@@ -111,7 +111,7 @@ _If there's any other ideas presented in this repo, that you think worth mention
 
 # 8 Features:
 - Account creation / Sign In / Sign Out
-- Manage / Overview Appointments from profile page
+- Friends List
 - Create / Delete Appointments
 - Invite friends to edit appointment
 - Auto Calculate best times depending on all invited people's inputs
