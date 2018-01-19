@@ -65,6 +65,9 @@ git clone https://github.com/mcnamee/react-native-starter-kit.git
 
 # Install dependencies
 npm i
+(Ensure you have react version ^16.0.0)
+(Install any dependencies command line says youre missing)
+(install watchman. ```brew install watchman```)
 ```
 
 #### 2.1. Run the _React Native_ App
