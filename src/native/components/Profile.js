@@ -18,6 +18,14 @@ const Profile = ({ member, logout }) => (
               />
             </Content>
 
+            <ListItem onPress={Actions.manageContacts} icon>
+              <Left>
+                <Icon name="list" />
+              </Left>
+              <Body>
+                <Text>Manage Contact List</Text>
+              </Body>
+            </ListItem>
             <ListItem onPress={Actions.updateProfile} icon>
               <Left>
                 <Icon name="person-add" />

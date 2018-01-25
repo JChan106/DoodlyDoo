@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scene, Tabs, Stack } from 'react-native-router-flux';
+import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
 import { Icon } from 'native-base';
 
 import DefaultProps from '../constants/navigation';
@@ -25,6 +25,9 @@ import MemberContainer from '../../containers/Member';
 import ProfileComponent from '../components/Profile';
 
 import AboutComponent from '../components/About';
+
+import ManageContacts from '../components/ManageContacts';
+import AddContact from '../components/AddContact';
 
 const Index = (
   <Stack>
@@ -92,6 +95,22 @@ const Index = (
             {...DefaultProps.navbarProps}
             component={UpdateProfileContainer}
             Layout={UpdateProfileComponent}
+          />
+          <Scene
+            back
+            key="manageContacts"
+            title="CONTACTS"
+            right={() => <Icon style={{paddingRight: 15}} onPress={Actions.addContact} name='add' />}
+            {...DefaultProps.navbarProps}
+            component={ManageContacts}
+          />
+
+          <Scene
+            back
+            key="addContact"
+            title="Add Contact"
+            {...DefaultProps.navbarProps}
+            component={AddContact}
           />
         </Stack>
       </Tabs>
