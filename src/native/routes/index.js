@@ -29,6 +29,8 @@ import AboutComponent from '../components/About';
 import ManageContacts from '../components/ManageContacts';
 import AddContact from '../components/AddContact';
 
+import Contact from '../components/Contact';
+
 const Index = (
   <Stack>
     <Scene hideNavBar>
@@ -112,6 +114,14 @@ const Index = (
             {...DefaultProps.navbarProps}
             component={AddContact}
           />
+
+          <Scene
+            back
+            key="contact"
+            title="CONTACT"
+            component={Contact}
+          />
+
         </Stack>
       </Tabs>
     </Scene>

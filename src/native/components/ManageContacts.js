@@ -69,12 +69,12 @@ class ManageContacts extends React.Component {
             {
               this.state.contactsExist
               ? <List style={{marginLeft: -17}}>
-                <ListItem onPress={Actions.manageContacts} style={{backgroundColor: 'white'}}>
+                <ListItem onPress={Actions.contact} style={{backgroundColor: 'white'}}>
                   <Body>
                     <Text style={{paddingLeft: 10}}>Abe Hu</Text>
                   </Body>
                 </ListItem>
-                <ListItem onPress={Actions.manageContacts} style={{backgroundColor: 'white'}}>
+                <ListItem onPress={Actions.contact} style={{backgroundColor: 'white'}}>
                   <Body>
                     <Text style={{paddingLeft: 10}}>Dillon Sio</Text>
                   </Body>
