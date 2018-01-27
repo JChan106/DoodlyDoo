@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, Content, Text, Body, ListItem, Form, Item, Label, Input, CheckBox, Button, View, H3, Icon } from 'native-base';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
+import Colors from '../../../native-base-theme/variables/commonColor';
 import Messages from './Messages';
 import Loading from './Loading';
 import Header from './Header';
@@ -70,7 +71,7 @@ class AddAppointment1 extends React.Component {
 
           <Form>
             <Item>
-              <Icon active name="md-list" />
+              <Icon active name="md-list" style={{color: Colors.brandPrimary}}/>
               <Input
                 placeholder="Appointment Name"
                 onChangeText={v => this.handleChange('firstName', v)}
@@ -78,7 +79,7 @@ class AddAppointment1 extends React.Component {
             </Item>
             <Spacer size={25} />
             <Item>
-              <Icon active name="md-menu" />
+              <Icon active name="md-menu" style={{color: Colors.brandPrimary}}/>
               <Input
                 placeholder="Brief Description"
                 onChangeText={v => this.handleChange('lastName', v)}
@@ -86,7 +87,7 @@ class AddAppointment1 extends React.Component {
             </Item>
             <Spacer size={25} />
             <Item>
-              <Icon active name="md-pin" />
+              <Icon active name="md-pin" style={{color: Colors.brandPrimary}}/>
               <Input
                 placeholder="Location"
                 onChangeText={v => this.handleChange('lastName', v)}

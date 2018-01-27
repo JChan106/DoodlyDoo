@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, Content, Text, Body, ListItem, Form, Item, Label, Input, CheckBox, Button, View, H3, Icon } from 'native-base';
+import { Container, Content, Text, Body, List, ListItem, Form, Item, Label, Input, CheckBox, Button, View, H3, Icon, Card, CardItem } from 'native-base';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
 import Messages from './Messages';
 import Loading from './Loading';
@@ -27,15 +27,9 @@ class AddAppointment3 extends React.Component {
 
   constructor(props) {
     super(props);
-    // this.state = {
-    //   firstName: props.member.firstName || '',
-    //   lastName: props.member.lastName || '',
-    //   email: props.member.email || '',
-    //   password: '',
-    //   password2: '',
-    //   changeEmail: false,
-    //   changePassword: false,
-    // };
+    this.state = {
+      tempCheck: false,
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -64,41 +58,32 @@ class AddAppointment3 extends React.Component {
       <Container>
         <Content padder>
           <Text style={{width: '100%', textAlign: 'center'}}> Step 3 of 3 </Text>
-          <Spacer size={50} />
+          <Spacer size={25} />
           {error && <Messages message={error} />}
           {success && <Messages message={success} type="success" />}
 
-          <Form>
-            <Item>
-              <Icon active name="md-list" />
-              <Input
-                placeholder="Appointment Name"
-                onChangeText={v => this.handleChange('firstName', v)}
-              />
-            </Item>
-            <Spacer size={25} />
-            <Item>
-              <Icon active name="md-menu" />
-              <Input
-                placeholder="Brief Description"
-                onChangeText={v => this.handleChange('lastName', v)}
-              />
-            </Item>
-            <Spacer size={25} />
-            <Item>
-              <Icon active name="md-pin" />
-              <Input
-                placeholder="Location"
-                onChangeText={v => this.handleChange('lastName', v)}
-              />
-            </Item>
-
-            <Spacer size={80} />
+          <Card style={{ paddingHorizontal: 10, width: '95%', alignSelf: 'center'}}>
+            <CardItem header bordered={true}>
+              <Text style={{ fontWeight: '600', textAlign: 'center', width: '100%' }}>Friends List</Text>
+            </CardItem>
+            <CardItem cardBody bordered={true} style={{backgroundColor: 'white'}}>
+            <List>
+              <ListItem>
+                <CheckBox checked={this.state.tempCheck} onPress={() => {this.setState({tempCheck: !this.state.tempCheck})}}/>
+                <Text style={{paddingLeft: 5}}> Friends Name Here </Text>
+              </ListItem>
+              <ListItem>
+                <CheckBox checked={this.state.tempCheck} onPress={() => {this.setState({tempCheck: !this.state.tempCheck})}}/>
+                <Text style={{paddingLeft: 5}}> Friends Name Here </Text>
+              </ListItem>
+            </List>
+            </CardItem>
+          </Card>
+            <Spacer size={30} />
 
             <Button block onPress={Actions.recipes}>
               <Text>Continue</Text>
             </Button>
-          </Form>
         </Content>
       </Container>
     );

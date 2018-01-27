@@ -4,6 +4,7 @@ import { Container, Content, Text, Body, ListItem, Form, Item, Label, Input, Che
 import Colors from '../../../native-base-theme/variables/commonColor';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import moment from 'moment';
 import TouchableOpacity from 'react-native';
 import Messages from './Messages';
 import Loading from './Loading';
@@ -31,21 +32,30 @@ class AddAppointment2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isDateTimePickerVisible: true,
+      markedDates: {}
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.selectDate = this.selectDate.bind(this);
   }
 
   _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
 
   _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
 
-  _handleDatePicked = (date) => {
-    console.log('A date has been picked: ', date);
-    this._hideDateTimePicker();
-  };
+  selectDate = (date) => {
+      if (this.state.markedDates[date] != undefined) {
+        const temp = {...this.state.markedDates};
+        delete temp[date];
+        console.log(temp);
+        this.setState({markedDates: temp});
+      } else {
+        const temp = {...this.state.markedDates, ...{[date]: {selected: true}}}
+        console.log(temp);
+        this.setState({markedDates: temp})
+      }
+  }
 
   handleChange = (name, val) => {
     // this.setState({
@@ -62,9 +72,12 @@ class AddAppointment2 extends React.Component {
 
   render() {
     const { loading, error, success } = this.props;
+    const today = moment().format("YYYY-MM-DD");
+
 
     // Loading
     if (loading) return <Loading />;
+
 
     return (
       <Container>
@@ -81,14 +94,18 @@ class AddAppointment2 extends React.Component {
               borderColor: Colors.brandPrimary,
               height: 350
             }}
+
+            markedDates={this.state.markedDates}
+            minDate={today}
+            onDayPress={(day) => {this.selectDate(day.dateString)}}
             // Specify theme properties to override specific styles for calendar parts. Default = {}
             theme={{
               backgroundColor: '#ffffff',
               calendarBackground: '#ffffff',
               textSectionTitleColor: 'gray',
-              selectedDayBackgroundColor: '#00adf5',
+              selectedDayBackgroundColor: '#ffffff',
               selectedDayTextColor: '#a32323',
-              todayTextColor: '#a32323',
+              todayTextColor: '#39d39f',
               dayTextColor: Colors.brandPrimary,
               textDisabledColor: '#d9e1e8',
               dotColor: Colors.brandPrimary,
