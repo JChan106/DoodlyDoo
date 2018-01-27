@@ -64,8 +64,8 @@ class Contact extends React.Component {
 
             <Spacer size={100} />
 
-            <Button block style={{backgroundColor: '#a32323'}} onPress={Actions.pop}>
-              <Text>DELETE</Text>
+            <Button bordered style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}} onPress={Actions.pop}>
+              <Text style={{textAlign: 'center', width: '100%', color: '#a32323'}}>DELETE</Text>
             </Button>
         </Content>
       </Container>

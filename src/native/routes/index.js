@@ -1,6 +1,6 @@
 import React from 'react';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
-import { Icon } from 'native-base';
+import { Icon, Text } from 'native-base';
 
 import DefaultProps from '../constants/navigation';
 import AppConfig from '../../constants/config';
@@ -31,6 +31,12 @@ import AddContact from '../components/AddContact';
 
 import Contact from '../components/Contact';
 
+import TimeInput from '../components/TimeInput';
+
+import AddAppointment1 from '../components/AddAppointment1';
+import AddAppointment2 from '../components/AddAppointment2';
+import AddAppointment3 from '../components/AddAppointment3';
+
 const Index = (
   <Stack>
     <Scene hideNavBar>
@@ -52,11 +58,14 @@ const Index = (
 
         <Stack
           key="recipes"
-          title="RECIPES"
+          title="YOUR APPOINTMENTS"
           icon={() => <Icon name="book" {...DefaultProps.icons} />}
           {...DefaultProps.navbarProps}
         >
-          <Scene key="recipes" component={RecipesContainer} Layout={RecipesComponent} />
+          <Scene renderBackButton={() => (null)} key="recipes" component={RecipesContainer} Layout={RecipesComponent} />
+          <Scene back key="addAppointment1" title="Whats the Occasion?" component={AddAppointment1} />
+          <Scene back key="addAppointment2" title="Pick Some Options" component={AddAppointment2} />
+          <Scene back key="addAppointment3" title="Invite Friends" component={AddAppointment3} />
         </Stack>
 
         <Stack
@@ -130,10 +139,19 @@ const Index = (
       back
       clone
       key="recipe"
-      title="RECIPE"
+      onRight={() => {Actions.timeInput()}}
+      rightTitle="Edit"
+      title="APPOINTMENT"
       {...DefaultProps.navbarProps}
       component={RecipesContainer}
       Layout={RecipeViewComponent}
+    />
+    <Scene
+      back
+      clone
+      key="timeInput"
+      title="INPUT TIME"
+      component={TimeInput}
     />
   </Stack>
 );

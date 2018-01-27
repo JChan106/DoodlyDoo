@@ -26,44 +26,29 @@ const RecipeListing = ({
 
   return (
     <Container>
-      <Content padder>
-        <Header
-          title="Top Recipes"
-          content="This is here to show how you can read and display data from a data source (in our case, Firebase)."
-        />
-
+      <Content>
+        <Spacer size={15} />
+          <Button bordered
+                  style={{width: '95%', alignSelf: 'center', shadowColor: '#608296'}}
+                  onPress={Actions.addAppointment1}>
+            <Text style={{width: '100%', textAlign: 'center'}}>Create Appointment</Text>
+          </Button>
+        <Spacer size={15} />
         <FlatList
-          numColumns={2}
+          numColumns={1}
           data={recipes}
           renderItem={({ item }) => (
-            <Card transparent style={{ paddingHorizontal: 6 }}>
-              <CardItem cardBody>
-                <TouchableOpacity onPress={() => onPress(item)} style={{ flex: 1 }}>
-                  <Image
-                    source={{ uri: item.image }}
-                    style={{
-                      height: 100,
-                      width: null,
-                      flex: 1,
-                      borderRadius: 5,
-                    }}
-                  />
-                </TouchableOpacity>
+            <Card style={{ paddingHorizontal: 10, width: '95%', alignSelf: 'center'}}>
+              <CardItem header bordered={true}>
+                <Text style={{ fontWeight: '600' }}>{item.title}</Text>
+                <Button bordered small onPress={() => onPress(item)}
+                  style={{right: 0, position: 'absolute', top: 9.5}}>
+                  <Text>View</Text>
+                </Button>
               </CardItem>
-              <CardItem cardBody>
-                <Body>
-                  <Spacer size={10} />
-                  <Text style={{ fontWeight: '800' }}>{item.title}</Text>
+              <CardItem cardBody bordered={true} style={{backgroundColor: 'white'}}>
+                <Body style={{paddingLeft: 15}}>
                   <Spacer size={15} />
-                  <Button
-                    block
-                    bordered
-                    small
-                    onPress={() => onPress(item)}
-                  >
-                    <Text>View Recipe</Text>
-                  </Button>
-                  <Spacer size={5} />
                 </Body>
               </CardItem>
             </Card>
