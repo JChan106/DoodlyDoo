@@ -40,10 +40,6 @@ class AddAppointment2 extends React.Component {
     this.selectDate = this.selectDate.bind(this);
   }
 
-  _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
-
-  _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
-
   selectDate = (date) => {
       if (this.state.markedDates[date] != undefined) {
         const temp = {...this.state.markedDates};
