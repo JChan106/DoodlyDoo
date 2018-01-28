@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Image } from 'react-native';
-import { Container, Content, Card, CardItem, Body, H3, List, ListItem, Text } from 'native-base';
+import { Image, ScrollView } from 'react-native';
+import { Container, Content, Card, CardItem, Body, H3, List, ListItem, Text, View, Icon } from 'native-base';
+import Colors from '../../../native-base-theme/variables/commonColor';
 import ErrorMessages from '../../constants/errors';
 import Error from './Error';
 import Spacer from './Spacer';
+import Swiper from 'react-native-swiper'
+import Chat from './Chat';
 
 const RecipeView = ({
   error,
@@ -38,84 +41,87 @@ const RecipeView = ({
   ));
 
   return (
-    <Container>
-      <Content padder>
-        <Spacer size={25} />
-        <H3>Some Appointment</H3>
-        <Text>Organizer: Jackie Chan</Text>
-        <Spacer size={15} />
+    <Swiper showsButtons={false}>
+          <ScrollView style={{backgroundColor: 'white'}}>
+            <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
+              <H3>Some Appointment</H3>
+              <Text>Organizer: Jackie Chan</Text>
+            </View>
+            <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
+              <CardItem header bordered>
+                <Icon active name="md-menu" style={{color: Colors.brandPrimary}}/>
+                <Text>Description</Text>
+              </CardItem>
+              <CardItem>
+                <Body>
+                  <Text>"Play Smash. Twice Sucks"</Text>
+                </Body>
+              </CardItem>
+            </Card>
+            <Card style={{width: '95%', alignSelf: 'center'}}>
+              <CardItem bordered>
+                <Icon active name="md-pin" style={{color: Colors.brandPrimary}}/>
+                <Text style={{fontWeight: '900'}}> Location: </Text>
+                <Text> Kevins Place </Text>
+              </CardItem>
+            </Card>
+            <Card style={{width: '95%', alignSelf: 'center'}}>
+              <CardItem header bordered>
+                <Text style={{color: '#49c179'}}>Available Times</Text>
+              </CardItem>
+              <CardItem>
+                <List>
+                  {method}
+                </List>
+              </CardItem>
+            </Card>
+            <Spacer size={40} />
+          </ScrollView>
 
-        <Card>
-          <CardItem header bordered>
-            <Text>Description</Text>
-          </CardItem>
-          <CardItem>
-            <Body>
-              <Text>"Play Smash. Twice Sucks"</Text>
-            </Body>
-          </CardItem>
-        </Card>
+          <ScrollView style={{backgroundColor: 'white'}}>
+            <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
+              <H3>Invited People</H3>
+            </View>
+            <Card style={{width: '95%', alignSelf: 'center'}}>
+              <CardItem header bordered>
+                <Icon active name="ios-person" style={{color: Colors.brandPrimary}}/>
+                <Text>Attendees</Text>
+              </CardItem>
+              <CardItem>
+                <Content>
+                  <List>
+                    {ingredients}
+                  </List>
+                </Content>
+              </CardItem>
+            </Card>
+            <Card style={{width: '95%', alignSelf: 'center'}}>
+              <CardItem header bordered>
+                <Text style={{color: '#a32323'}}>Can Not Attend</Text>
+              </CardItem>
+              <CardItem>
+                <List>
+                  {method}
+                </List>
+              </CardItem>
+            </Card>
+            <Card style={{width: '95%', alignSelf: 'center'}}>
+              <CardItem header bordered>
+                <Text style={{color: '#a32323'}}>Has Not Responded</Text>
+              </CardItem>
+              <CardItem>
+                <List>
+                  {method}
+                </List>
+              </CardItem>
+            </Card>
+            <Spacer size={40} />
+          </ScrollView>
 
-        <Card>
-          <CardItem header bordered>
-            <Text>Location</Text>
-          </CardItem>
-          <CardItem>
-            <Body>
-              <Text>"Kevin's place"</Text>
-            </Body>
-          </CardItem>
-        </Card>
-
-        <Card>
-          <CardItem header bordered>
-            <Text>Attendees</Text>
-          </CardItem>
-          <CardItem>
-            <Content>
-              <List>
-                {ingredients}
-              </List>
-            </Content>
-          </CardItem>
-        </Card>
-
-        <Card>
-          <CardItem header bordered>
-            <Text style={{color: '#a32323'}}>Can Not Attend</Text>
-          </CardItem>
-          <CardItem>
-            <List>
-              {method}
-            </List>
-          </CardItem>
-        </Card>
-
-        <Card>
-          <CardItem header bordered>
-            <Text style={{color: '#a32323'}}>Has Not Responded</Text>
-          </CardItem>
-          <CardItem>
-            <List>
-              {method}
-            </List>
-          </CardItem>
-        </Card>
-
-        <Card>
-          <CardItem header bordered>
-            <Text style={{color: '#49c179'}}>Available Times</Text>
-          </CardItem>
-          <CardItem>
-            <List>
-              {method}
-            </List>
-          </CardItem>
-        </Card>
-
-        <Spacer size={20} />
-      </Content>
-    </Container>
+          <View style={{flex: 1, backgroundColor: 'white', paddingBottom: 30}}>
+            <Chat />
+          </View>
+    </Swiper>
   );
 };
 

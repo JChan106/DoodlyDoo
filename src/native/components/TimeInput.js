@@ -5,7 +5,7 @@ import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import moment from 'moment';
 import Colors from '../../../native-base-theme/variables/commonColor';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
-import { TouchableOpacity, Modal } from 'react-native';
+import { TouchableOpacity, Modal, Keyboard } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Messages from './Messages';
 import Loading from './Loading';
@@ -50,14 +50,14 @@ class TimeInput extends React.Component {
 
   handleDatePicked = (date) => {
     let temp = date.toLocaleTimeString().replace(/:\d{2}\s/,' ');
-    temp = temp.slice(0, -4);
+    // temp = temp.slice(0, -3);
     this.hideDateTimePicker();
     this.setState({start: temp});
   };
 
   handleDatePicked2 = (date) => {
     let temp = date.toLocaleTimeString().replace(/:\d{2}\s/,' ');
-    temp = temp.slice(0, -4);
+    // temp = temp.slice(0, -3);
     this.hideDateTimePicker2();
     this.setState({end: temp});
   };
@@ -104,6 +104,7 @@ class TimeInput extends React.Component {
                   visible={this.state.modalVisible}
                   onRequestClose={() => this.toggleModal()}
                   transparent={true}
+                  animationType="fade"
               >
                 <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#00000080', opacity: 50}}>
                   <View style={{width: '85%', height: '60%', backgroundColor: 'white'}}>
@@ -114,7 +115,10 @@ class TimeInput extends React.Component {
                           value={this.state.start}
                           placeholder="Available Start Time"
                           onChangeText={v => this.handleChange('firstName', v)}
-                          onFocus={this.showDateTimePicker}
+                          onFocus={() => {
+                            Keyboard.dismiss();
+                            this.showDateTimePicker();
+                          }}
                         />
                       </Item>
                       <Item style={{paddingTop: '25%', width: '85%', alignSelf: 'center'}}>
@@ -123,7 +127,10 @@ class TimeInput extends React.Component {
                           value={this.state.end}
                           placeholder="Available End Time"
                           onChangeText={v => this.handleChange('lastName', v)}
-                          onFocus={this.showDateTimePicker2}
+                          onFocus={() => {
+                            Keyboard.dismiss();
+                            this.showDateTimePicker2();
+                          }}
                         />
                       </Item>
                       <DateTimePicker
