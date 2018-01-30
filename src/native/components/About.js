@@ -1,26 +1,104 @@
 import React from 'react';
-import { Container, Content, Text, H1, H2, H3, Button } from 'native-base';
+import { Image, ScrollView } from 'react-native';
+import {Body, List, ListItem, Content, Text, H1, H2, H3, Button, View, Card, CardItem, Icon } from 'native-base';
+import Colors from '../../../native-base-theme/variables/commonColor';
 import Spacer from './Spacer';
 
 const About = () => (
-  <Container>
-    <Content padder>
-      <Spacer size={30} />
-      <H1>Heading 1</H1>
-      <Spacer size={10} />
-      <Text>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </Text>
-
-      <Spacer size={30} />
-      <H2>Heading 2</H2>
-      <Spacer size={10} />
-      <Text>Elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </Text>
-
-      <Spacer size={30} />
-      <H3>Heading 3</H3>
-      <Spacer size={10} />
-      <Text>Elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </Text>
-    </Content>
-  </Container>
+    <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
+      <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
+        <H3>Welcome to your Dashboard</H3>
+        <Text>Your activities and notifications will be summarized here.</Text>
+      </View>
+      <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
+        <CardItem header bordered>
+          <Icon active name="md-flag" style={{color: Colors.brandPrimary}}/>
+          <Text>Lets get you updated!</Text>
+        </CardItem>
+        <CardItem>
+          <Body>
+            <Text>"Play Smash. Twice Sucks"</Text>
+          </Body>
+        </CardItem>
+      </Card>
+      <Card style={{width: '95%', alignSelf: 'center'}}>
+        <CardItem header bordered>
+          <Icon active name="ios-bookmark" style={{color: Colors.brandPrimary}}/>
+          <Text>Account Activity</Text>
+        </CardItem>
+        <CardItem>
+          <List>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+            <ListItem rightIcon={{ style: { opacity: 0 } }}>
+              <Text>"No Items Here"</Text>
+            </ListItem>
+          </List>
+        </CardItem>
+      </Card>
+      <Spacer size={40} />
+    </ScrollView>
 );
 
 export default About;
