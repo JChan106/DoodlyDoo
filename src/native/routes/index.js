@@ -25,6 +25,7 @@ import MemberContainer from '../../containers/Member';
 import ProfileComponent from '../components/Profile';
 
 import AboutComponent from '../components/About';
+import AboutContainer from '../../containers/About';
 
 import ManageContacts from '../components/ManageContacts';
 import AddContact from '../components/AddContact';
@@ -53,7 +54,7 @@ const Index = (
           icon={() => <Icon name="home" {...DefaultProps.icons} />}
           {...DefaultProps.navbarProps}
         >
-          <Scene key="home" component={AboutComponent} />
+          <Scene key="home" Layout={AboutComponent} component={AboutContainer} />
         </Stack>
 
         <Stack
