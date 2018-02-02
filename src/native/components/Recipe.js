@@ -41,7 +41,7 @@ const RecipeView = ({
   ));
 
   return (
-    <Swiper showsButtons={false}>
+    <Swiper showsButtons={false} index={1}>
           <ScrollView style={{backgroundColor: 'white'}}>
             <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
               <H3>Some Appointment</H3>
