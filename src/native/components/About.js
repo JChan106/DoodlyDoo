@@ -119,36 +119,27 @@ const About = ({member}) => (
 
           <View style={{flex: 1, backgroundColor: 'white'}}>
             <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
-              <H3 style={{paddingTop: 15, alignSelf: 'center'}}> Easily Make Appointments </H3>
+              <H3 style={{paddingTop: 15, alignSelf: 'center', paddingBottom: 10}}> Easily Make Appointments </H3>
               <CardItem cardBody>
-                <Image source={{uri: 'https://i.imgur.com/4xWiBrF.gif'}} style={{height: 510, width: null, flex: 1}}/>
-              </CardItem>
-            </Card>
-          </View>
-
-          <View style={{flex: 1, backgroundColor: 'white'}}>
-            <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
-              <H3 style={{paddingTop: 15, alignSelf: 'center'}}> Invite Your Friends </H3>
-              <CardItem cardBody>
-                <Image source={{uri: 'https://i.imgur.com/4xWiBrF.gif'}} style={{height: 510, width: null, flex: 1}}/>
+                <Image source={{uri: 'https://i.imgur.com/k3OP6Kf.gif'}} style={{height: 500, width: null, flex: 1}}/>
               </CardItem>
             </Card>
           </View>
 
             <View style={{flex: 1, backgroundColor: 'white'}}>
               <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
-                <H3 style={{paddingTop: 15, alignSelf: 'center'}}> Input Your Availabilities </H3>
+                <H3 style={{paddingTop: 15, alignSelf: 'center', paddingBottom: 10}}> Input Your Availabilities </H3>
                 <CardItem cardBody>
-                  <Image source={{uri: 'https://i.imgur.com/4xWiBrF.gif'}} style={{height: 510, width: null, flex: 1}}/>
+                  <Image source={{uri: 'https://i.imgur.com/oz5d0IR.gif'}} style={{height: 500, width: null, flex: 1}}/>
                 </CardItem>
               </Card>
             </View>
 
             <View style={{flex: 1, backgroundColor: 'white'}}>
               <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
-                <H3 style={{paddingTop: 15, alignSelf: 'center'}}> Collaborating is Simple </H3>
+                <H3 style={{paddingTop: 15, alignSelf: 'center', paddingBottom: 10}}> Collaborating is Simple </H3>
                 <CardItem cardBody>
-                  <Image source={{uri: 'https://i.imgur.com/4xWiBrF.gif'}} style={{height: 510, width: null, flex: 1}}/>
+                  <Image source={{uri: 'https://i.imgur.com/mwmA1Z6.gif'}} style={{height: 500, width: null, flex: 1}}/>
                 </CardItem>
               </Card>
             </View>

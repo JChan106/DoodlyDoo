@@ -104,7 +104,6 @@ class TimeInput extends React.Component {
                   visible={this.state.modalVisible}
                   onRequestClose={() => this.toggleModal()}
                   transparent={true}
-                  animationType="fade"
               >
                 <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#00000080', opacity: 50}}>
                   <View style={{width: '85%', height: '60%', backgroundColor: 'white'}}>
