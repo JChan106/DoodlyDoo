@@ -154,6 +154,26 @@ const Index = (
       title="INPUT TIME"
       component={TimeInput}
     />
+
+    <Scene
+      back
+      clone
+      key="loginFromLanding"
+      title="LOGIN"
+      {...DefaultProps.navbarProps}
+      component={LoginContainer}
+      Layout={LoginComponent}
+    />
+
+    <Scene
+      back
+      clone
+      key="signFromLanding"
+      title="SIGN UP"
+      {...DefaultProps.navbarProps}
+      component={SignUpContainer}
+      Layout={SignUpComponent}
+    />
   </Stack>
 );
 

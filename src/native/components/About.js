@@ -90,7 +90,7 @@ const About = ({member}) => (
             <View style={{flex: 1, backgroundColor: 'white'}}>
               <Card style={{width: '95%', justifyContent: 'center', alignSelf: 'center', paddingBottom: 15}}>
                 <CardItem style={{alignSelf: 'center'}}>
-                  <Button bordered style={{shadowColor: '#608296'}} onPress={Actions.signUp}>
+                  <Button bordered style={{shadowColor: '#608296'}} onPress={Actions.signFromLanding}>
                     <Text style={{textAlign: 'center'}}>Get Started</Text>
                   </Button>
                 </CardItem>

@@ -96,6 +96,7 @@ class SignUp extends React.Component {
             <Button block onPress={this.handleSubmit}>
               <Text>Sign Up</Text>
             </Button>
+            <Spacer size={35} />
           </Form>
         </Content>
       </Container>
