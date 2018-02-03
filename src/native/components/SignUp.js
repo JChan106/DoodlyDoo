@@ -41,7 +41,7 @@ class SignUp extends React.Component {
 
   handleSubmit = () => {
     this.props.onFormSubmit(this.state)
-      .then(() => Actions.login())
+      .then(() => Actions.pop())
       .catch(e => console.log(`Error: ${e}`));
   }
 

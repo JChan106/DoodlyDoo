@@ -28,31 +28,35 @@ class AddAppointment1 extends React.Component {
 
   constructor(props) {
     super(props);
-    // this.state = {
-    //   firstName: props.member.firstName || '',
-    //   lastName: props.member.lastName || '',
-    //   email: props.member.email || '',
-    //   password: '',
-    //   password2: '',
-    //   changeEmail: false,
-    //   changePassword: false,
-    // };
+    this.state = {
+      apptName: '',
+      description: '',
+      location: '',
+      errorMessage: '',
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange = (name, val) => {
-    // this.setState({
-    //   ...this.state,
-    //   [name]: val,
-    // });
+  handleChange(name, value) {
+    this.setState({
+      [name]: value,
+    });
   }
 
-  handleSubmit = () => {
-    // this.props.onFormSubmit(this.state)
-    //   .then(() => console.log('Profile Updated'))
-    //   .catch(e => console.log(`Error: ${e}`));
+  handleSubmit(e) {
+    if (this.state.apptName == '' || this.state.description == '' || this.state.location == '') {
+      this.setState({
+        errorMessage: "Please fill out all missing fields."
+      });
+    }
+    else {
+      this.setState({
+        errorMessage: ''
+      });
+      Actions.addAppointment2({apptName:this.state.apptName, description:this.state.description, location:this.state.location});
+    }
   }
 
   render() {
@@ -74,7 +78,7 @@ class AddAppointment1 extends React.Component {
               <Icon active name="md-list" style={{color: Colors.brandPrimary}}/>
               <Input
                 placeholder="Appointment Name"
-                onChangeText={v => this.handleChange('firstName', v)}
+                onChangeText={v => this.handleChange('apptName', v)}
               />
             </Item>
             <Spacer size={25} />
@@ -82,7 +86,7 @@ class AddAppointment1 extends React.Component {
               <Icon active name="md-menu" style={{color: Colors.brandPrimary}}/>
               <Input
                 placeholder="Brief Description"
-                onChangeText={v => this.handleChange('lastName', v)}
+                onChangeText={v => this.handleChange('description', v)}
               />
             </Item>
             <Spacer size={25} />
@@ -90,13 +94,14 @@ class AddAppointment1 extends React.Component {
               <Icon active name="md-pin" style={{color: Colors.brandPrimary}}/>
               <Input
                 placeholder="Location"
-                onChangeText={v => this.handleChange('lastName', v)}
+                onChangeText={v => this.handleChange('location', v)}
               />
             </Item>
 
-            <Spacer size={80} />
-
-            <Button block onPress={Actions.addAppointment2}>
+            <Spacer size={60} />
+            <Text style= {{color:'red', height:20}}>{this.state.errorMessage}</Text>
+            <Spacer size={10} />
+            <Button block onPress={this.handleSubmit}>
               <Text>Continue</Text>
             </Button>
           </Form>

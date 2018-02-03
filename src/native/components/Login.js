@@ -33,6 +33,7 @@ class Login extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+
   handleChange = (name, val) => {
     this.setState({
       ...this.state,
@@ -42,7 +43,7 @@ class Login extends React.Component {
 
   handleSubmit = () => {
     this.props.onFormSubmit(this.state)
-      .then(() => Actions.tabbar())
+      .then(() => Actions.pop())
       .catch(e => console.log(`Error: ${e}`));
   }
 

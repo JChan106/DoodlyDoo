@@ -32,12 +32,17 @@ class AddAppointment2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      markedDates: {}
+      markedDates: {},
+      errorMessage: '',
+      allDates: {},
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.selectDate = this.selectDate.bind(this);
+  }
+
+  ComponentWillMount() {
   }
 
   selectDate = (date) => {
@@ -49,7 +54,7 @@ class AddAppointment2 extends React.Component {
       } else {
         const temp = {...this.state.markedDates, ...{[date]: {selected: true}}}
         console.log(temp);
-        this.setState({markedDates: temp})
+        this.setState({markedDates: temp});
       }
   }
 
@@ -60,10 +65,18 @@ class AddAppointment2 extends React.Component {
     // });
   }
 
-  handleSubmit = () => {
-    // this.props.onFormSubmit(this.state)
-    //   .then(() => console.log('Profile Updated'))
-    //   .catch(e => console.log(`Error: ${e}`));
+  handleSubmit(e) {
+    // if ({this.state.markedDates} == {this.state.allDates}) {
+    //   this.setState({
+    //     errorMessage: "Please select appointment date(s)."
+    //   });
+    // }
+    // else {
+    //   this.setState({
+    //     errorMessage: ''
+    //   });
+      Actions.addAppointment3({apptName:this.props.apptName, description:this.props.description,location:this.props.location,dates:this.state.markedDates});
+    // }
   }
 
   render() {
@@ -86,7 +99,7 @@ class AddAppointment2 extends React.Component {
           <Calendar
             // Specify style for calendar container element. Default = {}
             style={{
-              borderWidth: 1,
+              borderWidth: 2,
               borderColor: Colors.brandPrimary,
               height: 350
             }}
@@ -116,7 +129,7 @@ class AddAppointment2 extends React.Component {
 
           <Spacer size={35} />
 
-          <Button block onPress={Actions.addAppointment3}>
+          <Button block onPress={this.handleSubmit}>
             <Text>Continue</Text>
           </Button>
 

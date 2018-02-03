@@ -6,6 +6,7 @@ import Messages from './Messages';
 import Loading from './Loading';
 import Header from './Header';
 import Spacer from './Spacer';
+import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 
 class AddAppointment3 extends React.Component {
   // static propTypes = {
@@ -30,7 +31,6 @@ class AddAppointment3 extends React.Component {
     this.state = {
       tempCheck: false,
     };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -42,10 +42,32 @@ class AddAppointment3 extends React.Component {
     // });
   }
 
-  handleSubmit = () => {
-    // this.props.onFormSubmit(this.state)
-    //   .then(() => console.log('Profile Updated'))
-    //   .catch(e => console.log(`Error: ${e}`));
+  handleSubmit(e) {
+    let appt = this.props.apptName;
+    let des = this.props.description;
+    let loc = this.props.location;
+    let dates = this.props.dates;
+    let user = Firebase.auth().currentUser;
+    if (user) {
+      console.log("user is: " + user.email);
+      var numofAppointments;
+      var getuserdata = FirebaseRef.child('users/' + user.uid);
+      getuserdata.once('value',function(snapshot){
+        numofAppointments = snapshot.val().numofAppointments;
+        numofAppointments++;
+        FirebaseRef.child('users/' + user.uid).update({numofAppointments: numofAppointments});
+        // console.log("postnume: " + postnum)
+        const appointments = FirebaseRef.child("users").child(user.uid).child("appointments").child(numofAppointments);
+        appointments.set({
+          appointmentName: appt,
+          description: des,
+          location: loc,
+          dates: dates,
+          //TODO: array of users invited?
+        });
+      })
+      Actions.recipes();
+    }
   }
 
   render() {
@@ -81,7 +103,7 @@ class AddAppointment3 extends React.Component {
           </Card>
             <Spacer size={30} />
 
-            <Button block onPress={Actions.recipes}>
+            <Button block onPress={this.handleSubmit}>
               <Text>Continue</Text>
             </Button>
         </Content>
