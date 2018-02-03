@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { getRecipes, getMeals, setError } from '../actions/recipes';
+import { logout, getMemberData } from '../actions/member';
+
 
 class RecipeListing extends Component {
   static propTypes = {
@@ -39,7 +41,7 @@ class RecipeListing extends Component {
   }
 
   render = () => {
-    const { Layout, recipes, match } = this.props;
+    const { Layout, recipes, match, member } = this.props;
     const id = (match && match.params && match.params.id) ? match.params.id : null;
 
     return (
@@ -48,6 +50,7 @@ class RecipeListing extends Component {
         error={recipes.error}
         loading={recipes.loading}
         recipes={recipes.recipes}
+        member={member}
         reFetch={() => this.fetchRecipes()}
       />
     );
@@ -56,12 +59,14 @@ class RecipeListing extends Component {
 
 const mapStateToProps = state => ({
   recipes: state.recipes || {},
+  member: state.member || {},
 });
 
 const mapDispatchToProps = {
   getRecipes,
   getMeals,
   setError,
+  getMemberData,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecipeListing);

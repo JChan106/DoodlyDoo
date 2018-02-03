@@ -41,7 +41,7 @@ const RecipeView = ({
   ));
 
   return (
-    <Swiper showsButtons={false}>
+    <Swiper showsButtons={false} index={1}>
           <ScrollView style={{backgroundColor: 'white'}}>
             <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
               <H3>Some Appointment</H3>
@@ -97,6 +97,7 @@ const RecipeView = ({
             </Card>
             <Card style={{width: '95%', alignSelf: 'center'}}>
               <CardItem header bordered>
+                <Icon active name="ios-person" style={{color: '#a32323'}}/>
                 <Text style={{color: '#a32323'}}>Can Not Attend</Text>
               </CardItem>
               <CardItem>
@@ -107,6 +108,7 @@ const RecipeView = ({
             </Card>
             <Card style={{width: '95%', alignSelf: 'center'}}>
               <CardItem header bordered>
+                <Icon active name="ios-remove-circle-outline" style={{color: '#a32323'}}/>
                 <Text style={{color: '#a32323'}}>Has Not Responded</Text>
               </CardItem>
               <CardItem>

@@ -92,11 +92,7 @@ class AddAppointment3 extends React.Component {
             <List>
               <ListItem>
                 <CheckBox checked={this.state.tempCheck} onPress={() => {this.setState({tempCheck: !this.state.tempCheck})}}/>
-                <Text style={{paddingLeft: 5}}> Friends Name Here </Text>
-              </ListItem>
-              <ListItem>
-                <CheckBox checked={this.state.tempCheck} onPress={() => {this.setState({tempCheck: !this.state.tempCheck})}}/>
-                <Text style={{paddingLeft: 5}}> Friends Name Here </Text>
+                <Text style={{paddingLeft: 5}}> Dillon Sio </Text>
               </ListItem>
             </List>
             </CardItem>
@@ -104,7 +100,7 @@ class AddAppointment3 extends React.Component {
             <Spacer size={30} />
 
             <Button block onPress={this.handleSubmit}>
-              <Text>Continue</Text>
+              <Text>Done!</Text>
             </Button>
         </Content>
       </Container>

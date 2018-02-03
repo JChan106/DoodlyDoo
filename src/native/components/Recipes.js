@@ -1,57 +1,46 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import { FlatList, TouchableOpacity, RefreshControl, Image } from 'react-native';
-import { Container, Content, Card, CardItem, Body, Text, Button } from 'native-base';
-import { Actions } from 'react-native-router-flux';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { View, FlatList, TouchableOpacity, RefreshControl, Image } from 'react-native';
+import { Container, Content, Card, CardItem, Body, Text, Button, H3 } from 'native-base';
+import { Actions } from 'react-native-router-flux';
+import { logout, getMemberData } from '../../actions/member';
 import Loading from './Loading';
 import Error from './Error';
 import Header from './Header';
 import Spacer from './Spacer';
 
-class RecipeListing extends Component {
-// const RecipeListing = ({error, loading, recipes, reFetch,}) => {
-  constructor() {
-    super();
-    this.state = {
-      userLoggedIn: null,
-    }
-    this.handlePress = this.handlePress.bind(this);
-  }
-  componentDidMount() {
-    // Loading
-    if (this.props.loading) return (<Loading />);
-    // Error
-    if (this.props.error) return (<Error content={this.props.error} />);
-    // let user = Firebase.auth().currentUser;
-    // user ? this.setState({userLoggedIn: true}) : this.setState({userLoggedIn: false});
-  }
-  handlePress(e) {
-    let user = Firebase.auth().currentUser;
-    if (user) {
-      Actions.addAppointment1();
-    }
-    else {
-      Actions.profile();
-    }
-  }
+const RecipeListing = ({
+  error,
+  loading,
+  recipes,
+  reFetch,
+  member,
+}) => {
+  // Loading
+  if (loading) return <Loading />;
 
-  render() {
-    const keyExtractor = item => item.id;
-    const onPress = item => Actions.recipe({ match: { params: { id: String(item.id) } } });
-    return (
-      <Container>
-        <Content>
+  // Error
+  if (error) return <Error content={error} />;
+
+  const keyExtractor = item => item.id;
+
+  const onPress = item => Actions.recipe({ match: { params: { id: String(item.id) } } });
+
+  return (
+    <Container>
+      {(member && member.email) ?
+      <Content>
           <Spacer size={15} />
             <Button bordered
                     style={{width: '95%', alignSelf: 'center', shadowColor: '#608296'}}
-                    onPress={this.handlePress}>
+                    onPress={Actions.addAppointment1}>
               <Text style={{width: '100%', textAlign: 'center'}}>Create Appointment</Text>
             </Button>
           <Spacer size={15} />
           <FlatList
             numColumns={1}
-            data={this.props.recipes}
+            data={recipes}
             renderItem={({ item }) => (
               <Card style={{ paddingHorizontal: 10, width: '95%', alignSelf: 'center'}}>
                 <CardItem header bordered={true}>
@@ -71,18 +60,25 @@ class RecipeListing extends Component {
             keyExtractor={keyExtractor}
             refreshControl={
               <RefreshControl
-                refreshing={this.props.loading}
-                onRefresh={this.props.reFetch}
+                refreshing={loading}
+                onRefresh={reFetch}
               />
             }
           />
-
           <Spacer size={20} />
-        </Content>
-      </Container>
-    );
-  }
-}
+      </Content>
+      :
+      <View style={{justifyContent: 'center', alignSelf: 'center', flex: 1}}>
+        <Button bordered style={{shadowColor: '#608296', alignSelf: 'center', marginBottom: 20}} onPress={Actions.loginFromLanding}>
+          <Text style={{textAlign: 'center'}}>Sign In</Text>
+        </Button>
+        <Button bordered style={{shadowColor: '#608296'}} onPress={Actions.signFromLanding}>
+          <Text style={{textAlign: 'center'}}>Create Account</Text>
+        </Button>
+      </View>}
+    </Container>
+  );
+};
 
 RecipeListing.propTypes = {
   error: PropTypes.string,
