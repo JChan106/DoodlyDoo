@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
 import { logout, getMemberData } from '../../actions/member';
-import Swiper from 'react-native-swiper'
+import Swiper from 'react-native-swiper';
 
 const About = ({member}) => (
     <Container>
@@ -45,63 +45,6 @@ const About = ({member}) => (
                 <ListItem rightIcon={{ style: { opacity: 0 } }}>
                   <Text>"No Items Here"</Text>
                 </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
               </List>
             </CardItem>
           </Card>
@@ -121,7 +64,7 @@ const About = ({member}) => (
             <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
               <H3 style={{paddingTop: 15, alignSelf: 'center', paddingBottom: 10}}> Easily Make Appointments </H3>
               <CardItem cardBody>
-                <Image source={{uri: 'https://i.imgur.com/k3OP6Kf.gif'}} style={{height: 500, width: null, flex: 1}}/>
+                <Image source={{uri: 'https://media.giphy.com/media/3o7WIx6QRwSer4HyH6/giphy.gif'}} style={{height: 480, width: null, flex: 1}}/>
               </CardItem>
             </Card>
           </View>
@@ -130,7 +73,7 @@ const About = ({member}) => (
               <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
                 <H3 style={{paddingTop: 15, alignSelf: 'center', paddingBottom: 10}}> Input Your Availabilities </H3>
                 <CardItem cardBody>
-                  <Image source={{uri: 'https://i.imgur.com/oz5d0IR.gif'}} style={{height: 500, width: null, flex: 1}}/>
+                  <Image source={{uri: 'https://media.giphy.com/media/3o7WIMspZUYI8Tdhjq/giphy.gif'}} style={{height: 480, width: null, flex: 1}}/>
                 </CardItem>
               </Card>
             </View>
@@ -139,7 +82,7 @@ const About = ({member}) => (
               <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
                 <H3 style={{paddingTop: 15, alignSelf: 'center', paddingBottom: 10}}> Collaborating is Simple </H3>
                 <CardItem cardBody>
-                  <Image source={{uri: 'https://i.imgur.com/mwmA1Z6.gif'}} style={{height: 500, width: null, flex: 1}}/>
+                  <Image source={{uri: 'https://media.giphy.com/media/l0NgSywq4eYMU6G8o/giphy.gif'}} style={{height: 463, width: null, flex: 1}}/>
                 </CardItem>
               </Card>
             </View>
