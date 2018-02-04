@@ -1,10 +1,10 @@
+import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList, TouchableOpacity, RefreshControl, Image } from 'react-native';
 import { Container, Content, Card, CardItem, Body, Text, Button, H3 } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { logout, getMemberData } from '../../actions/member';
-
 import Loading from './Loading';
 import Error from './Error';
 import Header from './Header';
