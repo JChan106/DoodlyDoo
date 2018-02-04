@@ -35,17 +35,21 @@ class AddAppointment2 extends React.Component {
       markedDates: {},
       errorMessage: '',
       allDates: {},
+      showError: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.selectDate = this.selectDate.bind(this);
+    this.showError = this.showError.bind(this);
   }
 
-  ComponentWillMount() {
+  showError () {
+    this.setState({showError: true})
   }
 
   selectDate = (date) => {
+      this.setState({showError: false});
       if (this.state.markedDates[date] != undefined) {
         const temp = {...this.state.markedDates};
         delete temp[date];
@@ -82,7 +86,7 @@ class AddAppointment2 extends React.Component {
   render() {
     const { loading, error, success } = this.props;
     const today = moment().format("YYYY-MM-DD");
-
+    const shouldContinue = Object.getOwnPropertyNames(this.state.markedDates).length != 0;
 
     // Loading
     if (loading) return <Loading />;
@@ -129,7 +133,13 @@ class AddAppointment2 extends React.Component {
 
           <Spacer size={35} />
 
-          <Button block onPress={this.handleSubmit}>
+          {
+            this.state.showError
+            ? <Text style={{color: '#a32323'}}> Please enter possible dates </Text>
+            : null
+          }
+
+          <Button block onPress={shouldContinue ? this.handleSubmit : this.showError}>
             <Text>Continue</Text>
           </Button>
 

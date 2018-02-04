@@ -6,6 +6,8 @@ import Messages from './Messages';
 import Loading from './Loading';
 import Header from './Header';
 import Spacer from './Spacer';
+import {Firebase,FirebaseRef} from './../../lib/firebase.js';
+
 
 class AddContact extends React.Component {
 
@@ -16,26 +18,45 @@ class AddContact extends React.Component {
 
   constructor(props) {
     super(props);
-    // this.state = {
-    //   firstName: props.member.firstName || '',
-    //   lastName: props.member.lastName || '',
-    //   email: props.member.email || '',
-    //   password: '',
-    //   password2: '',
-    //   changeEmail: false,
-    //   changePassword: false,
-    // };
+    this.state = {
+      firstName: null,
+      lastName: null,
+      email: null,
+      showError: false,
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange = (name, val) => {
-    // placeholder
+    this.setState({
+      ...this.state,
+      [name]: val,
+    });
   }
 
-  handleSubmit = () => {
-    // placeholder
+  handleSubmit = (e) => {
+    let that = this;
+    let user = Firebase.auth().currentUser;
+    if (user) {
+      console.log("user is: " + user.email);
+      var numofAppointments;
+      var getuserdata = FirebaseRef.child('users/' + user.uid);
+      getuserdata.once('value',function(snapshot){
+        numFriends = snapshot.val().numFriends;
+        numFriends++;
+        FirebaseRef.child('users/' + user.uid).update({numFriends: numFriends});
+        // console.log("postnume: " + postnum)
+        const friends = FirebaseRef.child("users").child(user.uid).child("friends").child(that.state.email);
+        friends.set({
+          firstName: that.state.firstName,
+          lastName: that.state.lastName,
+          email: that.state.email,
+        });
+      })
+    }
+    Actions.pop();
   }
 
   render() {
@@ -82,7 +103,7 @@ class AddContact extends React.Component {
 
             <Spacer size={20} />
 
-            <Button block onPress={Actions.pop}>
+            <Button block onPress={this.handleSubmit}>
               <Text>Done</Text>
             </Button>
           </Form>
