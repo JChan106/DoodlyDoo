@@ -7,20 +7,12 @@ import Loading from './Loading';
 import Header from './Header';
 import Spacer from './Spacer';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
+import { logout, getMemberData } from '../../actions/member';
+import { connect } from 'react-redux';
+
+
 
 class AddAppointment3 extends React.Component {
-  // static propTypes = {
-  //   error: PropTypes.string,
-  //   success: PropTypes.string,
-  //   loading: PropTypes.bool.isRequired,
-  //   onFormSubmit: PropTypes.func.isRequired,
-  //   member: PropTypes.shape({
-  //     firstName: PropTypes.string,
-  //     lastName: PropTypes.string,
-  //     email: PropTypes.string,
-  //   }).isRequired,
-  // }
-
   static defaultProps = {
     error: null,
     success: null,
@@ -33,6 +25,7 @@ class AddAppointment3 extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   handleChange = (name, val) => {
@@ -42,6 +35,30 @@ class AddAppointment3 extends React.Component {
     // });
   }
 
+  handleEdit () {
+    let appt = this.props.apptName;
+    let des = this.props.description;
+    let loc = this.props.location;
+    let dates = this.props.dates;
+    let id = this.props.recipe.id;
+    let user = Firebase.auth().currentUser;
+    if (user) {
+      var getuserdata = FirebaseRef.child('users/' + user.uid);
+      getuserdata.once('value',function(snapshot){
+        const appointments = FirebaseRef.child("appointments").child(user.uid).child(id - 1);
+        appointments.update({
+          appointmentName: appt,
+          description: des,
+          location: loc,
+          dates: dates,
+
+          //TODO: array of users invited?
+        });
+      })
+      Actions.recipes();
+    }
+  }
+
   handleSubmit(e) {
     let appt = this.props.apptName;
     let des = this.props.description;
@@ -49,20 +66,25 @@ class AddAppointment3 extends React.Component {
     let dates = this.props.dates;
     let user = Firebase.auth().currentUser;
     if (user) {
-      console.log("user is: " + user.email);
       var numofAppointments;
       var getuserdata = FirebaseRef.child('users/' + user.uid);
       getuserdata.once('value',function(snapshot){
+        let masterEmail = snapshot.val().email;
+        let masterName = `${snapshot.val().firstName} ${snapshot.val().lastName}`;
         numofAppointments = snapshot.val().numofAppointments;
+        // console.log("postnume: " + postnum)
+        const appointments = FirebaseRef.child("appointments").child(user.uid).child(numofAppointments);
         numofAppointments++;
         FirebaseRef.child('users/' + user.uid).update({numofAppointments: numofAppointments});
-        // console.log("postnume: " + postnum)
-        const appointments = FirebaseRef.child("users").child(user.uid).child("appointments").child(numofAppointments - 1);
         appointments.set({
           appointmentName: appt,
           description: des,
           location: loc,
           dates: dates,
+          masterEmail: masterEmail,
+          masterName: masterName,
+          id: numofAppointments,
+
           //TODO: array of users invited?
         });
       })
@@ -99,7 +121,7 @@ class AddAppointment3 extends React.Component {
           </Card>
             <Spacer size={30} />
 
-            <Button block onPress={this.handleSubmit}>
+            <Button block onPress={this.props.isEdit ? this.handleEdit : this.handleSubmit}>
               <Text>Done!</Text>
             </Button>
         </Content>

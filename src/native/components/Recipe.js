@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Image, ScrollView } from 'react-native';
-import { Container, Content, Card, CardItem, Body, H3, List, ListItem, Text, View, Icon } from 'native-base';
+import { Container, Content, Card, CardItem, Body, H3, List, ListItem, Text, View, Icon, Button } from 'native-base';
 import Colors from '../../../native-base-theme/variables/commonColor';
+import { Actions } from 'react-native-router-flux';
 import ErrorMessages from '../../constants/errors';
 import Error from './Error';
 import Spacer from './Spacer';
 import Swiper from 'react-native-swiper'
 import Chat from './Chat';
+import { Firebase, FirebaseRef } from '../../lib/firebase';
+
 
 const RecipeView = ({
   error,
@@ -32,8 +35,6 @@ const RecipeView = ({
     recipe = recipes.find(item => item.appointmentName === recipeId);
   }
 
-  console.log(recipe)
-
   // Recipe not found
   if (!recipe) return <Error content={ErrorMessages.recipe404} />;
 
@@ -45,6 +46,12 @@ const RecipeView = ({
   // ));
   //
 
+  let currentEmail = null;
+  let uid = Firebase.auth().currentUser.uid;
+  FirebaseRef.child('users').child(uid).on('value', (snapshot) => {
+    currentEmail = snapshot.val().email;
+  });
+
   // Build Method listing
   const method = Object.entries(recipe.dates).map(([key, value]) => (
       <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
@@ -52,13 +59,26 @@ const RecipeView = ({
       </ListItem>
   ));
 
+  const deleteAppointment = () => {
+    let uid = Firebase.auth().currentUser.uid;
+    FirebaseRef.child('appointments').child(uid).child(recipe.id - 1).remove();
+    let getuserdata = FirebaseRef.child('users/' + uid);
+    getuserdata.once('value', function(snapshot){
+      numofAppointments = snapshot.val().numofAppointments;
+      numofAppointments--;
+      FirebaseRef.child('users/' + uid).update({numofAppointments: numofAppointments});
+    });
+    Actions.recipes();
+  }
+
+  const onPress = () => Actions.addAppointment1({isEdit: true, recipe: recipe});
 
   return (
     <Swiper showsButtons={false} index={1}>
           <ScrollView style={{backgroundColor: 'white'}}>
             <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
               <H3>{recipe.appointmentName}</H3>
-              <Text>Organizer: Jackie Chan</Text>
+              <Text>Organizer: {recipe.masterName}</Text>
             </View>
             <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
               <CardItem header bordered>
@@ -136,6 +156,26 @@ const RecipeView = ({
           <View style={{flex: 1, backgroundColor: 'white', paddingBottom: 30}}>
             <Chat />
           </View>
+
+          {
+            currentEmail === recipe.masterEmail ?
+            <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
+              <View style={{paddingBottom: 15}}>
+                <Button bordered style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}} onPress={deleteAppointment}>
+                  <Text style={{textAlign: 'center', width: '100%', color: '#a32323'}}>Delete</Text>
+                </Button>
+              </View>
+              <View style={{paddingTop: 15}}>
+                <Button bordered style={{width: '95%', alignSelf: 'center', shadowColor: Colors.brandPrimary}} onPress={onPress}>
+                  <Text style={{textAlign: 'center', width: '100%'}}>Edit</Text>
+                </Button>
+              </View>
+            </View>
+            :
+            null
+          }
+
+
     </Swiper>
   );
 };

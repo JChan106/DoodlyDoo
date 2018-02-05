@@ -79,16 +79,24 @@ export function getRecipes(uid) {
   return dispatch => new Promise(resolve => {
     Firebase.auth().onAuthStateChanged((loggedIn) => {
       if(loggedIn) {
-        console.log('im hit1');
-        FirebaseRef.child('users').child(loggedIn.uid).child('appointments')
-        .on('value', (snapshot) => {
-          const recipes = snapshot.val() || {};
-          console.log('im hit')
-          return resolve(dispatch({
-            type: 'RECIPES_REPLACE',
-            data: recipes,
-          }));
-        })
+        let numAppointments = FirebaseRef.child('users').child(loggedIn.uid);
+        numAppointments.on('value', (snapshot) => {
+          if (snapshot.val().numofAppointments > 0) {
+            let ref = FirebaseRef.child('appointments').child(loggedIn.uid)
+            ref.on('value', (snapshot) => {
+              const recipes = snapshot.val() || {};
+              return resolve(dispatch({
+                type: 'RECIPES_REPLACE',
+                data: recipes,
+              }));
+            })
+          } else {
+            return resolve(dispatch({
+              type: 'RECIPES_REPLACE',
+              data: [],
+            }));
+          }
+        });
       }
     })}).catch(e => console.log(e));
 }
