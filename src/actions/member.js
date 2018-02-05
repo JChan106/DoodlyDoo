@@ -37,8 +37,8 @@ export function signUp(formData) {
             signedUp: Firebase.database.ServerValue.TIMESTAMP,
             lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
             numofAppointments: 0,
-            numFriends: 0,
             email: email,
+            numFriends: 0,
           }).then(() => statusMessage(dispatch, 'loading', false).then(resolve));
         }
       }).catch(reject);
