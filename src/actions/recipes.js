@@ -74,16 +74,21 @@ export function setError(message) {
 /**
   * Get Recipes
   */
-export function getRecipes() {
+export function getRecipes(uid) {
   if (Firebase === null) return () => new Promise(resolve => resolve());
-
-  return dispatch => new Promise(resolve => FirebaseRef.child('recipes')
-    .on('value', (snapshot) => {
-      const recipes = snapshot.val() || {};
-
-      return resolve(dispatch({
-        type: 'RECIPES_REPLACE',
-        data: recipes,
-      }));
-    })).catch(e => console.log(e));
+  return dispatch => new Promise(resolve => {
+    Firebase.auth().onAuthStateChanged((loggedIn) => {
+      if(loggedIn) {
+        console.log('im hit1');
+        FirebaseRef.child('users').child(loggedIn.uid).child('appointments')
+        .on('value', (snapshot) => {
+          const recipes = snapshot.val() || {};
+          console.log('im hit')
+          return resolve(dispatch({
+            type: 'RECIPES_REPLACE',
+            data: recipes,
+          }));
+        })
+      }
+    })}).catch(e => console.log(e));
 }

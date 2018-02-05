@@ -44,8 +44,8 @@ const RecipeListing = ({
             renderItem={({ item }) => (
               <Card style={{ paddingHorizontal: 10, width: '95%', alignSelf: 'center'}}>
                 <CardItem header bordered={true}>
-                  <Text style={{ fontWeight: '600' }}>{item.title}</Text>
-                  <Button bordered small onPress={() => onPress(item)}
+                  <Text style={{ fontWeight: '600' }}>{item.appointmentName}</Text>
+                  <Button bordered small onPress={() => Actions.recipe()}
                     style={{right: 0, position: 'absolute', top: 9.5}}>
                     <Text>View</Text>
                   </Button>

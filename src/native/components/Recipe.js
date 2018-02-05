@@ -15,30 +15,30 @@ const RecipeView = ({
   recipeId,
 }) => {
   // Error
-  if (error) return <Error content={error} />;
+  // if (error) return <Error content={error} />;
 
   // Get this Recipe from all recipes
-  let recipe = null;
-  if (recipeId && recipes) {
-    recipe = recipes.find(item => parseInt(item.id, 10) === parseInt(recipeId, 10));
-  }
+  // let recipe = null;
+  // if (recipeId && recipes) {
+  //   recipe = recipes.find(item => parseInt(item.id, 10) === parseInt(recipeId, 10));
+  // }
 
   // Recipe not found
-  if (!recipe) return <Error content={ErrorMessages.recipe404} />;
+  // if (!recipe) return <Error content={ErrorMessages.recipe404} />;
 
   // Build Ingredients listing
-  const ingredients = recipe.ingredients.map(item => (
-    <ListItem key={item} rightIcon={{ style: { opacity: 0 } }}>
-      <Text>{item}</Text>
-    </ListItem>
-  ));
-
-  // Build Method listing
-  const method = recipe.method.map(item => (
-    <ListItem key={item} rightIcon={{ style: { opacity: 0 } }}>
-      <Text>{item}</Text>
-    </ListItem>
-  ));
+  // const ingredients = recipe.ingredients.map(item => (
+  //   <ListItem key={item} rightIcon={{ style: { opacity: 0 } }}>
+  //     <Text>{item}</Text>
+  //   </ListItem>
+  // ));
+  //
+  // // Build Method listing
+  // const method = recipe.method.map(item => (
+  //   <ListItem key={item} rightIcon={{ style: { opacity: 0 } }}>
+  //     <Text>{item}</Text>
+  //   </ListItem>
+  // ));
 
   return (
     <Swiper showsButtons={false} index={1}>
@@ -71,7 +71,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  {method}
+                  <Text> Hi </Text>
                 </List>
               </CardItem>
             </Card>
@@ -90,7 +90,7 @@ const RecipeView = ({
               <CardItem>
                 <Content>
                   <List>
-                    {ingredients}
+                    <Text> Hi </Text>
                   </List>
                 </Content>
               </CardItem>
@@ -102,7 +102,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  {method}
+                  <Text> Hi </Text>
                 </List>
               </CardItem>
             </Card>
@@ -113,7 +113,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  {method}
+                  <Text> Hi </Text>
                 </List>
               </CardItem>
             </Card>

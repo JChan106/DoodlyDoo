@@ -28,11 +28,14 @@ class RecipeListing extends Component {
 
   componentDidMount = () => this.fetchRecipes();
 
+  // componentWillUpdate = () => this.fetchRecipes();
+
   /**
     * Fetch Data from API, saving to Redux
     */
   fetchRecipes = () => {
-    return this.props.getRecipes()
+    const uid = this.props.member.uid;
+    return this.props.getRecipes(uid)
       .then(() => this.props.getMeals())
       .catch((err) => {
         console.log(`Error: ${err}`);
