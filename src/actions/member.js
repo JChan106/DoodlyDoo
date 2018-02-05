@@ -38,12 +38,17 @@ export function signUp(formData) {
             lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
             numofAppointments: 0,
             numFriends: 0,
+            email: email,
           }).then(() => statusMessage(dispatch, 'loading', false).then(resolve));
         }
       }).catch(reject);
   }).catch(async (err) => { await statusMessage(dispatch, 'error', err.message); throw err.message; });
 }
 
+
+function emailToKey(emailAddress) {
+   return emailAddress.replace(/[.]/g, ',');
+}
 /**
   * Get this User's Details
   */
