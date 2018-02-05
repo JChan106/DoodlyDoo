@@ -57,7 +57,7 @@ class AddAppointment3 extends React.Component {
         numofAppointments++;
         FirebaseRef.child('users/' + user.uid).update({numofAppointments: numofAppointments});
         // console.log("postnume: " + postnum)
-        const appointments = FirebaseRef.child("users").child(user.uid).child("appointments").child(numofAppointments);
+        const appointments = FirebaseRef.child("users").child(user.uid).child("appointments").child(numofAppointments - 1);
         appointments.set({
           appointmentName: appt,
           description: des,

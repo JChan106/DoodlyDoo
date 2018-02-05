@@ -8,7 +8,6 @@ import Header from './Header';
 import Spacer from './Spacer';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 
-
 class AddContact extends React.Component {
 
   static defaultProps = {
@@ -19,12 +18,13 @@ class AddContact extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: null,
-      lastName: null,
-      email: null,
-      showError: false,
+      firstName: '',
+      lastName: '',
+      email: '',
+      errorMessage: '',
+      foundUser: false,
     };
-
+    this.emailToKey = this.emailToKey.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -37,30 +37,60 @@ class AddContact extends React.Component {
   }
 
   handleSubmit = (e) => {
-    let that = this;
-    let user = Firebase.auth().currentUser;
-    if (user) {
-      console.log("user is: " + user.email);
-      var numofAppointments;
-      var getuserdata = FirebaseRef.child('users/' + user.uid);
-      getuserdata.once('value',function(snapshot){
-        numFriends = snapshot.val().numFriends;
-        numFriends++;
-        FirebaseRef.child('users/' + user.uid).update({numFriends: numFriends});
-        // console.log("postnume: " + postnum)
-        const friends = FirebaseRef.child("users").child(user.uid).child("friends").child(that.state.email);
-        friends.set({
-          firstName: that.state.firstName,
-          lastName: that.state.lastName,
-          email: that.state.email,
-        });
-      })
+    if (this.state.firstName == '' || this.state.lastName == '' || this.state.email == '') {
+      this.setState({errorMessage: "Please fill out all missing fields."});
     }
-    Actions.pop();
+    else {
+      let that = this;
+      let user = Firebase.auth().currentUser;
+      let userfound = false;
+      if (user) {
+        console.log("user is: " + user.email);
+        FirebaseRef.child("users/").once("value").then(function(questionsSnapshot) {
+          return questionsSnapshot.forEach(function(questionSnapshot) {
+            return (
+              (questionSnapshot.val().email == that.state.email) ? (
+                that.setState({foundUser: true}),
+                console.log("hit")
+              )
+              :
+                console.log(questionSnapshot.val().email),
+                console.log("hi")
+            );
+          });
+        });
+        if(that.state.foundUser) {
+          console.log("ded");
+          that.setState({errorMessage: ''});
+          var numFriends;
+          var getuserdata = FirebaseRef.child('users/' + user.uid);
+          getuserdata.once('value',function(snapshot){
+            numFriends = snapshot.val().numFriends;
+            numFriends++;
+            FirebaseRef.child('users/' + user.uid).update({numFriends: numFriends});
+          })
+          const friends = FirebaseRef.child("friends").child(user.uid).child(that.emailToKey(that.state.email));
+          friends.set({
+            firstName: that.state.firstName,
+            lastName: that.state.lastName,
+            email: that.state.email,
+          });
+          Actions.pop();
+        }
+        else {
+          this.setState({errorMessage: 'User not found.'});
+        }
+      }
+    }
+  }
+
+  emailToKey(emailAddress) {
+     return emailAddress.replace(/[.]/g, ',');
   }
 
   render() {
     const { loading, error, success } = this.props;
+    const shouldContinue = (this.state.firstName != null && this.state.lastName != null && this.state.email != null);
 
     // Loading
     if (loading) return <Loading />;
@@ -102,7 +132,7 @@ class AddContact extends React.Component {
             </Item>
 
             <Spacer size={20} />
-
+            <Text style= {{color:'red', height:20}}>{this.state.errorMessage}</Text>
             <Button block onPress={this.handleSubmit}>
               <Text>Done</Text>
             </Button>
