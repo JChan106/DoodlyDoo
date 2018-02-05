@@ -14,37 +14,50 @@ const RecipeView = ({
   recipes,
   recipeId,
 }) => {
+
+  // console.log(this.props.recipeID);
+  // console.log(recipeId);
   // Error
-  if (error) return <Error content={error} />;
+  // if (error) return <Error content={error} />;
+
+  // Get this Recipe from all recipes
+  // let recipe = null;
+  // if (recipeId && recipes) {
+  //   recipe = recipes.find(item => parseInt(item.id, 10) === parseInt(recipeId, 10));
+  // }
 
   // Get this Recipe from all recipes
   let recipe = null;
   if (recipeId && recipes) {
-    recipe = recipes.find(item => parseInt(item.id, 10) === parseInt(recipeId, 10));
+    recipe = recipes.find(item => item.appointmentName === recipeId);
   }
+
+  console.log(recipe)
 
   // Recipe not found
   if (!recipe) return <Error content={ErrorMessages.recipe404} />;
 
   // Build Ingredients listing
-  const ingredients = recipe.ingredients.map(item => (
-    <ListItem key={item} rightIcon={{ style: { opacity: 0 } }}>
-      <Text>{item}</Text>
-    </ListItem>
-  ));
+  // const ingredients = recipe.ingredients.map(item => (
+  //   <ListItem key={item} rightIcon={{ style: { opacity: 0 } }}>
+  //     <Text>{item}</Text>
+  //   </ListItem>
+  // ));
+  //
 
   // Build Method listing
-  const method = recipe.method.map(item => (
-    <ListItem key={item} rightIcon={{ style: { opacity: 0 } }}>
-      <Text>{item}</Text>
-    </ListItem>
+  const method = Object.entries(recipe.dates).map(([key, value]) => (
+      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
+        <Text>{key}</Text>
+      </ListItem>
   ));
+
 
   return (
     <Swiper showsButtons={false} index={1}>
           <ScrollView style={{backgroundColor: 'white'}}>
             <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
-              <H3>Some Appointment</H3>
+              <H3>{recipe.appointmentName}</H3>
               <Text>Organizer: Jackie Chan</Text>
             </View>
             <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
@@ -54,7 +67,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <Body>
-                  <Text>"Play Smash. Twice Sucks"</Text>
+                  <Text>{recipe.description}</Text>
                 </Body>
               </CardItem>
             </Card>
@@ -62,12 +75,12 @@ const RecipeView = ({
               <CardItem bordered>
                 <Icon active name="md-pin" style={{color: Colors.brandPrimary}}/>
                 <Text style={{fontWeight: '900'}}> Location: </Text>
-                <Text> Kevins Place </Text>
+                <Text> {recipe.location} </Text>
               </CardItem>
             </Card>
             <Card style={{width: '95%', alignSelf: 'center'}}>
               <CardItem header bordered>
-                <Text style={{color: '#49c179'}}>Available Times</Text>
+                <Text style={{color: '#49c179'}}>Available Dates</Text>
               </CardItem>
               <CardItem>
                 <List>
@@ -90,7 +103,7 @@ const RecipeView = ({
               <CardItem>
                 <Content>
                   <List>
-                    {ingredients}
+                    <Text> Hi </Text>
                   </List>
                 </Content>
               </CardItem>
@@ -102,7 +115,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  {method}
+                  <Text> Hi </Text>
                 </List>
               </CardItem>
             </Card>
@@ -113,7 +126,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  {method}
+                  <Text> Hi </Text>
                 </List>
               </CardItem>
             </Card>

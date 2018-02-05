@@ -25,7 +25,7 @@ const RecipeListing = ({
 
   const keyExtractor = item => item.id;
 
-  const onPress = item => Actions.recipe({ match: { params: { id: String(item.id) } } });
+  const onPress = item => Actions.recipe({ match: { params: { id: String(item.appointmentName) } } });
 
   return (
     <Container>
@@ -44,7 +44,7 @@ const RecipeListing = ({
             renderItem={({ item }) => (
               <Card style={{ paddingHorizontal: 10, width: '95%', alignSelf: 'center'}}>
                 <CardItem header bordered={true}>
-                  <Text style={{ fontWeight: '600' }}>{item.title}</Text>
+                  <Text style={{ fontWeight: '600' }}>{item.appointmentName}</Text>
                   <Button bordered small onPress={() => onPress(item)}
                     style={{right: 0, position: 'absolute', top: 9.5}}>
                     <Text>View</Text>

@@ -15,7 +15,8 @@ const About = ({member}) => (
       {(member && member.email) ?
         <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
           <View style={{paddingTop: 15, paddingBottom: 15, width: '95%'}}>
-            <H3 style={{left: '3%', textAlign: 'left'}}>{member.firstName}s Dashboard </H3>
+            <H2 style={{left: '3%', textAlign: 'left'}}>Welcome back, {member.firstName} </H2>
+            <H3 style={{left: '3%', textAlign: 'left'}}>This is your dashboard </H3>
             <Text style={{left: '3%', textAlign: 'left'}}>Your activities and notifications will be summarized here.</Text>
           </View>
           <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
