@@ -25,6 +25,7 @@ class AddAppointment3 extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   handleChange = (name, val) => {
@@ -32,6 +33,30 @@ class AddAppointment3 extends React.Component {
     //   ...this.state,
     //   [name]: val,
     // });
+  }
+
+  handleEdit () {
+    let appt = this.props.apptName;
+    let des = this.props.description;
+    let loc = this.props.location;
+    let dates = this.props.dates;
+    let id = this.props.recipe.id;
+    let user = Firebase.auth().currentUser;
+    if (user) {
+      var getuserdata = FirebaseRef.child('users/' + user.uid);
+      getuserdata.once('value',function(snapshot){
+        const appointments = FirebaseRef.child("appointments").child(user.uid).child(id - 1);
+        appointments.update({
+          appointmentName: appt,
+          description: des,
+          location: loc,
+          dates: dates,
+
+          //TODO: array of users invited?
+        });
+      })
+      Actions.recipes();
+    }
   }
 
   handleSubmit(e) {
@@ -58,6 +83,7 @@ class AddAppointment3 extends React.Component {
           dates: dates,
           masterEmail: masterEmail,
           masterName: masterName,
+          id: numofAppointments,
 
           //TODO: array of users invited?
         });
@@ -95,7 +121,7 @@ class AddAppointment3 extends React.Component {
           </Card>
             <Spacer size={30} />
 
-            <Button block onPress={this.handleSubmit}>
+            <Button block onPress={this.props.isEdit ? this.handleEdit : this.handleSubmit}>
               <Text>Done!</Text>
             </Button>
         </Content>

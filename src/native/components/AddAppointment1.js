@@ -29,9 +29,9 @@ class AddAppointment1 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      apptName: '',
-      description: '',
-      location: '',
+      apptName: this.props.isEdit ? this.props.recipe.appointmentName : '',
+      description: this.props.isEdit ? this.props.recipe.description : '',
+      location: this.props.isEdit ? this.props.recipe.location : '',
       errorMessage: '',
     };
 
@@ -55,7 +55,7 @@ class AddAppointment1 extends React.Component {
       this.setState({
         errorMessage: ''
       });
-      Actions.addAppointment2({apptName:this.state.apptName, description:this.state.description, location:this.state.location});
+      Actions.addAppointment2({apptName:this.state.apptName, description:this.state.description, location:this.state.location, isEdit: this.props.isEdit, recipe: this.props.recipe});
     }
   }
 
@@ -77,6 +77,7 @@ class AddAppointment1 extends React.Component {
             <Item>
               <Icon active name="md-list" style={{color: Colors.brandPrimary}}/>
               <Input
+                value={this.props.isEdit ? this.state.apptName : null}
                 placeholder="Appointment Name"
                 onChangeText={v => this.handleChange('apptName', v)}
               />
@@ -85,6 +86,7 @@ class AddAppointment1 extends React.Component {
             <Item>
               <Icon active name="md-menu" style={{color: Colors.brandPrimary}}/>
               <Input
+                value={this.props.isEdit ? this.state.description : null}
                 placeholder="Brief Description"
                 onChangeText={v => this.handleChange('description', v)}
               />
@@ -93,6 +95,7 @@ class AddAppointment1 extends React.Component {
             <Item>
               <Icon active name="md-pin" style={{color: Colors.brandPrimary}}/>
               <Input
+                value={this.props.isEdit ? this.state.location : null}
                 placeholder="Location"
                 onChangeText={v => this.handleChange('location', v)}
               />

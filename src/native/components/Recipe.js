@@ -61,7 +61,7 @@ const RecipeView = ({
 
   const deleteAppointment = () => {
     let uid = Firebase.auth().currentUser.uid;
-    FirebaseRef.child('appointments').child(uid).remove();
+    FirebaseRef.child('appointments').child(uid).child(recipe.id - 1).remove();
     let getuserdata = FirebaseRef.child('users/' + uid);
     getuserdata.once('value', function(snapshot){
       numofAppointments = snapshot.val().numofAppointments;
@@ -70,6 +70,8 @@ const RecipeView = ({
     });
     Actions.recipes();
   }
+
+  const onPress = () => Actions.addAppointment1({isEdit: true, recipe: recipe});
 
   return (
     <Swiper showsButtons={false} index={1}>
@@ -157,10 +159,17 @@ const RecipeView = ({
 
           {
             currentEmail === recipe.masterEmail ?
-            <View style={{flex: 1, backgroundColor: 'white', paddingBottom: 30, justifyContent: 'center'}}>
-              <Button bordered style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}} onPress={deleteAppointment}>
-                <Text style={{textAlign: 'center', width: '100%', color: '#a32323'}}>DELETE</Text>
-              </Button>
+            <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
+              <View style={{paddingBottom: 15}}>
+                <Button bordered style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}} onPress={deleteAppointment}>
+                  <Text style={{textAlign: 'center', width: '100%', color: '#a32323'}}>Delete</Text>
+                </Button>
+              </View>
+              <View style={{paddingTop: 15}}>
+                <Button bordered style={{width: '95%', alignSelf: 'center', shadowColor: Colors.brandPrimary}} onPress={onPress}>
+                  <Text style={{textAlign: 'center', width: '100%'}}>Edit</Text>
+                </Button>
+              </View>
             </View>
             :
             null

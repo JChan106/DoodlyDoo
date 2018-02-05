@@ -36,6 +36,7 @@ export default function recipeReducer(state = initialState, action) {
           location: item.location,
           masterEmail: item.masterEmail,
           masterName: item.masterName,
+          id: item.id,
         }));
       }
 

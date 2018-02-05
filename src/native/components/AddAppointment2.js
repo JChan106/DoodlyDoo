@@ -29,6 +29,10 @@ class AddAppointment2 extends React.Component {
     success: null,
   }
 
+  componentDidMount () {
+    this.props.isEdit ? this.setState({markedDates: this.props.recipe.dates}) : null
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -77,7 +81,7 @@ class AddAppointment2 extends React.Component {
     //   this.setState({
     //     errorMessage: ''
     //   });
-      Actions.addAppointment3({apptName:this.props.apptName, description:this.props.description,location:this.props.location,dates:this.state.markedDates});
+      Actions.addAppointment3({apptName:this.props.apptName, description:this.props.description,location:this.props.location,dates:this.state.markedDates,isEdit:this.props.isEdit,recipe:this.props.recipe});
     // }
   }
 
