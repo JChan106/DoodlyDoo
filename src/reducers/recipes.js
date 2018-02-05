@@ -28,12 +28,14 @@ export default function recipeReducer(state = initialState, action) {
       let recipes = [];
 
       // Pick out the props I need
-      if (action.data && typeof action.data === 'object') {
+      if (action.data && typeof action.data === 'object' && Array.isArray(action.data)) {
         recipes = action.data.map(item => ({
           appointmentName: item.appointmentName,
           dates: item.dates,
           description: item.description,
           location: item.location,
+          masterEmail: item.masterEmail,
+          masterName: item.masterName,
         }));
       }
 

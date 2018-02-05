@@ -45,7 +45,6 @@ class AddContact extends React.Component {
       let user = Firebase.auth().currentUser;
       let userfound = false;
       if (user) {
-        console.log("user is: " + user.email);
         FirebaseRef.child("users/").once("value").then(function(questionsSnapshot) {
           return questionsSnapshot.forEach(function(questionSnapshot) {
             return (

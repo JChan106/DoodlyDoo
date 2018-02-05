@@ -7,20 +7,12 @@ import Loading from './Loading';
 import Header from './Header';
 import Spacer from './Spacer';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
+import { logout, getMemberData } from '../../actions/member';
+import { connect } from 'react-redux';
+
+
 
 class AddAppointment3 extends React.Component {
-  // static propTypes = {
-  //   error: PropTypes.string,
-  //   success: PropTypes.string,
-  //   loading: PropTypes.bool.isRequired,
-  //   onFormSubmit: PropTypes.func.isRequired,
-  //   member: PropTypes.shape({
-  //     firstName: PropTypes.string,
-  //     lastName: PropTypes.string,
-  //     email: PropTypes.string,
-  //   }).isRequired,
-  // }
-
   static defaultProps = {
     error: null,
     success: null,
@@ -49,20 +41,24 @@ class AddAppointment3 extends React.Component {
     let dates = this.props.dates;
     let user = Firebase.auth().currentUser;
     if (user) {
-      console.log("user is: " + user.email);
       var numofAppointments;
       var getuserdata = FirebaseRef.child('users/' + user.uid);
       getuserdata.once('value',function(snapshot){
+        let masterEmail = snapshot.val().email;
+        let masterName = `${snapshot.val().firstName} ${snapshot.val().lastName}`;
         numofAppointments = snapshot.val().numofAppointments;
+        // console.log("postnume: " + postnum)
+        const appointments = FirebaseRef.child("appointments").child(user.uid).child(numofAppointments);
         numofAppointments++;
         FirebaseRef.child('users/' + user.uid).update({numofAppointments: numofAppointments});
-        // console.log("postnume: " + postnum)
-        const appointments = FirebaseRef.child("users").child(user.uid).child("appointments").child(numofAppointments - 1);
         appointments.set({
           appointmentName: appt,
           description: des,
           location: loc,
           dates: dates,
+          masterEmail: masterEmail,
+          masterName: masterName,
+
           //TODO: array of users invited?
         });
       })

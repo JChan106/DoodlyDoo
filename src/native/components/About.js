@@ -10,12 +10,14 @@ import { Actions } from 'react-native-router-flux';
 import { logout, getMemberData } from '../../actions/member';
 import Swiper from 'react-native-swiper';
 
+let temp = "Welcome back, "
+
 const About = ({member}) => (
     <Container>
       {(member && member.email) ?
         <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
           <View style={{paddingTop: 15, paddingBottom: 15, width: '95%'}}>
-            <H2 style={{left: '3%', textAlign: 'left'}}>Welcome back, {member.firstName} </H2>
+            <H2 style={{left: '3%', textAlign: 'left'}}>{temp + member.firstName} </H2>
             <H3 style={{left: '3%', textAlign: 'left'}}>This is your dashboard </H3>
             <Text style={{left: '3%', textAlign: 'left'}}>Your activities and notifications will be summarized here.</Text>
           </View>
