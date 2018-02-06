@@ -46,13 +46,15 @@ class RecipeListing extends Component {
   render = () => {
     const { Layout, recipes, match, member } = this.props;
     const id = (match && match.params && match.params.id) ? match.params.id : null;
+    let tempArray = recipes.recipes;
+    tempArray = tempArray.filter(x => x != null);
 
     return (
       <Layout
         recipeId={id}
         error={recipes.error}
         loading={recipes.loading}
-        recipes={recipes.recipes}
+        recipes={tempArray}
         member={member}
         reFetch={() => this.fetchRecipes()}
       />
