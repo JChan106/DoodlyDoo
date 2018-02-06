@@ -37,6 +37,7 @@ export default function recipeReducer(state = initialState, action) {
           masterEmail: item.masterEmail,
           masterName: item.masterName,
           id: item.id,
+          invitedUsers: item.invitedUsers,
         }));
       }
 

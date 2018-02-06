@@ -66,6 +66,14 @@ class AddAppointment3 extends React.Component {
     let des = this.props.description;
     let loc = this.props.location;
     let dates = this.props.dates;
+    let invited = {};
+    Object.entries(this.state.friendCheck).map(([key, value]) => {
+      console.log(value);
+      if (value.checked) {
+        invited[value.name] = key
+      }
+    });
+    console.log(invited);
     let user = Firebase.auth().currentUser;
     if (user) {
       var numofAppointments;
@@ -86,6 +94,7 @@ class AddAppointment3 extends React.Component {
           masterEmail: masterEmail,
           masterName: masterName,
           id: numofAppointments,
+          invitedUsers: invited,
 
           //TODO: array of users invited?
         });
@@ -99,11 +108,12 @@ class AddAppointment3 extends React.Component {
       let userEmail = this.props.member.email.replace(/[.]/g, ',');
       let tempFriends = {};
       FirebaseRef.child('friends').child(userEmail).on('value', (snapshot) => {
-        Object.entries(snapshot.val()).map(([key, value]) => {
-            tempFriends[value.email] = false;
-        });
-        console.log(tempFriends);
-        that.setState({friendObject: snapshot.val(), friendCheck: tempFriends})
+        if(snapshot.val()) {
+          Object.entries(snapshot.val()).map(([key, value]) => {
+              tempFriends[value.email] = {checked: false, name: `${value.firstName} ${value.lastName}`};
+          });
+          that.setState({friendObject: snapshot.val(), friendCheck: tempFriends})
+        }
       });
     }
 
@@ -111,11 +121,10 @@ class AddAppointment3 extends React.Component {
       return Object.entries(this.state.friendObject).map(([key, value]) => (
         <ListItem key={key} onPress={() => {
           let tempCheck = this.state.friendCheck;
-          tempCheck[value.email] = !tempCheck[value.email];
-          console.log(tempCheck);
+          tempCheck[value.email].checked = !tempCheck[value.email].checked;
           this.setState({friendCheck: tempCheck})
         }} style={{width: '100%'}}>
-            <CheckBox checked={this.state.friendCheck[value.email]}/>
+            <CheckBox checked={this.state.friendCheck[value.email].checked}/>
             <Text style={{paddingLeft: 5}}> {value.firstName} {value.lastName} </Text>
         </ListItem>
       ));
