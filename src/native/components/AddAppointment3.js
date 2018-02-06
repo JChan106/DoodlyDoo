@@ -21,11 +21,13 @@ class AddAppointment3 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tempCheck: false,
+      friendCheck: {},
+      friendObject: {},
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+    this.printFriends = this.printFriends.bind(this);
   }
 
   handleChange = (name, val) => {
@@ -92,6 +94,34 @@ class AddAppointment3 extends React.Component {
     }
   }
 
+    componentDidMount = () => {
+      that = this;
+      let userEmail = this.props.member.email.replace(/[.]/g, ',');
+      let tempFriends = {};
+      FirebaseRef.child('friends').child(userEmail).on('value', (snapshot) => {
+        Object.entries(snapshot.val()).map(([key, value]) => {
+            tempFriends[value.email] = false;
+        });
+        console.log(tempFriends);
+        that.setState({friendObject: snapshot.val(), friendCheck: tempFriends})
+      });
+    }
+
+    printFriends = () => {
+      return Object.entries(this.state.friendObject).map(([key, value]) => (
+        <ListItem key={key} onPress={() => {
+          let tempCheck = this.state.friendCheck;
+          tempCheck[value.email] = !tempCheck[value.email];
+          console.log(tempCheck);
+          this.setState({friendCheck: tempCheck})
+        }} style={{width: '100%'}}>
+            <CheckBox checked={this.state.friendCheck[value.email]}/>
+            <Text style={{paddingLeft: 5}}> {value.firstName} {value.lastName} </Text>
+        </ListItem>
+      ));
+    }
+
+
   render() {
     const { loading, error, success } = this.props;
 
@@ -111,12 +141,9 @@ class AddAppointment3 extends React.Component {
               <Text style={{ fontWeight: '600', textAlign: 'center', width: '100%' }}>Friends List</Text>
             </CardItem>
             <CardItem cardBody bordered={true} style={{backgroundColor: 'white'}}>
-            <List>
-              <ListItem>
-                <CheckBox checked={this.state.tempCheck} onPress={() => {this.setState({tempCheck: !this.state.tempCheck})}}/>
-                <Text style={{paddingLeft: 5}}> Dillon Sio </Text>
-              </ListItem>
-            </List>
+              <List style={{width: '90%'}}>
+                {this.printFriends()}
+              </List>
             </CardItem>
           </Card>
             <Spacer size={30} />
@@ -130,4 +157,13 @@ class AddAppointment3 extends React.Component {
   }
 }
 
-export default AddAppointment3;
+const mapStateToProps = state => ({
+  member: state.member || {},
+});
+
+const mapDispatchToProps = {
+  memberLogout: logout,
+  getMemberData,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddAppointment3);

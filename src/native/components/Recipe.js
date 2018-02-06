@@ -45,12 +45,14 @@ const RecipeView = ({
   //   </ListItem>
   // ));
   //
+      let currentEmail = null;
+      if (Firebase.auth().currentUser) {
+        let uid = Firebase.auth().currentUser.uid;
+        FirebaseRef.child('users').child(uid).on('value', (snapshot) => {
+          currentEmail = snapshot.val().email;
+        });
+      }
 
-  let currentEmail = null;
-  let uid = Firebase.auth().currentUser.uid;
-  FirebaseRef.child('users').child(uid).on('value', (snapshot) => {
-    currentEmail = snapshot.val().email;
-  });
 
   // Build Method listing
   const method = Object.entries(recipe.dates).map(([key, value]) => (
