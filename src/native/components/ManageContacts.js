@@ -6,6 +6,8 @@ import Messages from './Messages';
 import Loading from './Loading';
 import Header from './Header';
 import Spacer from './Spacer';
+import RequestItem from './RequestItem';
+import ContactItem from './ContactItem';
 import Colors from '../../../native-base-theme/variables/commonColor';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 
@@ -30,30 +32,20 @@ class ManageContacts extends React.Component {
 
   constructor(props) {
     super(props);
-    // this.state = {
-    //   firstName: props.member.firstName || '',
-    //   lastName: props.member.lastName || '',
-    //   email: props.member.email || '',
-    //   password: '',
-    //   password2: '',
-    //   changeEmail: false,
-    //   changePassword: false,
-    // };
-
     this.state = {
       contacts: [],
       requests: [],
+      selectedButton: null,
+      theyAccepted: null,
       contactsExist: true,
     };
-    this.bothTrue = this.bothTrue.bind(this);
+    this.theyAccepted = this.theyAccepted.bind(this);
     this.emailToKey = this.emailToKey.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleAccept = this.handleAccept.bind(this);
-    this.handleDecline = this.handleDecline.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     var that = this;
     let user = Firebase.auth().currentUser;
     var contacts = [];
@@ -78,21 +70,14 @@ class ManageContacts extends React.Component {
     }
   }
 
-  bothTrue(e) {
+  theyAccepted(e) {
     let user = Firebase.auth().currentUser;
     var that = this;
     if (user) {
-      const iAccepted = FirebaseRef.child("friends/").child(this.emailToKey(user.email) + '/').child(this.emailToKey(e.email));
-      const theyAccepted = FirebaseRef.child("friends/").child(this.emailToKey(e.email) + '/').child(this.emailToKey(user.email));
-      if (theyAccepted.hasAccepted == true && iAccepted.hasAccepted == true) {
-        console.log(theyAccepted.hasAccepted);
-        console.log(iAccepted.hasAccepted);
-        return true;
-      }
-      else {
-        return false;
-      }
-      this.forceUpdate();
+        var theyAccepted = FirebaseRef.child("friends/").child(this.emailToKey(e) + '/').child(this.emailToKey(user.email));
+        return theyAccepted.once('value').then(function(snapshot) {
+          return snapshot.val().hasAccepted;
+        });
     }
   }
 
@@ -113,60 +98,36 @@ class ManageContacts extends React.Component {
     //   .catch(e => console.log(`Error: ${e}`));
   }
 
-  handleAccept(e) {
-    var that = this;
-    let user = Firebase.auth().currentUser;
-    if (user) {
-      const acceptedFriend = FirebaseRef.child('friends/').child(that.emailToKey(user.email) + '/').child(that.emailToKey(e.email));
-      acceptedFriend.update({
-        hasAccepted: true,
-      });
-      that.forceUpdate();
-    }
-
-  }
-
-  handleDecline(e) {
-
-  }
-
   render() {
     const { loading, error, success } = this.props;
     const contactItems = this.state.contacts.map((contact) => {
-      return (
-        <ListItem onPress={Actions.contact} style={{backgroundColor: 'white'}}>
-          <Body>
-            <Text style={{paddingLeft: 10}}>{contact.firstName + ' ' + contact.lastName}</Text>
-            {() => this.bothTrue(contact) ? <Text style={{paddingLeft: 10, color: 'green'}}>Accepted!</Text> :
-            <Text style={{paddingLeft: 10, color: 'green'}}>Pending Friend Request...</Text>
-          }
-          </Body>
-        </ListItem>)
+      return (<ContactItem key={contact.email} contact={contact} Accepted={this.theyAccepted(contact.email)}/>)
     });
     const requestItems = this.state.requests.map((request) => {
-      return (
-        <ListItem style={{backgroundColor: Colors.brandPrimary}}>
-          <Body>
-            <Text style={{paddingLeft: 10, color: 'white'}}>{'Friend request from ' + request.firstName + ' ' + request.lastName}</Text>
-            <Button block style={{width: '30%', alignSelf: 'start'}}
-            onPress={() => this.handleAccept(request)}>
-            <Text style={{width: '100%', textAlign: 'center'}}>Accept</Text></Button>
-            <Button block style={{width: '30%', alignSelf: 'end'}}
-            onPress={this.handleDecline}>
-            <Text style={{width: '100%', textAlign: 'center'}}>Decline</Text></Button>
-          </Body>
-        </ListItem>)
+      return (<RequestItem
+        key={request.email}
+        requests={this.state.requests}
+        request={request}
+        contacts={this.state.contacts}
+        onSelectRequest={selectedRequests => this.setState({requests: selectedRequests})}
+        onAccept={newContact => this.setState({contacts: this.state.contacts.concat(newContact)})}
+        />)
     });
     if (loading) return <Loading />;
     return (
       <View>
             {
-              this.state.contactsExist ?
+              this.state.contacts.length > 0 || this.props.addedContact ?
               <List style={{marginLeft: -17}}>
-                {contactItems}
+                {
+                  this.props.addedContact ?
+                  <ContactItem key={this.props.addedContact.email} contact={this.props.addedContact} Accepted={this.theyAccepted(this.props.addedContact.email)}/>
+                  : null
+                }
                 {requestItems}
+                {contactItems}
               </List>
-              : <Text>You have no contacts.</Text>
+              : <Text style={{textAlign:'center', marginTop: 10}}>You have no friends!</Text>
           }
         </View>
     );
