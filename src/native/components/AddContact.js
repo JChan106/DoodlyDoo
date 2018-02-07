@@ -22,7 +22,8 @@ class AddContact extends React.Component {
       lastName: '',
       email: '',
       errorMessage: '',
-      foundUser: false,
+      alreadyAdded: false,
+      contact: null,
     };
     this.emailToKey = this.emailToKey.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -46,41 +47,53 @@ class AddContact extends React.Component {
       let userfound = false;
       if (user) {
         console.log("user is: " + user.email);
-        FirebaseRef.child("users/").once("value").then(function(snapshot){
-          snapshot.forEach(function(snapshot) {
-            if (snapshot.val().email == that.state.email) {
-              that.setState({foundUser: true, errorMessage: ''});
-              console.log("found!");
-              var numFriends;
-              var userFirst;
-              var userLast;
-              var getuserdata = FirebaseRef.child('users/' + user.uid);
-              getuserdata.once('value',function(snapshot){
-                numFriends = snapshot.val().numFriends;
-                userFirst = snapshot.val().firstName;
-                userLast = snapshot.val().lastName;
-                numFriends++;
-                FirebaseRef.child('users/' + user.uid).update({numFriends: numFriends});
-              })
-              const myFriendslist = FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email));
-              myFriendslist.set({
-                firstName: that.state.firstName,
-                lastName: that.state.lastName,
-                email: that.state.email,
-                hasAccepted: true,
+        FirebaseRef.child("users/").once("value").then(function(contact){
+          contact.forEach(function(contact) {
+            if (contact.val().email == that.state.email) {
+              FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email)).once("value").then(function(snapshot){
+                if (snapshot.val()) {
+                  console.log("User already added! " + snapshot.val());
+                  that.setState({alreadyAdded: true, errorMessage: 'User already added!'});
+                }
+                else {
+                  const myFriendslist = FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email));
+                  const theirFriendslist = FirebaseRef.child("friends").child(that.emailToKey(that.state.email)).child(that.emailToKey(user.email));
+                  userfound = true;
+                  that.setState({errorMessage: ''});
+                  console.log("found!");
+                  console.log(that.state.contact);
+                  var numFriends;
+                  var userFirst;
+                  var userLast;
+                  var getuserdata = FirebaseRef.child('users/' + user.uid);
+                  getuserdata.once('value',function(myData){
+                    numFriends = myData.val().numFriends;
+                    userFirst = myData.val().firstName;
+                    userLast = myData.val().lastName;
+                    numFriends++;
+                    FirebaseRef.child('users/' + user.uid).update({numFriends: numFriends});
+                  });
+                  myFriendslist.set({
+                    firstName: that.state.firstName,
+                    lastName: that.state.lastName,
+                    email: that.state.email,
+                    hasAccepted: true,
+                  });
+                  theirFriendslist.set({
+                    firstName: userFirst,
+                    lastName: userLast,
+                    email: user.email,
+                    hasAccepted: false,
+                  });
+                  FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email)).once("value").then(function(s2){
+                    Actions.pop(); Actions.refresh({addedContact:s2.val()});
+                  });
+                }
               });
-              const theirFriendslist = FirebaseRef.child("friends").child(that.emailToKey(that.state.email)).child(that.emailToKey(user.email));
-              theirFriendslist.set({
-                firstName: userFirst,
-                lastName: userLast,
-                email: user.email,
-                hasAccepted: false,
-              })
-              Actions.pop();
             }
           })
         });
-        if(!that.state.foundUser) {
+        if(!userfound) {
           that.setState({errorMessage: 'User not found.'});
         }
       }
