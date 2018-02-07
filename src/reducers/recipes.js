@@ -26,8 +26,15 @@ export default function recipeReducer(state = initialState, action) {
     }
     case 'RECIPES_REPLACE': {
       let recipes = [];
-
+      let temp = []
       // Pick out the props I need
+      if (action.data && !Array.isArray(action.data)) {
+        Object.entries(action.data).map(([key, value]) => {
+          temp.push(value);
+        });
+        action.data = temp;
+      }
+
       if (action.data && typeof action.data === 'object' && Array.isArray(action.data)) {
         recipes = action.data.map(item => ({
           appointmentName: item.appointmentName,
@@ -37,6 +44,7 @@ export default function recipeReducer(state = initialState, action) {
           masterEmail: item.masterEmail,
           masterName: item.masterName,
           id: item.id,
+          invitedUsers: item.invitedUsers,
         }));
       }
 

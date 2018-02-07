@@ -38,26 +38,20 @@ const RecipeView = ({
   // Recipe not found
   if (!recipe) return <Error content={ErrorMessages.recipe404} />;
 
-  // Build Ingredients listing
-  // const ingredients = recipe.ingredients.map(item => (
-  //   <ListItem key={item} rightIcon={{ style: { opacity: 0 } }}>
-  //     <Text>{item}</Text>
-  //   </ListItem>
-  // ));
-  //
-
   let currentEmail = null;
-  let uid = Firebase.auth().currentUser.uid;
-  FirebaseRef.child('users').child(uid).on('value', (snapshot) => {
-    currentEmail = snapshot.val().email;
-  });
+  if (Firebase.auth().currentUser) {
+    let uid = Firebase.auth().currentUser.uid;
+    FirebaseRef.child('users').child(uid).on('value', (snapshot) => {
+      currentEmail = snapshot.val().email;
+    });
+  }
 
   // Build Method listing
-  const method = Object.entries(recipe.dates).map(([key, value]) => (
+  const method = (object) => object ? Object.entries(object).map(([key, value]) => (
       <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
         <Text>{key}</Text>
       </ListItem>
-  ));
+  )) : null
 
   const deleteAppointment = () => {
     let uid = Firebase.auth().currentUser.uid;
@@ -104,7 +98,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  {method}
+                  {method(recipe.dates)}
                 </List>
               </CardItem>
             </Card>
@@ -146,7 +140,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  <Text> Hi </Text>
+                  {method(recipe.invitedUsers)}
                 </List>
               </CardItem>
             </Card>
