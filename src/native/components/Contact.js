@@ -26,6 +26,8 @@ class Contact extends React.Component {
     //   changePassword: false,
     // };
 
+    this.state = {};
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -49,24 +51,15 @@ class Contact extends React.Component {
         <Content padder>
           {error && <Messages message={error} />}
           {success && <Messages message={success} type="success" />}
-
             <Item>
-              <Label>First Name</Label>
+              <Label>{this.props.firstName}</Label>
             </Item>
-
             <Item>
-              <Label>Last Name</Label>
+              <Label>{this.props.lastName}</Label>
             </Item>
-
             <Item>
-              <Label>Email</Label>
+              <Label>{this.props.email}</Label>
             </Item>
-
-            <Spacer size={100} />
-
-            <Button bordered style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}} onPress={Actions.pop}>
-              <Text style={{textAlign: 'center', width: '100%', color: '#a32323'}}>DELETE</Text>
-            </Button>
         </Content>
       </Container>
 

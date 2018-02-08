@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Actions } from 'react-native-router-flux';
-import { Container, Content, Text, Body, List, Left, ListItem, Form, Item, Label, Input, CheckBox, Button, View, H1, H2, H3 } from 'native-base';
+import { Container, Content, Text, Body, List, Left, ListItem, Form, Item, Label, Input, CheckBox, Button, View, H1, H2, H3, } from 'native-base';
 import Messages from './Messages';
 import Loading from './Loading';
 import Header from './Header';
@@ -10,6 +10,7 @@ import RequestItem from './RequestItem';
 import ContactItem from './ContactItem';
 import Colors from '../../../native-base-theme/variables/commonColor';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
+import {ScrollView} from 'react-native';
 
 class ManageContacts extends React.Component {
 
@@ -115,21 +116,21 @@ class ManageContacts extends React.Component {
     });
     if (loading) return <Loading />;
     return (
-      <View>
+      <ScrollView>
             {
-              this.state.contacts.length > 0 || this.props.addedContact ?
+              this.state.requests.length > 0 || this.state.contacts.length > 0 || this.props.addedContact ?
               <List style={{marginLeft: -17}}>
+                {requestItems}
+                {contactItems}
                 {
                   this.props.addedContact ?
                   <ContactItem key={this.props.addedContact.email} contact={this.props.addedContact} Accepted={this.theyAccepted(this.props.addedContact.email)}/>
                   : null
                 }
-                {requestItems}
-                {contactItems}
               </List>
               : <Text style={{textAlign:'center', marginTop: 10}}>You have no friends!</Text>
           }
-        </View>
+        </ScrollView>
     );
   }
 }

@@ -46,6 +46,7 @@ class AddContact extends React.Component {
       let user = Firebase.auth().currentUser;
       let userfound = false;
       if (user) {
+        that.setState({errorMessage: ''});
         console.log("user is: " + user.email);
         FirebaseRef.child("users/").once("value").then(function(contact){
           contact.forEach(function(contact) {
@@ -53,13 +54,11 @@ class AddContact extends React.Component {
               FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email)).once("value").then(function(snapshot){
                 if (snapshot.val()) {
                   console.log("User already added! " + snapshot.val());
-                  that.setState({alreadyAdded: true, errorMessage: 'User already added!'});
+                  that.setState({errorMessage: 'User already added!'});
                 }
                 else {
                   const myFriendslist = FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email));
                   const theirFriendslist = FirebaseRef.child("friends").child(that.emailToKey(that.state.email)).child(that.emailToKey(user.email));
-                  userfound = true;
-                  that.setState({errorMessage: ''});
                   console.log("found!");
                   console.log(that.state.contact);
                   var numFriends;
@@ -93,9 +92,7 @@ class AddContact extends React.Component {
             }
           })
         });
-        if(!userfound) {
-          that.setState({errorMessage: 'User not found.'});
-        }
+        that.setState({errorMessage: 'User not found.'});
       }
     }
   }
