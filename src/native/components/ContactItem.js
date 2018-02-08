@@ -22,7 +22,7 @@ class ContactItem extends Component {
       hasAccepted: false,
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handlePress = this.handlePress.bind(this);
   }
 
   componentDidMount() {
@@ -39,7 +39,8 @@ class ContactItem extends Component {
   handleChange = (name, val) => {
   }
 
-  handleSubmit = () => {
+  handlePress(){
+    Actions.contact({firstName:this.state.contact.firstName, lastName:this.state.contact.lastName, email:this.state.contact.email});
   }
 
   render() {
@@ -47,9 +48,9 @@ class ContactItem extends Component {
     // Loading
     if (loading) return <Loading />;
     return (
-      <ListItem onPress={Actions.contact} style={{backgroundColor: 'white'}}>
+      <ListItem onPress={this.handlePress} style={{backgroundColor: 'white', height: 50}}>
         <Body>
-          <Text style={{paddingLeft: 10}}>{this.state.contact.firstName + ' ' + this.state.contact.lastName}</Text>
+          <Text style={{paddingLeft: 10, fontSize: 20}}>{this.state.contact.firstName + ' ' + this.state.contact.lastName}</Text>
           {
             !this.state.hasAccepted ?
             <Text style={{paddingLeft: 10, color:'green'}}>Request Pending...</Text>
