@@ -113,7 +113,7 @@ class AddContact extends React.Component {
         <Content padder>
           <Header
             title="Add Contact"
-            content="Add a contact bitch"
+            content="Add a contact"
           />
 
           {error && <Messages message={error} />}
