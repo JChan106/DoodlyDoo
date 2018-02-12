@@ -62,7 +62,7 @@ const RecipeListing = ({
             refreshControl={
               <RefreshControl
                 refreshing={loading}
-                onRefresh={reFetch}
+                onRefresh={() => {}}
               />
             }
           />

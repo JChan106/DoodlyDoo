@@ -55,7 +55,19 @@ const RecipeView = ({
 
   const deleteAppointment = () => {
     let uid = Firebase.auth().currentUser.uid;
-    FirebaseRef.child('appointments').child(uid).child(recipe.id - 1).remove();
+
+    const invited = FirebaseRef.child("appointments").child(uid).child(recipe.id).child('invitedUsers');
+    invited.on('value', (snapshot) => {
+      snapshot.val() ?
+      Object.entries(snapshot.val()).map(([key, value]) => {
+        let email = value.replace(/[.]/g, ',');
+        FirebaseRef.child('invitedAppointments').child(email).child(recipe.id).remove();
+      }) : null
+    });
+
+
+
+    FirebaseRef.child('appointments').child(uid).child(recipe.id).remove();
     let getuserdata = FirebaseRef.child('users/' + uid);
     getuserdata.once('value', function(snapshot){
       numofAppointments = snapshot.val().numofAppointments;

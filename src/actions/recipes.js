@@ -1,4 +1,6 @@
 import { Firebase, FirebaseRef } from '../lib/firebase';
+import statusMessage from './status';
+
 
 /**
   * Get this User's Favourite Recipes
@@ -75,28 +77,39 @@ export function setError(message) {
   * Get Recipes
   */
 export function getRecipes(uid) {
+  console.log('hit');
   if (Firebase === null) return () => new Promise(resolve => resolve());
-  return dispatch => new Promise(resolve => {
+  return dispatch => new Promise(async (resolve) => {
     Firebase.auth().onAuthStateChanged((loggedIn) => {
       if(loggedIn) {
-        let numAppointments = FirebaseRef.child('users').child(loggedIn.uid);
-        numAppointments.on('value', (snapshot) => {
-          if (snapshot.val().numofAppointments > 0) {
-            let ref = FirebaseRef.child('appointments').child(loggedIn.uid)
-            ref.on('value', (snapshot) => {
-              const recipes = snapshot.val() || {};
+        const recipes = {};
+        let emailKey = loggedIn.email.replace(/[.]/g, ',');
+        let numInvited = FirebaseRef.child('invitedAppointments').child(emailKey);
+        numInvited.on('value', async (snapshot) => {
+          // await statusMessage(dispatch, 'loading', true);
+          snapshot.val() ? recipes = snapshot.val() : recipes = {}
+
+
+          let numAppointments = FirebaseRef.child('users').child(loggedIn.uid);
+          numAppointments.on('value', (snapshot) => {
+            if (snapshot.val().numofAppointments > 0) {
+              let ref = FirebaseRef.child('appointments').child(loggedIn.uid);
+              ref.on('value', (snapshot) => {
+                recipes = Object.assign(recipes, snapshot.val()) || Object.assign({}, recipes);
+                return resolve(dispatch({
+                  type: 'RECIPES_REPLACE',
+                  data: recipes,
+                }));
+              })
+            } else {
               return resolve(dispatch({
                 type: 'RECIPES_REPLACE',
                 data: recipes,
               }));
-            })
-          } else {
-            return resolve(dispatch({
-              type: 'RECIPES_REPLACE',
-              data: [],
-            }));
-          }
+            }
+          });
+          // await statusMessage(dispatch, 'loading', false);
         });
       }
-    })}).catch(e => console.log(e));
+    })}).catch(async (e) => console.log(e));
 }

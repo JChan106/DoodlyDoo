@@ -43,18 +43,63 @@ class AddAppointment3 extends React.Component {
     let loc = this.props.location;
     let dates = this.props.dates;
     let id = this.props.recipe.id;
+    let masterEmail = this.props.recipe.masterEmail;
+    let masterName = this.props.recipe.masterName;
+    let invitedUsers = this.props.recipe.invitedUsers;
     let user = Firebase.auth().currentUser;
+    let invited = {};
+    Object.entries(this.state.friendCheck).map(([key, value]) => {
+      if (value.checked) {
+        invited[value.name] = key
+      }
+    });
+
     if (user) {
       var getuserdata = FirebaseRef.child('users/' + user.uid);
       getuserdata.once('value',function(snapshot){
-        const appointments = FirebaseRef.child("appointments").child(user.uid).child(id - 1);
+        const appointments = FirebaseRef.child("appointments").child(user.uid).child(id);
+        let editInvited = null;
+        invitedUsers ?
+          Object.entries(invitedUsers).map(([key, value]) => {
+            let email = value.replace(/[.]/g, ',');
+            if (!(Object.values(invited).indexOf(value.email) > -1)) {
+              FirebaseRef.child('invitedAppointments').child(email).child(id).remove();
+            } else {
+              editInvited = FirebaseRef.child('invitedAppointments').child(email).child(id);
+              editInvited.update({
+                appointmentName: appt,
+                description: des,
+                location: loc,
+                dates: dates,
+                invitedUsers: invited,
+              });
+            }
+          }) : null
+
+        Object.getOwnPropertyNames(invited).length > 0 ?
+          Object.entries(invited).map(([key, value]) => {
+            let email = value.replace(/[.]/g, ',');
+            if (!invitedUsers || !(Object.values(invitedUsers).indexOf(value.email) > -1)) {
+              let newInvite = FirebaseRef.child('invitedAppointments').child(email).child(id);
+              newInvite.set({
+                appointmentName: appt,
+                description: des,
+                location: loc,
+                dates: dates,
+                masterEmail: masterEmail,
+                masterName: masterName,
+                id: id,
+                invitedUsers: invited,
+              });
+            }
+          }) : null
+
         appointments.update({
           appointmentName: appt,
           description: des,
           location: loc,
           dates: dates,
-
-          //TODO: array of users invited?
+          invitedUsers: invited,
         });
       })
       Actions.recipes();
@@ -68,12 +113,10 @@ class AddAppointment3 extends React.Component {
     let dates = this.props.dates;
     let invited = {};
     Object.entries(this.state.friendCheck).map(([key, value]) => {
-      console.log(value);
       if (value.checked) {
         invited[value.name] = key
       }
     });
-    console.log(invited);
     let user = Firebase.auth().currentUser;
     if (user) {
       var numofAppointments;
@@ -82,10 +125,11 @@ class AddAppointment3 extends React.Component {
         let masterEmail = snapshot.val().email;
         let masterName = `${snapshot.val().firstName} ${snapshot.val().lastName}`;
         numofAppointments = snapshot.val().numofAppointments;
-        // console.log("postnume: " + postnum)
-        const appointments = FirebaseRef.child("appointments").child(user.uid).child(numofAppointments);
+        appointmentID = snapshot.val().appointmentID;
         numofAppointments++;
+        appointmentID++;
         FirebaseRef.child('users/' + user.uid).update({numofAppointments: numofAppointments});
+        const appointments = FirebaseRef.child("appointments").child(user.uid).child(appointmentID);
         appointments.set({
           appointmentName: appt,
           description: des,
@@ -93,11 +137,24 @@ class AddAppointment3 extends React.Component {
           dates: dates,
           masterEmail: masterEmail,
           masterName: masterName,
-          id: numofAppointments,
+          id: appointmentID,
           invitedUsers: invited,
-
-          //TODO: array of users invited?
         });
+        Object.entries(invited).map(([key, value]) => {
+          let invUser = value.replace(/[.]/g, ',');
+          const firebaseInvited = FirebaseRef.child("invitedAppointments").child(invUser).child(appointmentID);
+          firebaseInvited.set({
+            appointmentName: appt,
+            description: des,
+            location: loc,
+            dates: dates,
+            masterEmail: masterEmail,
+            masterName: masterName,
+            id: appointmentID,
+            invitedUsers: invited,
+          })
+        });
+        FirebaseRef.child('users/' + user.uid).update({appointmentID: appointmentID});
       })
       Actions.recipes();
     }
@@ -110,7 +167,15 @@ class AddAppointment3 extends React.Component {
       FirebaseRef.child('friends').child(userEmail).on('value', (snapshot) => {
         if(snapshot.val()) {
           Object.entries(snapshot.val()).map(([key, value]) => {
+            if (this.props.recipe && this.props.recipe.invitedUsers) {
+              if (Object.values(this.props.recipe.invitedUsers).indexOf(value.email) > -1) {
+                tempFriends[value.email] = {checked: true, name: `${value.firstName} ${value.lastName}`};
+              } else {
+                tempFriends[value.email] = {checked: false, name: `${value.firstName} ${value.lastName}`};
+              }
+            } else {
               tempFriends[value.email] = {checked: false, name: `${value.firstName} ${value.lastName}`};
+            }
           });
           that.setState({friendObject: snapshot.val(), friendCheck: tempFriends})
         }
@@ -124,7 +189,11 @@ class AddAppointment3 extends React.Component {
           tempCheck[value.email].checked = !tempCheck[value.email].checked;
           this.setState({friendCheck: tempCheck})
         }} style={{width: '100%'}}>
-            <CheckBox checked={this.state.friendCheck[value.email].checked}/>
+            <CheckBox onPress={() => {
+              let tempCheck = this.state.friendCheck;
+              tempCheck[value.email].checked = !tempCheck[value.email].checked;
+              this.setState({friendCheck: tempCheck})
+            }} checked={this.state.friendCheck[value.email].checked}/>
             <Text style={{paddingLeft: 5}}> {value.firstName} {value.lastName} </Text>
         </ListItem>
       ));
