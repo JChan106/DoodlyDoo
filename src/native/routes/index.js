@@ -34,6 +34,7 @@ import Contact from '../components/Contact';
 
 import TimeInput from '../components/TimeInput';
 
+import Recipes from '../components/Recipes';
 import AddAppointment1 from '../components/AddAppointment1';
 import AddAppointment2 from '../components/AddAppointment2';
 import AddAppointment3 from '../components/AddAppointment3';
@@ -63,6 +64,7 @@ const Index = (
           icon={() => <Icon name="book" {...DefaultProps.icons} />}
           {...DefaultProps.navbarProps}
         >
+
           <Scene renderBackButton={() => (null)} key="recipes" component={RecipesContainer} Layout={RecipesComponent} />
           <Scene back key="addAppointment1" title="Whats the Occasion?" component={AddAppointment1} />
           <Scene back key="addAppointment2" title="Pick Some Options" component={AddAppointment2} />

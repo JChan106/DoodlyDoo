@@ -23,6 +23,7 @@ class ContactItem extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handlePress = this.handlePress.bind(this);
+    this.capitalize = this.capitalize.bind(this);
   }
 
   componentDidMount() {
@@ -43,14 +44,18 @@ class ContactItem extends Component {
     Actions.contact({firstName:this.state.contact.firstName, lastName:this.state.contact.lastName, email:this.state.contact.email});
   }
 
+  capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
   render() {
     const { loading, error, success } = this.props;
     // Loading
     if (loading) return <Loading />;
     return (
-      <ListItem onPress={this.handlePress} style={{backgroundColor: 'white', height: 50}}>
+      <ListItem onPress={this.handlePress} style={{backgroundColor: 'white'}}>
         <Body>
-          <Text style={{paddingLeft: 10, fontSize: 20}}>{this.state.contact.firstName + ' ' + this.state.contact.lastName}</Text>
+          <Text style={{paddingLeft: 10, fontWeight: 'bold'}}>{this.capitalize(this.state.contact.firstName) + ' ' + this.capitalize(this.state.contact.lastName)}</Text>
           {
             !this.state.hasAccepted ?
             <Text style={{paddingLeft: 10, color:'green'}}>Request Pending...</Text>
