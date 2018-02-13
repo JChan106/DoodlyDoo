@@ -1,6 +1,10 @@
 import React from 'react';
-import { View, Container } from 'native-base';
+import { View, Container, Content, Text } from 'native-base';
 import { GiftedChat } from 'react-native-gifted-chat';
+import { connect } from 'react-redux';
+import {Firebase,FirebaseRef} from './../../lib/firebase.js';
+import { getRecipes } from '../../actions/recipes';
+import { getMemberData } from '../../actions/member';
 
 class Chat extends React.Component {
   static defaultProps = {
@@ -12,49 +16,61 @@ class Chat extends React.Component {
     super(props);
     this.state = {
       messages: [],
+      isOwner: false,
     };
   }
 
-  componentWillMount() {
-    this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: 'Hey Abe, Can I just bring napkins to the potluck?',
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'React Native'
-          },
-        },
-      ],
-    });
+  componentDidMount() {
+    that = this;
+    let emailKey = this.props.recipe.masterEmail.replace(/[.]/g, ',');
+    let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(this.props.recipe.id);
+    appointmentMessages ? appointmentMessages.on('value', (snapshot) => {
+      that.setState({messages: snapshot.val()});
+    }) : null
   }
 
   onSend(messages = []) {
-    this.setState((previousState) => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }));
+    let emailKey = this.props.recipe.masterEmail.replace(/[.]/g, ',');
+    let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(this.props.recipe.id);
+    if (appointmentMessages) {
+      // console.log(messages.concat(this.state.messages));
+      appointmentMessages.set(messages.concat(this.state.messages));
+    }
   }
 
   render() {
-    const { loading, error, success } = this.props;
+    const { loading, error, success, member } = this.props;
 
     // Loading
     if (loading) return <Loading />;
 
     return (
-      <Container>
-        <GiftedChat
-          messages={this.state.messages}
-          onSend={(messages) => this.onSend(messages)}
-          user={{
-            _id: 1,
-          }}
-        />
-      </Container>
+          <GiftedChat
+            messages={this.state.messages}
+            keyboardShouldPersistTaps='never'
+            submitOnReturn={true}
+            bottomOffset={48}
+            onSend={(messages) => {
+              // let temp = `${member.firstName} ${member.lastName} \n${messages[0].text}`;
+              // messages[0].text = temp;
+              // console.log(messages);
+              this.onSend(messages);
+              }}
+            user={{
+              name: `${member.firstName} ${member.lastName}`,
+              _id: member.signedUp
+            }}
+          />
     );
   }
 }
 
-export default Chat;
+const mapStateToProps = state => ({
+  member: state.member || {},
+});
+
+const mapDispatchToProps = {
+  getMemberData,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Image, ScrollView } from 'react-native';
+import { Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 import { Container, Content, Card, CardItem, Body, H3, List, ListItem, Text, View, Icon, Button } from 'native-base';
 import Colors from '../../../native-base-theme/variables/commonColor';
 import { Actions } from 'react-native-router-flux';
@@ -159,9 +159,11 @@ const RecipeView = ({
             <Spacer size={40} />
           </ScrollView>
 
-          <View style={{flex: 1, backgroundColor: 'white', paddingBottom: 30}}>
-            <Chat />
-          </View>
+          <ScrollView contentContainerStyle={30} keyboardShouldPersistTaps='never' style={{flex:1, backgroundColor: 'white'}} >
+              <TouchableWithoutFeedback>
+                <Chat recipe={recipe}/>
+              </TouchableWithoutFeedback>
+          </ScrollView>
 
           {
             currentEmail === recipe.masterEmail ?
