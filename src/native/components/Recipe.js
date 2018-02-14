@@ -67,7 +67,7 @@ const RecipeView = ({
 
     let emailKey = recipe.masterEmail.replace(/[.]/g, ',');
     FirebaseRef.child('appointments').child(uid).child(recipe.id).remove();
-    FirebaseRef.child('messages').child(emailKey).child(recipe.id).remove();
+    FirebaseRef.child('messages').child(uid).child(recipe.id).remove();
     let getuserdata = FirebaseRef.child('users/' + uid);
     getuserdata.once('value', function(snapshot){
       numofAppointments = snapshot.val().numofAppointments;
@@ -159,10 +159,8 @@ const RecipeView = ({
             <Spacer size={40} />
           </ScrollView>
 
-          <ScrollView contentContainerStyle={30} keyboardShouldPersistTaps='never' style={{flex:1, backgroundColor: 'white'}} >
-              <TouchableWithoutFeedback>
-                <Chat recipe={recipe}/>
-              </TouchableWithoutFeedback>
+          <ScrollView contentContainerStyle={30} keyboardShouldPersistTaps='always' style={{flex:1, backgroundColor: 'white'}} >
+              <Chat recipe={recipe}/>
           </ScrollView>
 
           {
