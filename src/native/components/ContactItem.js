@@ -58,12 +58,12 @@ class ContactItem extends Component {
     // Loading
     if (loading) return <Loading />;
     return (
-      <ListItem ref="myRef" onPress={this.handlePress} style={{backgroundColor: 'white'}}>
+      <ListItem onPress={this.handlePress} style={{backgroundColor: 'white'}}>
         <Body>
-          <Text style={{paddingLeft: 10, fontWeight: 'bold'}}>{this.capitalize(this.state.contact.firstName) + ' ' + this.capitalize(this.state.contact.lastName)}</Text>
+          <Text ref="myRef" style={{paddingLeft: 10, fontWeight: 'bold'}}>{this.capitalize(this.state.contact.firstName) + ' ' + this.capitalize(this.state.contact.lastName)}</Text>
           {
             !this.state.hasAccepted ?
-            <Text style={{paddingLeft: 10, color:'green'}}>Request Pending...</Text>
+            <Text ref="myRef" style={{paddingLeft: 10, color:'green'}}>Request Pending...</Text>
             : null
           }
         </Body>
