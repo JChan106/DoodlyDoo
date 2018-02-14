@@ -65,9 +65,9 @@ const RecipeView = ({
       }) : null
     });
 
-
-
+    let emailKey = recipe.masterEmail.replace(/[.]/g, ',');
     FirebaseRef.child('appointments').child(uid).child(recipe.id).remove();
+    FirebaseRef.child('messages').child(emailKey).child(recipe.id).remove();
     let getuserdata = FirebaseRef.child('users/' + uid);
     getuserdata.once('value', function(snapshot){
       numofAppointments = snapshot.val().numofAppointments;
