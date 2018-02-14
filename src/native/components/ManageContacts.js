@@ -14,18 +14,6 @@ import {ScrollView} from 'react-native';
 
 class ManageContacts extends React.Component {
 
-  // static propTypes = {
-  //   error: PropTypes.string,
-  //   success: PropTypes.string,
-  //   loading: PropTypes.bool.isRequired,
-  //   onFormSubmit: PropTypes.func.isRequired,
-  //   member: PropTypes.shape({
-  //     firstName: PropTypes.string,
-  //     lastName: PropTypes.string,
-  //     email: PropTypes.string,
-  //   }).isRequired,
-  // }
-
   static defaultProps = {
     error: null,
     success: null,
@@ -42,17 +30,19 @@ class ManageContacts extends React.Component {
     };
     this.theyAccepted = this.theyAccepted.bind(this);
     this.emailToKey = this.emailToKey.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     var that = this;
     let user = Firebase.auth().currentUser;
-    var contacts = [];
-    var requests = [];
     if (user) {
-      FirebaseRef.child("friends/").child(that.emailToKey(user.email) + '/').once("value").then(function(snapshot){
+      FirebaseRef.child("friends/").child(that.emailToKey(user.email) + '/').on("value",function(snapshot){
+        var contacts = [];
+        var requests = [];
+        that.setState({
+          contacts: [],
+          requests:[]
+        })
         snapshot.forEach(function(snapshot) {
           if (snapshot.val().hasAccepted) {
             contacts.push(snapshot.val());
@@ -86,47 +76,25 @@ class ManageContacts extends React.Component {
      return emailAddress.replace(/[.]/g, ',');
   }
 
-  handleChange = (name, val) => {
-    // this.setState({
-    //   ...this.state,
-    //   [name]: val,
-    // });
-  }
-
-  handleSubmit = () => {
-    // this.props.onFormSubmit(this.state)
-    //   .then(() => console.log('Profile Updated'))
-    //   .catch(e => console.log(`Error: ${e}`));
-  }
-
   render() {
     const { loading, error, success } = this.props;
     const contactItems = this.state.contacts.map((contact) => {
-      return (<ContactItem key={contact.email} contact={contact} Accepted={this.theyAccepted(contact.email)}/>)
+      return (<ContactItem key={contact.email} contact={contact}/>)
     });
     const requestItems = this.state.requests.map((request) => {
       return (<RequestItem
         key={request.email}
-        requests={this.state.requests}
         request={request}
-        contacts={this.state.contacts}
-        onSelectRequest={selectedRequests => this.setState({requests: selectedRequests})}
-        onAccept={newContact => this.setState({contacts: this.state.contacts.concat(newContact)})}
         />)
     });
     if (loading) return <Loading />;
     return (
       <ScrollView>
             {
-              this.state.requests.length > 0 || this.state.contacts.length > 0 || this.props.addedContact ?
+              this.state.requests.length > 0 || this.state.contacts.length > 0 ?
               <List style={{marginLeft: -17}}>
                 {requestItems}
                 {contactItems}
-                {
-                  this.props.addedContact ?
-                  <ContactItem key={this.props.addedContact.email} contact={this.props.addedContact} Accepted={this.theyAccepted(this.props.addedContact.email)}/>
-                  : null
-                }
               </List>
               : <Text style={{textAlign:'center', marginTop: 10}}>You have no friends!</Text>
           }

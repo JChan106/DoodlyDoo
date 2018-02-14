@@ -6,6 +6,7 @@ import Messages from './Messages';
 import Loading from './Loading';
 import Header from './Header';
 import Spacer from './Spacer';
+import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 
 
 class ContactItem extends Component {
@@ -21,23 +22,23 @@ class ContactItem extends Component {
       contact: this.props.contact,
       hasAccepted: false,
     };
-    this.handleChange = this.handleChange.bind(this);
     this.handlePress = this.handlePress.bind(this);
     this.capitalize = this.capitalize.bind(this);
+    this.emailToKey = this.emailToKey.bind(this);
   }
 
   componentDidMount() {
-    // console.log(this.state.contact);
+    let user = Firebase.auth().currentUser;
     var that = this;
-    this.props.Accepted.then(function(snapshot){
-      // console.log(snapshot);
-      that.setState({
-        hasAccepted: snapshot,
-      })
-    });
-  }
 
-  handleChange = (name, val) => {
+    if (user && this.refs.myRef) {
+        var theyAccepted = FirebaseRef.child("friends/").child(this.emailToKey(this.props.contact.email) + '/').child(this.emailToKey(user.email)).child("hasAccepted");
+        theyAccepted.on('value',function(snapshot) {
+            that.setState({
+              hasAccepted: snapshot.val(),
+            });
+        });
+    }
   }
 
   handlePress(){
@@ -46,14 +47,18 @@ class ContactItem extends Component {
 
   capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-}
+  }
+
+  emailToKey(emailAddress) {
+     return emailAddress.replace(/[.]/g, ',');
+  }
 
   render() {
     const { loading, error, success } = this.props;
     // Loading
     if (loading) return <Loading />;
     return (
-      <ListItem onPress={this.handlePress} style={{backgroundColor: 'white'}}>
+      <ListItem ref="myRef" onPress={this.handlePress} style={{backgroundColor: 'white'}}>
         <Body>
           <Text style={{paddingLeft: 10, fontWeight: 'bold'}}>{this.capitalize(this.state.contact.firstName) + ' ' + this.capitalize(this.state.contact.lastName)}</Text>
           {

@@ -69,8 +69,6 @@ class AddContact extends React.Component {
                     numFriends = myData.val().numFriends;
                     userFirst = myData.val().firstName;
                     userLast = myData.val().lastName;
-                    numFriends++;
-                    FirebaseRef.child('users/' + user.uid).update({numFriends: numFriends});
                   });
                   myFriendslist.set({
                     firstName: that.state.firstName,
