@@ -5,7 +5,7 @@ import Colors from '../../../native-base-theme/variables/commonColor';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import moment from 'moment';
-import TouchableOpacity from 'react-native';
+import { TouchableOpacity, Modal } from 'react-native';
 import Messages from './Messages';
 import Loading from './Loading';
 import Header from './Header';

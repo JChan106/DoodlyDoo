@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Container, Content, Text } from 'native-base';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { connect } from 'react-redux';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 import { getRecipes } from '../../actions/recipes';
 import { getMemberData } from '../../actions/member';
+import { Button, View, Text, Modal, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+
 
 class Chat extends React.Component {
   static defaultProps = {
@@ -17,7 +18,15 @@ class Chat extends React.Component {
     this.state = {
       messages: [],
       isOwner: false,
+      modalVisible: false,
+      showName: false,
+      user: {},
     };
+    this.toggleModal = this.toggleModal.bind(this);
+  }
+
+  toggleModal(user) {
+    this.setState({modalVisible: !this.state.modalVisible, user: user});
   }
 
   componentDidMount() {
@@ -33,7 +42,6 @@ class Chat extends React.Component {
     let emailKey = this.props.recipe.masterEmail.replace(/[.]/g, ',');
     let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(this.props.recipe.id);
     if (appointmentMessages) {
-      // console.log(messages.concat(this.state.messages));
       appointmentMessages.set(messages.concat(this.state.messages));
     }
   }
@@ -45,23 +53,38 @@ class Chat extends React.Component {
     if (loading) return <Loading />;
 
     return (
-          <GiftedChat
-            messages={this.state.messages}
-            keyboardShouldPersistTaps='never'
-            submitOnReturn={true}
-            bottomOffset={48}
-            onSend={(messages) => {
-              // let temp = `${member.firstName} ${member.lastName} \n${messages[0].text}`;
-              // messages[0].text = temp;
-              // console.log(messages);
-              this.onSend(messages);
+      <View>
+      <TouchableOpacity style={{width: '100%', height: '100%'}} onPress={() => this.setState({modalVisible: false})}>
+            <GiftedChat
+              messages={this.state.messages}
+              keyboardShouldPersistTaps='always'
+              submitOnReturn={true}
+              bottomOffset={48}
+              showUserAvatar={true}
+              onPressAvatar={(user) => this.toggleModal(user)}
+              onSend={(messages) => {
+                this.onSend(messages);
+                }}
+              user={{
+                name: `${member.firstName} ${member.lastName}`,
+                _id: member.email
               }}
-            user={{
-              name: `${member.firstName} ${member.lastName}`,
-              _id: member.signedUp
-            }}
-          />
-    );
+            />
+            { this.state.modalVisible ?
+
+              <Modal isVisible={this.state.modalVisible}
+              onRequestClose={() => this.toggleModal()}
+              transparent={true}>
+                <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#00000080', opacity: 50}}>
+                  <View style={{width: '85%', height: '60%', backgroundColor: 'white'}}>
+                    <Text> {this.state.user.name} </Text>
+                    <Text> {this.state.user._id} </Text>
+                  </View>
+                </View>
+              </Modal> : null }
+        </TouchableOpacity>
+        </View>
+      );
   }
 }
 
