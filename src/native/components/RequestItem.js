@@ -45,25 +45,24 @@ class RequestItem extends Component {
   handleAccept(e) {
     var that = this;
     let user = Firebase.auth().currentUser;
-    if (user) {
-      const acceptedFriend = FirebaseRef.child('friends/').child(that.emailToKey(user.email) + '/').child(that.emailToKey(e.email));
-      acceptedFriend.update({
-        hasAccepted: true,
-      });
-      this.props.requests.splice(this.props.requests.indexOf(e), 1 );
-      this.props.onSelectRequest(this.props.requests);
-      this.props.onAccept(e);
+    if (this.refs.myRef) {
+      if (user) {
+        const acceptedFriend = FirebaseRef.child('friends/').child(that.emailToKey(user.email) + '/').child(that.emailToKey(e.email));
+        acceptedFriend.update({
+          hasAccepted: true,
+        });
+      }
     }
   }
 
   handleDecline(e) {
     var that = this;
     let user = Firebase.auth().currentUser;
-    if (user) {
-      const removeFriend = FirebaseRef.child('friends/').child(that.emailToKey(user.email) + '/').child(that.emailToKey(e.email)).remove();
-      const removeMe = FirebaseRef.child('friends/').child(that.emailToKey(e.email) + '/').child(that.emailToKey(user.email)).remove();
-      this.props.requests.splice(this.props.requests.indexOf(e), 1 );
-      this.props.onSelectRequest(this.props.requests);
+    if (this.refs.myRef) {
+      if (user) {
+        const removeFriend = FirebaseRef.child('friends/').child(that.emailToKey(user.email) + '/').child(that.emailToKey(e.email)).remove();
+        const removeMe = FirebaseRef.child('friends/').child(that.emailToKey(e.email) + '/').child(that.emailToKey(user.email)).remove();
+      }
     }
   }
 
@@ -76,7 +75,7 @@ class RequestItem extends Component {
     // Loading
     if (loading) return <Loading />;
     return (
-      <ListItem style={{backgroundColor: Colors.brandPrimary}}>
+      <ListItem ref="myRef" style={{backgroundColor: Colors.brandPrimary}}>
         <Body style={{height: 60, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
           <Text style={{paddingBottom: 10, color: 'white', alignSelf: 'center'}}>{'Friend request from ' + this.props.request.firstName + ' ' + this.props.request.lastName}</Text>
           <Body style={{paddingBottom: 5,width: '100%', height: '10%', display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
