@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 import { getRecipes } from '../../actions/recipes';
 import { getMemberData } from '../../actions/member';
+import { Icon } from 'native-base';
 import { Button, View, Text, Modal, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 
 
@@ -54,7 +55,7 @@ class Chat extends React.Component {
 
     return (
       <View>
-      <TouchableOpacity style={{width: '100%', height: '100%'}} onPress={() => this.setState({modalVisible: false})}>
+      <TouchableOpacity style={{width: '100%', height: '100%'}} >
             <GiftedChat
               messages={this.state.messages}
               keyboardShouldPersistTaps='always'
@@ -71,16 +72,18 @@ class Chat extends React.Component {
               }}
             />
             { this.state.modalVisible ?
-
               <Modal isVisible={this.state.modalVisible}
               onRequestClose={() => this.toggleModal()}
+              animationType='slide'
               transparent={true}>
-                <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#00000080', opacity: 50}}>
-                  <View style={{width: '85%', height: '60%', backgroundColor: 'white'}}>
-                    <Text> {this.state.user.name} </Text>
-                    <Text> {this.state.user._id} </Text>
+                <TouchableOpacity onPress={() => this.setState({modalVisible: false})} style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
+                  <View style={{width: '100%', height: '16%', backgroundColor: '#f5f5f5'}}>
+                    <View style={{width: '100%', bottom: 0, position: 'absolute', paddingLeft: 15}}>
+                      <Text style={{fontWeight: '700', fontSize: 20, paddingBottom: 10}}> Full Name: <Text style={{fontWeight: '300'}}>{this.state.user.name}</Text> </Text>
+                      <Text style={{fontWeight: '700', fontSize: 20, paddingBottom: 15}}> Email: <Text style={{fontWeight: '300'}}>{this.state.user._id}</Text> </Text>
+                    </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               </Modal> : null }
         </TouchableOpacity>
         </View>
