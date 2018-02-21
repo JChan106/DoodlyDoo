@@ -139,6 +139,7 @@ class AddAppointment3 extends React.Component {
           masterName: masterName,
           id: appointmentID,
           invitedUsers: invited,
+          masteruid: user.uid,
         });
         Object.entries(invited).map(([key, value]) => {
           let invUser = value.email.replace(/[.]/g, ',');
@@ -152,6 +153,7 @@ class AddAppointment3 extends React.Component {
             masterName: masterName,
             id: appointmentID,
             invitedUsers: invited,
+            masteruid: user.uid
           })
         });
         FirebaseRef.child('users/' + user.uid).update({appointmentID: appointmentID});

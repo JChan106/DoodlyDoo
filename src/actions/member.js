@@ -31,6 +31,11 @@ export function signUp(formData) {
       .then((res) => {
         // Send user details to Firebase database
         if (res && res.uid) {
+          FirebaseRef.child('addUserByEmail').child(email.replace(/[.]/g, ',')).set({
+            firstName,
+            lastName,
+          });
+          
           FirebaseRef.child(`users/${res.uid}`).set({
             firstName,
             lastName,
@@ -41,6 +46,8 @@ export function signUp(formData) {
             email: email,
             numFriends: 0,
           }).then(() => statusMessage(dispatch, 'loading', false).then(resolve));
+
+
         }
       }).catch(reject);
   }).catch(async (err) => { await statusMessage(dispatch, 'error', err.message); throw err.message; });

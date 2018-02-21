@@ -9,6 +9,7 @@ export default {
     {
       placeholder: true,
       appointmentName: '---- --- -- ------',
+      masteruid: '---- ---',
       description: '---- --- -- ------ ---- --- -- ------ ---- --- -- ------ ---- --- -- ------',
       location: '---- ------ ',
       masterEmail: '---- ------ ',

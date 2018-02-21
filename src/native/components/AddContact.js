@@ -18,8 +18,6 @@ class AddContact extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: '',
-      lastName: '',
       email: '',
       errorMessage: '',
       alreadyAdded: false,
@@ -38,7 +36,7 @@ class AddContact extends React.Component {
   }
 
   handleSubmit = (e) => {
-    if (this.state.firstName == '' || this.state.lastName == '' || this.state.email == '') {
+    if (this.state.email == '') {
       this.setState({errorMessage: "Please fill out all missing fields."});
     }
     else {
@@ -57,30 +55,41 @@ class AddContact extends React.Component {
                   that.setState({errorMessage: 'User already added!'});
                 }
                 else {
+                  console.log("HIT BITCH")
                   const myFriendslist = FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email));
                   const theirFriendslist = FirebaseRef.child("friends").child(that.emailToKey(that.state.email)).child(that.emailToKey(user.email));
-                  console.log("found!");
-                  console.log(that.state.contact);
+                  // var theirInfo = FirebaseRef.child("addUserByEmail").child(that.emailToKey(that.state.email));
                   var numFriends;
                   var userFirst;
                   var userLast;
+                  var theirFirst;
+                  var theirLast;
                   var getuserdata = FirebaseRef.child('users/' + user.uid);
+                  var theirInfo = FirebaseRef.child("addUserByEmail").child(that.emailToKey(that.state.email));
                   getuserdata.once('value',function(myData){
                     numFriends = myData.val().numFriends;
                     userFirst = myData.val().firstName;
                     userLast = myData.val().lastName;
+                  }).then(() => {
+                    theirFriendslist.set({
+                      firstName: userFirst,
+                      lastName: userLast,
+                      email: user.email,
+                      hasAccepted: false,
+                    });
                   });
-                  myFriendslist.set({
-                    firstName: that.state.firstName,
-                    lastName: that.state.lastName,
-                    email: that.state.email,
-                    hasAccepted: true,
-                  });
-                  theirFriendslist.set({
-                    firstName: userFirst,
-                    lastName: userLast,
-                    email: user.email,
-                    hasAccepted: false,
+                  theirInfo.once('value', function(theirData){
+                    console.log(theirData.val());
+                    theirFirst = theirData.val().firstName;
+                    theirLast = theirData.val().lastName;
+                  }).then(() => {
+                    console.log(theirFirst);
+                    myFriendslist.set({
+                      firstName: theirFirst,
+                      lastName: theirLast,
+                      email: that.state.email,
+                      hasAccepted: true,
+                    });
                   });
                   FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email)).once("value").then(function(s2){
                     Actions.pop(); Actions.refresh({addedContact:s2.val()});
@@ -101,7 +110,7 @@ class AddContact extends React.Component {
 
   render() {
     const { loading, error, success } = this.props;
-    const shouldContinue = (this.state.firstName != null && this.state.lastName != null && this.state.email != null);
+    const shouldContinue = (this.state.email != null);
 
     // Loading
     if (loading) return <Loading />;
@@ -118,22 +127,6 @@ class AddContact extends React.Component {
           {success && <Messages message={success} type="success" />}
 
           <Form>
-            <Item stackedLabel>
-              <Label>First Name</Label>
-              <Input
-                placeholder={'First'}
-                onChangeText={v => this.handleChange('firstName', v)}
-              />
-            </Item>
-
-            <Item stackedLabel>
-              <Label>Last Name</Label>
-              <Input
-                placeholder={'Last'}
-                onChangeText={v => this.handleChange('lastName', v)}
-              />
-            </Item>
-
             <Item stackedLabel>
               <Label>Email</Label>
               <Input

@@ -25,7 +25,7 @@ const RecipeListing = ({
 
   const keyExtractor = item => item.id;
 
-  const onPress = item => Actions.recipe({ match: { params: { id: String(item.id) } } });
+  const onPress = item => Actions.recipe({ match: { params: { id: String(item.id), member: member } } });
 
   return (
     <Container>

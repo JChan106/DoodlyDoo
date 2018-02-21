@@ -86,9 +86,20 @@ export function getRecipes(uid) {
         let emailKey = loggedIn.email.replace(/[.]/g, ',');
         let numInvited = FirebaseRef.child('invitedAppointments').child(emailKey);
         numInvited.on('value', async (snapshot) => {
-          // await statusMessage(dispatch, 'loading', true);
-          snapshot.val() ? recipes = snapshot.val() : recipes = {}
-
+          if (snapshot.val()) {
+            Object.entries(snapshot.val()).map(([recipeId, recipeValue]) => {
+              let masteruid = recipeValue.masteruid;
+              let master = FirebaseRef.child('appointments').child(masteruid).child(recipeId);
+              master.on('value', async (appointmentSnap) => {
+                let tempRecipe = {};
+                tempRecipe[recipeId] = appointmentSnap.val();
+                recipes = Object.assign(recipes, tempRecipe);
+                console.log(recipes);
+              })
+            })
+          } else {
+            recipes = {}
+          }
 
           let numAppointments = FirebaseRef.child('users').child(loggedIn.uid);
           numAppointments.on('value', (snapshot) => {

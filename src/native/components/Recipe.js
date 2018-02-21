@@ -16,6 +16,7 @@ const RecipeView = ({
   error,
   recipes,
   recipeId,
+  member,
 }) => {
 
   // Get this Recipe from all recipes
@@ -35,12 +36,51 @@ const RecipeView = ({
     });
   }
 
+  let canAttend = true;
+  let name = `${member.firstName} ${member.lastName}`
+  if(currentEmail && currentEmail != recipe.masterEmail) {
+    let invitedInfo = FirebaseRef.child('invitedAppointments').child(currentEmail.replace(/[.]/g, ',')).child(recipe.id).child('invitedUsers').child(name);
+    invitedInfo.on('value', (snapshot) => {
+      snapshot.val() ? canAttend = snapshot.val().canAttend : null;
+    });
+  }
+
+  console.log(canAttend);
+
   // Build Method listing
   const method = (object) => object ? Object.entries(object).map(([key, value]) => (
       <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
         <Text>{key}</Text>
       </ListItem>
-  )) : null
+    )) : null
+
+  // Build Method listing
+  const noResponses = (object) => object ? Object.entries(object).map(([key, value]) => {
+    if (value.canAttend && !value.inputted)
+    return (
+      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
+        <Text>{key}</Text>
+      </ListItem>
+    )
+  }) : null
+
+  const noShows = (object) => object ? Object.entries(object).map(([key, value]) => {
+    if (!value.canAttend)
+    return (
+      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
+        <Text>{key}</Text>
+      </ListItem>
+    )
+  }) : null
+
+  const attendees = (object) => object ? Object.entries(object).map(([key, value]) => {
+    if (value.canAttend && value.inputted)
+    return (
+      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
+        <Text>{key}</Text>
+      </ListItem>
+    )
+  }) : null
 
   const deleteAppointment = () => {
     let uid = Firebase.auth().currentUser.uid;
@@ -69,7 +109,25 @@ const RecipeView = ({
   const onPress = () => Actions.addAppointment1({isEdit: true, recipe: recipe});
 
   const onCantAttend = () => {
-    const invited = FirebaseRef.child("appointments").child(uid).child(recipe.id).child('invitedUsers');
+    let uid = Firebase.auth().currentUser.uid;
+    let email = currentEmail.replace(/[.]/g, ',')
+    let userName = `${member.firstName} ${member.lastName}`;
+
+    canAttend = false;
+    console.log(recipe.masteruid);
+    console.log(recipe.id);
+    FirebaseRef.child('appointments').child(recipe.masteruid).child(recipe.id).child('invitedUsers').child(userName).update({canAttend: false});
+    FirebaseRef.child('invitedAppointments').child(email).child(recipe.id).child('invitedUsers').child(userName).update({canAttend: false})
+  }
+
+  const onCanAttend = () => {
+    let uid = Firebase.auth().currentUser.uid;
+    let email = currentEmail.replace(/[.]/g, ',')
+    let userName = `${member.firstName} ${member.lastName}`;
+
+    canAttend = true;
+    FirebaseRef.child('appointments').child(recipe.masteruid).child(recipe.id).child('invitedUsers').child(userName).update({canAttend: true});
+    FirebaseRef.child('invitedAppointments').child(email).child(recipe.id).child('invitedUsers').child(userName).update({canAttend: true});
   }
 
   return (
@@ -127,7 +185,7 @@ const RecipeView = ({
               <CardItem>
                 <Content>
                   <List>
-                    <Text> Hi </Text>
+                    {attendees(recipe.invitedUsers)}
                   </List>
                 </Content>
               </CardItem>
@@ -139,7 +197,7 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  <Text> Hi </Text>
+                  {noShows(recipe.invitedUsers)}
                 </List>
               </CardItem>
             </Card>
@@ -150,24 +208,32 @@ const RecipeView = ({
               </CardItem>
               <CardItem>
                 <List>
-                  {method(recipe.invitedUsers)}
+                  {noResponses(recipe.invitedUsers)}
                 </List>
               </CardItem>
             </Card>
             <Spacer size={30} />
             {
               currentEmail != recipe.masterEmail ?
-                <View>
-                  <Button bordered
-                          style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}}
-                          onPress={() => {}}>
-                    <Text style={{width: '100%', textAlign: 'center', color: '#a32323'}}>Can Not Attend</Text>
-                  </Button>
-                  <Spacer size={60} />
-                </View> : null
+                canAttend ?
+                  <View>
+                    <Button bordered
+                            style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}}
+                            onPress={onCantAttend}>
+                      <Text style={{width: '100%', textAlign: 'center', color: '#a32323'}}>Can Not Attend</Text>
+                    </Button>
+                    <Spacer size={60} />
+                  </View> :
+                  <View>
+                    <Button bordered
+                            style={{width: '95%', alignSelf: 'center', borderColor: Colors.brandPrimary}}
+                            onPress={onCanAttend}>
+                      <Text style={{width: '100%', textAlign: 'center', color: Colors.brandPrimary}}>Undo Can Not Attend</Text>
+                    </Button>
+                    <Spacer size={60} />
+                  </View> : null
             }
           </ScrollView>
-
 
 
 
