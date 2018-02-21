@@ -54,8 +54,7 @@ class Chat extends React.Component {
     if (loading) return <Loading />;
 
     return (
-      <View>
-      <TouchableOpacity style={{width: '100%', height: '100%'}} >
+      <View style={{width: '100%', height: '100%'}}>
             <GiftedChat
               messages={this.state.messages}
               keyboardShouldPersistTaps='always'
@@ -85,7 +84,6 @@ class Chat extends React.Component {
                   </View>
                 </TouchableOpacity>
               </Modal> : null }
-        </TouchableOpacity>
         </View>
       );
   }

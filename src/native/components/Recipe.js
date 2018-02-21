@@ -18,21 +18,10 @@ const RecipeView = ({
   recipeId,
 }) => {
 
-  // console.log(this.props.recipeID);
-  // console.log(recipeId);
-  // Error
-  // if (error) return <Error content={error} />;
-
-  // Get this Recipe from all recipes
-  // let recipe = null;
-  // if (recipeId && recipes) {
-  //   recipe = recipes.find(item => parseInt(item.id, 10) === parseInt(recipeId, 10));
-  // }
-
   // Get this Recipe from all recipes
   let recipe = null;
   if (recipeId && recipes) {
-    recipe = recipes.find(item => item.appointmentName === recipeId);
+    recipe = recipes.find(item => String(item.id) === recipeId);
   }
 
   // Recipe not found
@@ -60,7 +49,7 @@ const RecipeView = ({
     invited.on('value', (snapshot) => {
       snapshot.val() ?
       Object.entries(snapshot.val()).map(([key, value]) => {
-        let email = value.replace(/[.]/g, ',');
+        let email = value.email.replace(/[.]/g, ',');
         FirebaseRef.child('invitedAppointments').child(email).child(recipe.id).remove();
       }) : null
     });
@@ -78,6 +67,10 @@ const RecipeView = ({
   }
 
   const onPress = () => Actions.addAppointment1({isEdit: true, recipe: recipe});
+
+  const onCantAttend = () => {
+    const invited = FirebaseRef.child("appointments").child(uid).child(recipe.id).child('invitedUsers');
+  }
 
   return (
     <Swiper showsButtons={false} index={1}>
@@ -116,6 +109,11 @@ const RecipeView = ({
             </Card>
             <Spacer size={40} />
           </ScrollView>
+
+
+
+
+
 
           <ScrollView style={{backgroundColor: 'white'}}>
             <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
@@ -156,8 +154,24 @@ const RecipeView = ({
                 </List>
               </CardItem>
             </Card>
-            <Spacer size={40} />
+            <Spacer size={30} />
+            {
+              currentEmail != recipe.masterEmail ?
+                <View>
+                  <Button bordered
+                          style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}}
+                          onPress={() => {}}>
+                    <Text style={{width: '100%', textAlign: 'center', color: '#a32323'}}>Can Not Attend</Text>
+                  </Button>
+                  <Spacer size={60} />
+                </View> : null
+            }
           </ScrollView>
+
+
+
+
+
 
           <ScrollView contentContainerStyle={30} keyboardShouldPersistTaps='always' style={{flex:1, backgroundColor: 'white'}} >
               <Chat recipe={recipe}/>

@@ -50,7 +50,7 @@ class AddAppointment3 extends React.Component {
     let invited = {};
     Object.entries(this.state.friendCheck).map(([key, value]) => {
       if (value.checked) {
-        invited[value.name] = key
+        invited[value.name] = {email: key, inputted: false, canAttend: true}
       }
     });
 
@@ -61,7 +61,7 @@ class AddAppointment3 extends React.Component {
         let editInvited = null;
         invitedUsers ?
           Object.entries(invitedUsers).map(([key, value]) => {
-            let email = value.replace(/[.]/g, ',');
+            let email = value.email.replace(/[.]/g, ',');
             if (!(Object.values(invited).indexOf(value.email) > -1)) {
               FirebaseRef.child('invitedAppointments').child(email).child(id).remove();
             } else {
@@ -78,7 +78,7 @@ class AddAppointment3 extends React.Component {
 
         Object.getOwnPropertyNames(invited).length > 0 ?
           Object.entries(invited).map(([key, value]) => {
-            let email = value.replace(/[.]/g, ',');
+            let email = value.email.replace(/[.]/g, ',');
             if (!invitedUsers || !(Object.values(invitedUsers).indexOf(value.email) > -1)) {
               let newInvite = FirebaseRef.child('invitedAppointments').child(email).child(id);
               newInvite.set({
@@ -114,7 +114,7 @@ class AddAppointment3 extends React.Component {
     let invited = {};
     Object.entries(this.state.friendCheck).map(([key, value]) => {
       if (value.checked) {
-        invited[value.name] = key
+        invited[value.name] = {email: key, inputted: false, canAttend: true}
       }
     });
     let user = Firebase.auth().currentUser;
@@ -141,7 +141,7 @@ class AddAppointment3 extends React.Component {
           invitedUsers: invited,
         });
         Object.entries(invited).map(([key, value]) => {
-          let invUser = value.replace(/[.]/g, ',');
+          let invUser = value.email.replace(/[.]/g, ',');
           const firebaseInvited = FirebaseRef.child("invitedAppointments").child(invUser).child(appointmentID);
           firebaseInvited.set({
             appointmentName: appt,
@@ -168,11 +168,13 @@ class AddAppointment3 extends React.Component {
         if(snapshot.val()) {
           Object.entries(snapshot.val()).map(([key, value]) => {
             if (this.props.recipe && this.props.recipe.invitedUsers) {
-              if (Object.values(this.props.recipe.invitedUsers).indexOf(value.email) > -1) {
-                tempFriends[value.email] = {checked: true, name: `${value.firstName} ${value.lastName}`};
-              } else {
-                tempFriends[value.email] = {checked: false, name: `${value.firstName} ${value.lastName}`};
-              }
+              Object.entries(this.props.recipe.invitedUsers).map(([invitedKey, invitedValue]) => {
+                if (value.email === invitedValue.email) {
+                  tempFriends[value.email] = {checked: true, name: `${value.firstName} ${value.lastName}`};
+                } else {
+                  if (!tempFriends[value.email]) tempFriends[value.email] = {checked: false, name: `${value.firstName} ${value.lastName}`};
+                }
+              });
             } else {
               tempFriends[value.email] = {checked: false, name: `${value.firstName} ${value.lastName}`};
             }
@@ -229,6 +231,7 @@ class AddAppointment3 extends React.Component {
             <Button block onPress={this.props.isEdit ? this.handleEdit : this.handleSubmit}>
               <Text>Done!</Text>
             </Button>
+            <Spacer size={30} />
         </Content>
       </Container>
     );

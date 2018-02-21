@@ -25,8 +25,7 @@ const RecipeListing = ({
 
   const keyExtractor = item => item.id;
 
-  const onPress = item => Actions.recipe({ match: { params: { id: String(item.appointmentName) } } });
-
+  const onPress = item => Actions.recipe({ match: { params: { id: String(item.id) } } });
 
   return (
     <Container>
@@ -43,7 +42,7 @@ const RecipeListing = ({
             numColumns={1}
             data={recipes}
             renderItem={({ item }) => (
-              <Card style={{ paddingHorizontal: 10, width: '95%', alignSelf: 'center'}}>
+              <Card style={{marginBottom: 10, paddingHorizontal: 10, width: '95%', alignSelf: 'center'}}>
                 <CardItem header bordered={true}>
                   <Text style={{ fontWeight: '600' }}>{item.appointmentName}</Text>
                   <Button bordered small onPress={() => onPress(item)}
@@ -53,7 +52,9 @@ const RecipeListing = ({
                 </CardItem>
                 <CardItem cardBody bordered={true} style={{backgroundColor: 'white'}}>
                   <Body style={{paddingLeft: 15}}>
-                    <Spacer size={15} />
+                    <Spacer size={10} />
+                    <Text style={{fontWeight: '600'}}>Created By: <Text style={{fontWeight: '200'}}> {item.masterName} </Text> </Text>
+                    <Spacer size={10} />
                   </Body>
                 </CardItem>
               </Card>
