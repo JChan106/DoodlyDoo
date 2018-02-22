@@ -35,7 +35,8 @@ export function signUp(formData) {
             firstName,
             lastName,
           });
-          
+          let lowerCaseEmail = email.toLowerCase();
+          console.log(lowerCaseEmail);
           FirebaseRef.child(`users/${res.uid}`).set({
             firstName,
             lastName,
@@ -43,7 +44,7 @@ export function signUp(formData) {
             lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
             numofAppointments: 0,
             appointmentID: 0,
-            email: email,
+            email: lowerCaseEmail,
             numFriends: 0,
           }).then(() => statusMessage(dispatch, 'loading', false).then(resolve));
 

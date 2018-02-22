@@ -45,7 +45,6 @@ const RecipeView = ({
     });
   }
 
-  console.log(canAttend);
 
   // Build Method listing
   const method = (object) => object ? Object.entries(object).map(([key, value]) => (
@@ -114,8 +113,6 @@ const RecipeView = ({
     let userName = `${member.firstName} ${member.lastName}`;
 
     canAttend = false;
-    console.log(recipe.masteruid);
-    console.log(recipe.id);
     FirebaseRef.child('appointments').child(recipe.masteruid).child(recipe.id).child('invitedUsers').child(userName).update({canAttend: false});
     FirebaseRef.child('invitedAppointments').child(email).child(recipe.id).child('invitedUsers').child(userName).update({canAttend: false})
   }

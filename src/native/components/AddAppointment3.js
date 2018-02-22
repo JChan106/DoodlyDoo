@@ -46,18 +46,26 @@ class AddAppointment3 extends React.Component {
     let masterEmail = this.props.recipe.masterEmail;
     let masterName = this.props.recipe.masterName;
     let invitedUsers = this.props.recipe.invitedUsers;
+    let masteruid = this.props.recipe.masteruid;
     let user = Firebase.auth().currentUser;
     let invited = {};
+    const appointmentsInvited = FirebaseRef.child("appointments").child(this.props.recipe.masteruid).child(id).child('invitedUsers');
+    const appointments = FirebaseRef.child("appointments").child(this.props.recipe.masteruid).child(id);
+    appointmentsInvited.once('value', (snapshot) => {
+      invited = snapshot.val();
+    });
     Object.entries(this.state.friendCheck).map(([key, value]) => {
-      if (value.checked) {
+      if (value.checked && !(value.name in invited)) {
         invited[value.name] = {email: key, inputted: false, canAttend: true}
+      } else if (!value.checked && value.name in invited) {
+        delete invited[value.name];
       }
     });
 
     if (user) {
       var getuserdata = FirebaseRef.child('users/' + user.uid);
       getuserdata.once('value',function(snapshot){
-        const appointments = FirebaseRef.child("appointments").child(user.uid).child(id);
+
         let editInvited = null;
         invitedUsers ?
           Object.entries(invitedUsers).map(([key, value]) => {
@@ -90,6 +98,7 @@ class AddAppointment3 extends React.Component {
                 masterName: masterName,
                 id: id,
                 invitedUsers: invited,
+                masteruid: masteruid,
               });
             }
           }) : null

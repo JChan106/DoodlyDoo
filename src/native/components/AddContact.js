@@ -55,10 +55,8 @@ class AddContact extends React.Component {
                   that.setState({errorMessage: 'User already added!'});
                 }
                 else {
-                  console.log("HIT BITCH")
                   const myFriendslist = FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email));
                   const theirFriendslist = FirebaseRef.child("friends").child(that.emailToKey(that.state.email)).child(that.emailToKey(user.email));
-                  // var theirInfo = FirebaseRef.child("addUserByEmail").child(that.emailToKey(that.state.email));
                   var numFriends;
                   var userFirst;
                   var userLast;
@@ -79,11 +77,9 @@ class AddContact extends React.Component {
                     });
                   });
                   theirInfo.once('value', function(theirData){
-                    console.log(theirData.val());
                     theirFirst = theirData.val().firstName;
                     theirLast = theirData.val().lastName;
                   }).then(() => {
-                    console.log(theirFirst);
                     myFriendslist.set({
                       firstName: theirFirst,
                       lastName: theirLast,

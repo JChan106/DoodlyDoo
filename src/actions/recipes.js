@@ -77,7 +77,6 @@ export function setError(message) {
   * Get Recipes
   */
 export function getRecipes(uid) {
-  console.log('hit');
   if (Firebase === null) return () => new Promise(resolve => resolve());
   return dispatch => new Promise(async (resolve) => {
     Firebase.auth().onAuthStateChanged((loggedIn) => {
@@ -94,7 +93,6 @@ export function getRecipes(uid) {
                 let tempRecipe = {};
                 tempRecipe[recipeId] = appointmentSnap.val();
                 recipes = Object.assign(recipes, tempRecipe);
-                console.log(recipes);
               })
             })
           } else {
