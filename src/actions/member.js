@@ -31,11 +31,11 @@ export function signUp(formData) {
       .then((res) => {
         // Send user details to Firebase database
         if (res && res.uid) {
-          FirebaseRef.child('addUserByEmail').child(email.replace(/[.]/g, ',')).set({
+          let lowerCaseEmail = email.toLowerCase();
+          FirebaseRef.child('addUserByEmail').child(lowerCaseEmail.replace(/[.]/g, ',')).set({
             firstName,
             lastName,
           });
-          let lowerCaseEmail = email.toLowerCase();
           console.log(lowerCaseEmail);
           FirebaseRef.child(`users/${res.uid}`).set({
             firstName,

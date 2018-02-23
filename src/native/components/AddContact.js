@@ -95,7 +95,13 @@ class AddContact extends React.Component {
             }
           })
         });
-        that.setState({errorMessage: 'User not found.'});
+        let checkUserExist = FirebaseRef.child('addUserByEmail');
+        checkUserExist.once('value', (userEmails) => {
+          let doesUserExist = Object.values(userEmails.val()).indexOf(that.state.email) > -1;
+          if (!doesUserExist) {
+            that.setState({errorMessage: 'User not found.'});
+          }
+        })
       }
     }
   }

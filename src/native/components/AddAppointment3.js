@@ -42,7 +42,7 @@ class AddAppointment3 extends React.Component {
     let des = this.props.description;
     let loc = this.props.location;
     let dates = this.props.dates;
-    let id = this.props.recipe.id;
+    let id = `${this.props.recipe.masterEmail}${this.props.recipe.id}`;
     let masterEmail = this.props.recipe.masterEmail;
     let masterName = this.props.recipe.masterName;
     let invitedUsers = this.props.recipe.invitedUsers;
@@ -138,7 +138,8 @@ class AddAppointment3 extends React.Component {
         numofAppointments++;
         appointmentID++;
         FirebaseRef.child('users/' + user.uid).update({numofAppointments: numofAppointments});
-        const appointments = FirebaseRef.child("appointments").child(user.uid).child(appointmentID);
+        let id = `${user.email.replace(/[.]/g, ',')}${appointmentID}`;
+        const appointments = FirebaseRef.child("appointments").child(user.uid).child(id);
         appointments.set({
           appointmentName: appt,
           description: des,
@@ -146,13 +147,13 @@ class AddAppointment3 extends React.Component {
           dates: dates,
           masterEmail: masterEmail,
           masterName: masterName,
-          id: appointmentID,
+          id: id,
           invitedUsers: invited,
           masteruid: user.uid,
         });
         Object.entries(invited).map(([key, value]) => {
           let invUser = value.email.replace(/[.]/g, ',');
-          const firebaseInvited = FirebaseRef.child("invitedAppointments").child(invUser).child(appointmentID);
+          const firebaseInvited = FirebaseRef.child("invitedAppointments").child(invUser).child(id);
           firebaseInvited.set({
             appointmentName: appt,
             description: des,
@@ -160,7 +161,7 @@ class AddAppointment3 extends React.Component {
             dates: dates,
             masterEmail: masterEmail,
             masterName: masterName,
-            id: appointmentID,
+            id: id,
             invitedUsers: invited,
             masteruid: user.uid
           })
