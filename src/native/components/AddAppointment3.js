@@ -42,18 +42,20 @@ class AddAppointment3 extends React.Component {
     let des = this.props.description;
     let loc = this.props.location;
     let dates = this.props.dates;
-    let id = `${this.props.recipe.masterEmail}${this.props.recipe.id}`;
+    let id = this.props.recipe.id;
     let masterEmail = this.props.recipe.masterEmail;
     let masterName = this.props.recipe.masterName;
     let invitedUsers = this.props.recipe.invitedUsers;
     let masteruid = this.props.recipe.masteruid;
     let user = Firebase.auth().currentUser;
     let invited = {};
+
     const appointmentsInvited = FirebaseRef.child("appointments").child(this.props.recipe.masteruid).child(id).child('invitedUsers');
     const appointments = FirebaseRef.child("appointments").child(this.props.recipe.masteruid).child(id);
     appointmentsInvited.once('value', (snapshot) => {
       invited = snapshot.val();
     });
+
     Object.entries(this.state.friendCheck).map(([key, value]) => {
       if (value.checked && !(value.name in invited)) {
         invited[value.name] = {email: key, inputted: false, canAttend: true}

@@ -36,17 +36,20 @@ export default function recipeReducer(state = initialState, action) {
       }
 
       if (action.data && typeof action.data === 'object' && Array.isArray(action.data)) {
-        recipes = action.data.map(item => ({
-          appointmentName: item.appointmentName,
-          dates: item.dates,
-          description: item.description,
-          location: item.location,
-          masterEmail: item.masterEmail,
-          masterName: item.masterName,
-          id: item.id,
-          invitedUsers: item.invitedUsers,
-          masteruid: item.masteruid,
-        }));
+        recipes = action.data.map(item => {
+          if (item) {
+            return {
+            appointmentName: item.appointmentName,
+            dates: item.dates,
+            description: item.description,
+            location: item.location,
+            masterEmail: item.masterEmail,
+            masterName: item.masterName,
+            id: item.id,
+            invitedUsers: item.invitedUsers,
+            masteruid: item.masteruid,
+          }
+      }});
       }
 
       return {
