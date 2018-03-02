@@ -13,6 +13,8 @@ import Loading from './Loading';
 import Header from './Header';
 import Spacer from './Spacer';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
+import { getRecipes } from '../../actions/recipes';
+
 
 
 class TimeInput extends React.Component {
@@ -49,7 +51,7 @@ class TimeInput extends React.Component {
     let recipeInfo = this.props.recipes.recipe;
     let emailKey = this.props.member.email.replace(/[.]/g, ',');
     FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).on('value', (snapshot) => {
-      this.setState({recipe: snapshot.val(), selectedTimesObject: snapshot.val().userDates ? snapshot.val().userDates[emailKey] : {} });
+      this.setState({recipe: snapshot.val(), selectedTimesObject: snapshot.val().userDates && snapshot.val().userDates[emailKey] ? snapshot.val().userDates[emailKey] : {} });
     });
   };
 
@@ -90,8 +92,21 @@ class TimeInput extends React.Component {
     let tempUserDates = this.state.selectedTimesObject;
     let tempObject = {};
     tempObject[emailKey] = tempUserDates;
-    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').set(tempObject);
+    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').update(tempObject);
+    // this.props.getRecipes(this.props.member.uid);
     Actions.pop();
+  }
+
+  componentWillUnmount = () => {
+    if (Object.keys(this.state.selectedTimesObject).length === 0) {
+        let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
+        let recipeInfo = this.props.recipes.recipe;
+        FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: false});
+      } else {
+        let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
+        let recipeInfo = this.props.recipes.recipe;
+        FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: true});
+      }
   }
 
   deleteTime = (day, times) => {
@@ -252,4 +267,8 @@ const mapStateToProps = state => ({
   member: state.member || {},
 });
 
-export default connect(mapStateToProps)(TimeInput);
+const mapDispatchToProps = {
+  getRecipes,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TimeInput);

@@ -40,7 +40,7 @@ const RecipeView = ({
   let canAttend = true;
   let name = `${member.firstName} ${member.lastName}`
   if(currentEmail && currentEmail != recipe.masterEmail) {
-    let invitedInfo = FirebaseRef.child('invitedAppointments').child(currentEmail.replace(/[.]/g, ',')).child(recipe.id).child('invitedUsers').child(name);
+    let invitedInfo = FirebaseRef.child('appointments').child(recipe.masteruid).child(recipe.id).child('invitedUsers').child(name);
     invitedInfo.on('value', (snapshot) => {
       snapshot.val() ? canAttend = snapshot.val().canAttend : null;
     });
@@ -86,7 +86,7 @@ const RecipeView = ({
     let uid = Firebase.auth().currentUser.uid;
 
     const invited = FirebaseRef.child("appointments").child(uid).child(recipe.id).child('invitedUsers');
-    invited.on('value', (snapshot) => {
+    invited.once('value', (snapshot) => {
       snapshot.val() ?
       Object.entries(snapshot.val()).map(([key, value]) => {
         let email = value.email.replace(/[.]/g, ',');
