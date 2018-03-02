@@ -1,16 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { List, Card, CardItem, Container, Content, Text, Body, ListItem, Form, Item, Label, Input, CheckBox, Button, View, Icon } from 'native-base';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import moment from 'moment';
 import Colors from '../../../native-base-theme/variables/commonColor';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
-import { TouchableOpacity, Modal, Keyboard } from 'react-native';
+import { TouchableOpacity, Modal, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Messages from './Messages';
 import Loading from './Loading';
 import Header from './Header';
 import Spacer from './Spacer';
+import {Firebase,FirebaseRef} from './../../lib/firebase.js';
+
 
 class TimeInput extends React.Component {
   static defaultProps = {
@@ -27,18 +30,28 @@ class TimeInput extends React.Component {
       isDateTimePickerVisible2: false,
       start: null,
       end: null,
-      timesArray: []
+      selectedTimesObject: {},
+      recipe: null,
+      userDates: null,
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.selectDate = this.selectDate.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.showDateTimePicker = this.showDateTimePicker.bind(this);
     this.hideDateTimePicker = this.hideDateTimePicker.bind(this);
     this.showDateTimePicker2 = this.showDateTimePicker2.bind(this);
     this.hideDateTimePicker2 = this.hideDateTimePicker2.bind(this);
+    this.inputTimes = this.inputTimes.bind(this);
+    this.deleteTime = this.deleteTime.bind(this);
   }
+
+  componentWillMount = () => {
+    let recipeInfo = this.props.recipes.recipe;
+    let emailKey = this.props.member.email.replace(/[.]/g, ',');
+    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).on('value', (snapshot) => {
+      this.setState({recipe: snapshot.val(), selectedTimesObject: snapshot.val().userDates ? snapshot.val().userDates[emailKey] : {} });
+    });
+  };
 
   showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
 
@@ -71,27 +84,39 @@ class TimeInput extends React.Component {
     this.setState({start: null, end: null})
   }
 
-  handleChange = (name, val) => {
-    // this.setState({
-    //   ...this.state,
-    //   [name]: val,
-    // });
+  inputTimes = () => {
+    let emailKey = this.props.member.email.replace(/[.]/g, ',');
+    let recipeInfo = this.props.recipes.recipe;
+    let tempUserDates = this.state.selectedTimesObject;
+    let tempObject = {};
+    tempObject[emailKey] = tempUserDates;
+    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').set(tempObject);
+    Actions.pop();
   }
 
-  handleSubmit = () => {
-    // this.props.onFormSubmit(this.state)
-    //   .then(() => console.log('Profile Updated'))
-    //   .catch(e => console.log(`Error: ${e}`));
+  deleteTime = (day, times) => {
+    let emailKey = this.props.member.email.replace(/[.]/g, ',');
+    let recipeInfo = this.props.recipes.recipe;
+    let deleteObject = this.state.selectedTimesObject;
+    deleteObject[day] = deleteObject[day].filter((value) => {
+      return (value.start !== times.start && value.end !== times.end)
+    });
+    this.setState({selectedTimesObject: deleteObject});
   }
 
   render() {
     const { loading, error, success } = this.props;
     const today = moment().format("YYYY-MM-DD");
-    const dates = this.state.timesArray.map(item => (
-      <ListItem key={`${item.day}${item.start}${item.end}`} rightIcon={{ style: { opacity: 0 } }}>
-        <Text>{item.day}:    {item.start} - {item.end}</Text>
-      </ListItem>
-    ));
+    const dates = Object.entries(this.state.selectedTimesObject).map(([day, timesArray]) => {
+      return timesArray.map((times) => {
+        return (<ListItem key={`${day}${times.start}${times.end}`} rightIcon={{ style: { opacity: 0 } }}>
+                  <Button iconRight transparent onPress={() => this.deleteTime(day, times)}>
+                    <Icon active name="ios-close" style={{color: Colors.brandPrimary, marginTop: 2, fontSize: 25}}/>
+                  </Button>
+                  <Text>{day}:    {times.start} - {times.end}</Text>
+                </ListItem>)
+      });
+  });
 
     // Loading
     if (loading) return <Loading />;
@@ -99,64 +124,66 @@ class TimeInput extends React.Component {
     return (
       <Container>
         <Content padding>
+
           <Spacer size={10} />
               <Modal
                   visible={this.state.modalVisible}
                   onRequestClose={() => this.toggleModal()}
                   transparent={true}
+                  animationType='fade'
               >
-                <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#00000080', opacity: 50}}>
-                  <View style={{width: '85%', height: '60%', backgroundColor: 'white'}}>
-                    <Form>
-                      <Item style={{paddingTop: '20%', width: '85%', alignSelf: 'center'}}>
-                        <Icon active name="ios-time" style={{color: Colors.brandPrimary}}/>
-                        <Input
-                          value={this.state.start}
-                          placeholder="Available Start Time"
-                          onChangeText={v => this.handleChange('firstName', v)}
-                          onFocus={() => {
-                            Keyboard.dismiss();
-                            this.showDateTimePicker();
-                          }}
-                        />
-                      </Item>
-                      <Item style={{paddingTop: '25%', width: '85%', alignSelf: 'center'}}>
-                        <Icon active name="ios-time" style={{color: Colors.brandPrimary}}/>
-                        <Input
-                          value={this.state.end}
-                          placeholder="Available End Time"
-                          onChangeText={v => this.handleChange('lastName', v)}
-                          onFocus={() => {
-                            Keyboard.dismiss();
-                            this.showDateTimePicker2();
-                          }}
-                        />
-                      </Item>
-                      <DateTimePicker
-                        mode="time"
-                        isVisible={this.state.isDateTimePickerVisible}
-                        onConfirm={this.handleDatePicked}
-                        onCancel={this.hideDateTimePicker}
-                      />
-                      <DateTimePicker
-                        mode="time"
-                        isVisible={this.state.isDateTimePickerVisible2}
-                        onConfirm={this.handleDatePicked2}
-                        onCancel={this.hideDateTimePicker2}
-                      />
-                    </Form>
-                    <Button onPress={() => {
-                      this.toggleModal();
-                      let tempObject = {...this.state.timesArray, ...{start: this.state.start, end: this.state.end, day: this.state.selectedDay}};
-                      let tempArray = this.state.timesArray;
-                      tempArray.push(tempObject);
-                      console.log(tempArray);
-                      this.setState({timesArray: tempArray});
-                    }} style={{bottom: 25, position: 'absolute', width: '85%', alignSelf: 'center'}}>
-                      <Text style={{textAlign: 'center', width: '100%'}}>Add Times</Text>
-                    </Button>
+                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({modalVisible: false})} style={{flex: 1}}>
+                  <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', backgroundColor: '#00000080', opacity: 50}}>
+                      <View style={{width: '85%', height: '60%', backgroundColor: 'white'}}>
+                      <TouchableOpacity activeOpacity={1} onPress={() => this.setState({modalVisible: true})} style={{flex: 1}}>
+                        <Form>
+                          <Item style={{paddingTop: '25%', width: '85%', alignSelf: 'center'}}>
+                            <TouchableWithoutFeedback activeOpacity={1} onPress={this.showDateTimePicker}>
+                              <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginBottom: 5}}>
+                                <Icon active name="ios-time" style={{color: Colors.brandPrimary, marginRight: 20, fontSize: 25}} />
+                                <Text style={{fontSize: 20}}> {this.state.start ? this.state.start : 'Available Start Time'} </Text>
+                              </View>
+                            </TouchableWithoutFeedback>
+                          </Item>
+                          <Item style={{paddingTop: '25%', width: '85%', alignSelf: 'center'}}>
+                            <TouchableWithoutFeedback activeOpacity={1} onPress={this.showDateTimePicker2}>
+                              <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginBottom: 5}}>
+                                <Icon active name="ios-time" style={{color: Colors.brandPrimary, marginRight: 20, fontSize: 25}} />
+                                <Text style={{fontSize: 20}}> {this.state.end ? this.state.end : 'Available End Time'} </Text>
+                              </View>
+                            </TouchableWithoutFeedback>
+                          </Item>
+                          <DateTimePicker
+                            mode="time"
+                            isVisible={this.state.isDateTimePickerVisible}
+                            onConfirm={this.handleDatePicked}
+                            onCancel={this.hideDateTimePicker}
+                          />
+                          <DateTimePicker
+                            mode="time"
+                            isVisible={this.state.isDateTimePickerVisible2}
+                            onConfirm={this.handleDatePicked2}
+                            onCancel={this.hideDateTimePicker2}
+                          />
+                        </Form>
+                        <Button onPress={() => {
+                          if (this.state.start && this.state.end) {
+                            this.toggleModal();
+                            let timesArrayState = this.state.selectedTimesObject[this.state.selectedDay]
+                            let tempStateObject = this.state.selectedTimesObject;
+                            let tempArray = new Array();
+                            tempArray.push({start: this.state.start, end: this.state.end});
+                            tempArray = timesArrayState ? tempArray.concat(timesArrayState) : tempArray;
+                            tempStateObject[this.state.selectedDay] = tempArray;
+                            this.setState({selectedTimesObject: tempStateObject});
+                          }
+                        }} style={{bottom: 25, position: 'absolute', width: '85%', alignSelf: 'center'}}>
+                          <Text style={{textAlign: 'center', width: '100%'}}>Add Times</Text>
+                        </Button>
+                        </TouchableOpacity>
+                      </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               </Modal>
           {error && <Messages message={error} />}
           {success && <Messages message={success} type="success" />}
@@ -169,11 +196,13 @@ class TimeInput extends React.Component {
               height: 310
             }}
 
-            markedDates={this.state.markedDates}
-            minDate={today}
+            markedDates={this.state.recipe.dates}
+
             onDayPress={(day) => {
-              this.toggleModal();
-              this.selectDate(day);
+              if (this.state.recipe.dates[day.dateString]) {
+                this.toggleModal();
+                this.selectDate(day);
+              }
             }}
             // Specify theme properties to override specific styles for calendar parts. Default = {}
             theme={{
@@ -183,7 +212,7 @@ class TimeInput extends React.Component {
               selectedDayBackgroundColor: '#ffffff',
               selectedDayTextColor: '#a32323',
               todayTextColor: '#39d39f',
-              dayTextColor: Colors.brandPrimary,
+              dayTextColor: '#d9e1e8',
               textDisabledColor: '#d9e1e8',
               dotColor: Colors.brandPrimary,
               selectedDotColor: Colors.brandPrimary,
@@ -208,7 +237,7 @@ class TimeInput extends React.Component {
             </CardItem>
           </Card>
           <Spacer size={15} />
-          <Button block style={{width: '95%', alignSelf: 'center'}} onPress={Actions.pop}>
+          <Button block style={{width: '95%', alignSelf: 'center'}} onPress={this.inputTimes}>
             <Text>Input Times</Text>
           </Button>
           <Spacer size={25} />
@@ -218,4 +247,9 @@ class TimeInput extends React.Component {
   }
 }
 
-export default TimeInput;
+const mapStateToProps = state => ({
+  recipes: state.recipes || {},
+  member: state.member || {},
+});
+
+export default connect(mapStateToProps)(TimeInput);

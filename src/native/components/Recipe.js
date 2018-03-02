@@ -17,6 +17,7 @@ const RecipeView = ({
   recipes,
   recipeId,
   member,
+  setCurrentRecipe,
 }) => {
 
   // Get this Recipe from all recipes
@@ -128,7 +129,7 @@ const RecipeView = ({
   }
 
   return (
-    <Swiper showsButtons={false} index={1}>
+    <Swiper removeClippedSubviews={false} >
           <ScrollView style={{backgroundColor: 'white'}}>
             <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
               <H3>{recipe.appointmentName}</H3>
@@ -255,7 +256,9 @@ const RecipeView = ({
               </View>
             </View>
             :
-            null
+            <ScrollView contentContainerStyle={30} keyboardShouldPersistTaps='always' style={{flex:1, backgroundColor: 'white'}} >
+              <Text> Temp Screen </Text>
+            </ScrollView>
           }
 
 

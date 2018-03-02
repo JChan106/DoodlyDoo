@@ -1,4 +1,3 @@
-import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList, TouchableOpacity, RefreshControl, Image } from 'react-native';
@@ -16,6 +15,7 @@ const RecipeListing = ({
   recipes,
   reFetch,
   member,
+  setCurrentRecipe,
 }) => {
   // Loading
   if (loading) return <Loading />;
@@ -23,9 +23,14 @@ const RecipeListing = ({
   // Error
   if (error) return <Error content={error} />;
 
+  // console.log(setCurrentRecipe);
+
   const keyExtractor = item => item.id;
 
-  const onPress = item => Actions.recipe({ match: { params: { id: String(item.id), member: member } } });
+  const onPress = item => {
+    setCurrentRecipe({id: item.id, masteruid: item.masteruid});
+    return Actions.recipe({ match: { params: { id: String(item.id), member: member } } });
+  }
 
   return (
     <Container>

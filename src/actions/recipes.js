@@ -73,6 +73,13 @@ export function setError(message) {
   })));
 }
 
+export function setCurrentRecipe(recipe) {
+  return dispatch => new Promise(resolve => resolve(dispatch({
+    type: 'CURRENT_RECIPE',
+    data: recipe,
+  })));
+}
+
 /**
   * Get Recipes
   */
@@ -105,7 +112,6 @@ export function getRecipes(uid) {
               let ref = FirebaseRef.child('appointments').child(loggedIn.uid);
               ref.on('value', (snapshot) => {
                 recipes = Object.assign(recipes, snapshot.val()) || Object.assign({}, recipes);
-                console.log(recipes);
                 return resolve(dispatch({
                   type: 'RECIPES_REPLACE',
                   data: recipes,

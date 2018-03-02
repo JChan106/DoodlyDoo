@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { getRecipes, getMeals, setError } from '../actions/recipes';
+import { getRecipes, getMeals, setError, setCurrentRecipe } from '../actions/recipes';
 import { logout, getMemberData } from '../actions/member';
 
 
@@ -43,11 +43,21 @@ class RecipeListing extends Component {
       });
   }
 
+  setRecipeRedux = (recipe) => {
+    return this.props.setCurrentRecipe(recipe)
+      .catch((err) => {
+        console.log(`Error: ${err}`);
+        return this.props.setError(err);
+      });
+  }
+
   render = () => {
     const { Layout, recipes, match, member } = this.props;
     const id = (match && match.params && match.params.id) ? match.params.id : null;
     let tempArray = recipes.recipes;
     tempArray = tempArray.filter(x => x != null);
+
+    // not reloading issue may be here.
 
     return (
       <Layout
@@ -57,6 +67,7 @@ class RecipeListing extends Component {
         recipes={tempArray}
         member={member}
         reFetch={() => this.fetchRecipes()}
+        setCurrentRecipe={this.setRecipeRedux}
       />
     );
   }
@@ -68,6 +79,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  setCurrentRecipe,
   getRecipes,
   getMeals,
   setError,

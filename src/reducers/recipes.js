@@ -10,12 +10,12 @@ export default function recipeReducer(state = initialState, action) {
         favourites: action.data || [],
       };
     }
-    case 'MEALS_REPLACE': {
+    case 'CURRENT_RECIPE': {
       return {
         ...state,
         error: null,
         loading: false,
-        meals: action.data,
+        recipe: action.data,
       };
     }
     case 'RECIPES_ERROR': {

@@ -70,7 +70,7 @@
     "react-native-gifted-chat": "^0.3.0",
     "react-native-modal-datetime-picker": "^4.13.0",
     "react-native-router-flux": "^4.0.0-beta.28",
-    "react-native-swiper": "^1.5.13",
+    "react-native-swiper": "https://github.com/Tennen/react-native-swiper/tarball/master",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "reactstrap": "^5.0.0-alpha.4",

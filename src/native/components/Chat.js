@@ -54,7 +54,7 @@ class Chat extends React.Component {
     if (loading) return <Loading />;
 
     return (
-      <View style={{width: '100%', height: '100%'}}>
+        <View style={{width: '100%', height: '100%'}}>
             <GiftedChat
               messages={this.state.messages}
               keyboardShouldPersistTaps='always'
@@ -75,13 +75,15 @@ class Chat extends React.Component {
               onRequestClose={() => this.toggleModal()}
               animationType='slide'
               transparent={true}>
-                <TouchableOpacity onPress={() => this.setState({modalVisible: false})} style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                  <View style={{width: '100%', height: '16%', backgroundColor: '#f5f5f5'}}>
-                    <View style={{width: '100%', bottom: 0, position: 'absolute', paddingLeft: 15}}>
-                      <Text style={{fontWeight: '700', fontSize: 20, paddingBottom: 10}}> Full Name: <Text style={{fontWeight: '300'}}>{this.state.user.name}</Text> </Text>
-                      <Text style={{fontWeight: '700', fontSize: 20, paddingBottom: 15}}> Email: <Text style={{fontWeight: '300'}}>{this.state.user._id}</Text> </Text>
+                <TouchableOpacity activeOpacity={1} onPress={() => this.setState({modalVisible: false})} style={{flex: 1}}>
+                    <View style={{width: '100%', height: '16%', backgroundColor: '#f5f5f5'}}>
+                      <TouchableOpacity activeOpacity={1} onPress={() => this.setState({modalVisible: true})} style={{flex: 1}}>
+                        <View style={{width: '100%', bottom: 0, position: 'absolute', paddingLeft: 15}}>
+                          <Text style={{fontWeight: '700', fontSize: 20, paddingBottom: 10}}> Full Name: <Text style={{fontWeight: '300'}}>{this.state.user.name}</Text> </Text>
+                          <Text style={{fontWeight: '700', fontSize: 20, paddingBottom: 15}}> Email: <Text style={{fontWeight: '300'}}>{this.state.user._id}</Text> </Text>
+                        </View>
+                      </TouchableOpacity>
                     </View>
-                  </View>
                 </TouchableOpacity>
               </Modal> : null }
         </View>

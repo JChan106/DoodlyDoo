@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
 import { Icon, Text } from 'native-base';
 
@@ -38,6 +39,8 @@ import Recipes from '../components/Recipes';
 import AddAppointment1 from '../components/AddAppointment1';
 import AddAppointment2 from '../components/AddAppointment2';
 import AddAppointment3 from '../components/AddAppointment3';
+
+import recipeStore from '../../store/recipes';
 
 const Index = (
   <Stack>

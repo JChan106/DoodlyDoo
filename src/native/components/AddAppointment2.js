@@ -59,7 +59,7 @@ class AddAppointment2 extends React.Component {
         delete temp[date];
         this.setState({markedDates: temp});
       } else {
-        const temp = {...this.state.markedDates, ...{[date]: {selected: true}}}
+        const temp = {...this.state.markedDates, ...{[date]: {selected: true, disabled: false, disableTouchEvent: false}}}
         this.setState({markedDates: temp});
       }
   }
