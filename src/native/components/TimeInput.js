@@ -93,12 +93,17 @@ class TimeInput extends React.Component {
     let tempObject = {};
     tempObject[emailKey] = tempUserDates;
     FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').update(tempObject);
-    // this.props.getRecipes(this.props.member.uid);
-    Actions.pop();
+    this.props.getRecipes(this.props.member.uid);
+    // Actions.pop();
+    this.setInputted();
   }
 
-  componentWillUnmount = () => {
-    if (Object.keys(this.state.selectedTimesObject).length === 0) {
+  setInputted = () => {
+    let tempArray = Object.values(this.state.selectedTimesObject);
+    tempArray = tempArray.filter((value) => {
+      return value.length !== 0;
+    });
+    if (tempArray.length === 0) {
         let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
         let recipeInfo = this.props.recipes.recipe;
         FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: false});
@@ -255,7 +260,7 @@ class TimeInput extends React.Component {
           <Button block style={{width: '95%', alignSelf: 'center'}} onPress={this.inputTimes}>
             <Text>Input Times</Text>
           </Button>
-          <Spacer size={25} />
+          <Spacer size={50} />
         </Content>
       </Container>
     );

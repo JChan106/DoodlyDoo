@@ -22,6 +22,7 @@ class Chat extends React.Component {
       modalVisible: false,
       showName: false,
       user: {},
+      masterEmail: null,
     };
     this.toggleModal = this.toggleModal.bind(this);
   }
@@ -32,16 +33,20 @@ class Chat extends React.Component {
 
   componentDidMount() {
     that = this;
-    let emailKey = this.props.recipe.masterEmail.replace(/[.]/g, ',');
-    let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(this.props.recipe.id);
-    appointmentMessages ? appointmentMessages.on('value', (snapshot) => {
-      that.setState({messages: snapshot.val()});
-    }) : null
+    let recipeInfo = this.props.recipes.recipe;
+    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).once('value', (snapshot) => {
+      let emailKey = snapshot.val().masterEmail.replace(/[.]/g, ',');
+      let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id);
+      appointmentMessages ? appointmentMessages.on('value', (appointmentSnap) => {
+        that.setState({messages: appointmentSnap.val(), masterEmail: snapshot.val().masterEmail});
+      }) : null
+    });
   }
 
   onSend(messages = []) {
-    let emailKey = this.props.recipe.masterEmail.replace(/[.]/g, ',');
-    let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(this.props.recipe.id);
+    let recipeInfo = this.props.recipes.recipe;
+    let emailKey = this.state.masterEmail.replace(/[.]/g, ',');
+    let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id);
     if (appointmentMessages) {
       appointmentMessages.set(messages.concat(this.state.messages));
     }
@@ -54,7 +59,7 @@ class Chat extends React.Component {
     if (loading) return <Loading />;
 
     return (
-        <View style={{width: '100%', height: '100%'}}>
+        <View style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
             <GiftedChat
               messages={this.state.messages}
               keyboardShouldPersistTaps='always'
@@ -93,6 +98,7 @@ class Chat extends React.Component {
 
 const mapStateToProps = state => ({
   member: state.member || {},
+  recipes: state.recipes || {},
 });
 
 const mapDispatchToProps = {

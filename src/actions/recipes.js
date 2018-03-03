@@ -111,7 +111,6 @@ export function getRecipes(uid) {
             if (snapshot.val().numofAppointments > 0) {
               let ref = FirebaseRef.child('appointments').child(loggedIn.uid);
               ref.on('value', (snapshot) => {
-                console.log('im updating');
                 recipes = Object.assign(recipes, snapshot.val()) || Object.assign({}, recipes);
                 return resolve(dispatch({
                   type: 'RECIPES_REPLACE',

@@ -11,6 +11,7 @@ import Swiper from 'react-native-swiper'
 import Chat from './Chat';
 import RecipeActivityTracker from './RecipeActivityTracker';
 import AppointmentMasterOptions from './AppointmentMasterOptions';
+import TimeInput from './TimeInput';
 import { Firebase, FirebaseRef } from '../../lib/firebase';
 
 
@@ -92,7 +93,7 @@ const RecipeView = ({
           </ScrollView>
 
           <ScrollView contentContainerStyle={30} keyboardShouldPersistTaps='always' style={{flex:1, backgroundColor: 'white'}} >
-              <Chat recipe={recipe}/>
+              <TimeInput />
           </ScrollView>
 
           {

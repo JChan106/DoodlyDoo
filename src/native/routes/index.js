@@ -34,6 +34,7 @@ import AddContact from '../components/AddContact';
 import Contact from '../components/Contact';
 
 import TimeInput from '../components/TimeInput';
+import Chat from '../components/Chat';
 
 import Recipes from '../components/Recipes';
 import AddAppointment1 from '../components/AddAppointment1';
@@ -145,8 +146,8 @@ const Index = (
       back
       clone
       key="recipe"
-      onRight={() => {Actions.timeInput()}}
-      rightTitle="Edit"
+      onRight={() => {Actions.chat()}}
+      rightTitle="Chat"
       title="APPOINTMENT"
       {...DefaultProps.navbarProps}
       component={RecipesContainer}
@@ -155,9 +156,9 @@ const Index = (
     <Scene
       back
       clone
-      key="timeInput"
-      title="INPUT TIME"
-      component={TimeInput}
+      key="chat"
+      title="Appointment Chat"
+      component={Chat}
     />
 
     <Scene
