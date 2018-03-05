@@ -91,10 +91,10 @@ class TimeInput extends React.Component {
     let recipeInfo = this.props.recipes.recipe;
     let tempUserDates = this.state.selectedTimesObject;
     let tempObject = {};
-    tempObject[emailKey] = tempUserDates;
+    let name = `${this.props.member.firstName} ${this.props.member.lastName}`;
+    tempObject[emailKey] = {name: name, ...tempUserDates};
     FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').update(tempObject);
     this.props.getRecipes(this.props.member.uid);
-    // Actions.pop();
     this.setInputted();
   }
 
@@ -128,14 +128,16 @@ class TimeInput extends React.Component {
     const { loading, error, success } = this.props;
     const today = moment().format("YYYY-MM-DD");
     const dates = Object.entries(this.state.selectedTimesObject).map(([day, timesArray]) => {
-      return timesArray.map((times) => {
-        return (<ListItem key={`${day}${times.start}${times.end}`} rightIcon={{ style: { opacity: 0 } }}>
-                  <Button iconRight transparent onPress={() => this.deleteTime(day, times)}>
-                    <Icon active name="ios-close" style={{color: Colors.brandPrimary, marginTop: 2, fontSize: 25}}/>
-                  </Button>
-                  <Text>{day}:    {times.start} - {times.end}</Text>
-                </ListItem>)
-      });
+      if (Array.isArray(timesArray)) {
+        return timesArray.map((times) => {
+          return (<ListItem key={`${day}${times.start}${times.end}`} rightIcon={{ style: { opacity: 0 } }}>
+                    <Button iconRight transparent onPress={() => this.deleteTime(day, times)}>
+                      <Icon active name="ios-close" style={{color: Colors.brandPrimary, marginTop: 2, fontSize: 25}}/>
+                    </Button>
+                    <Text>{day}:    {times.start} - {times.end}</Text>
+                  </ListItem>)
+        });
+      }
   });
 
     // Loading

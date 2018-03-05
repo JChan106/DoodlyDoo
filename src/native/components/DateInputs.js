@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
 import { Container, Icon, Button, View, Text, Modal, Card, CardItem, List, Content, ListItem, Body, Separator} from 'native-base';
+import { ScrollView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Colors from '../../../native-base-theme/variables/commonColor';
 
@@ -29,26 +30,28 @@ class DateInputs extends React.Component {
   }
 
   componentDidMount () {
-    Object.values(this.state.inputtedInfo).map((value) => {
-      if (value[this.props.date]) {
-        this.setState({showMessage: false});
-      }
-    });
+    if (this.state.inputtedInfo) {
+      Object.values(this.state.inputtedInfo).map((value) => {
+        if (value[this.props.date]) {
+          this.setState({showMessage: false});
+        }
+      });
+    }
   }
 
   printInputs = (object) => object ? Object.entries(object).map(([key, value]) => (
     <View>
       {
       value[this.props.date] ?
-      <ListItem itemHeader>
-          <Text>{key}</Text>
+      <ListItem itemDivider style={{paddingLeft: 20, paddingBottom: 12, paddingTop: 12}}>
+          <Text style={{fontWeight: '700', fontSize: '17'}}>{value.name} ({key.replace(/[,]/g, '.')})</Text>
        </ListItem> : null
       }
        {
          Object.entries(value).map(([date, timesArray]) => {
            if (this.props.date === date) {
              return timesArray.map((times) => (
-                    <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
+                    <ListItem key={key} rightIcon={{ style: { opacity: 0 } }} style={{paddingLeft: 20, borderBottomWidth: 0}}>
                        <Text>{times.start} - {times.end}</Text>
                     </ListItem>
                   ));
@@ -61,13 +64,22 @@ class DateInputs extends React.Component {
   render() {
     const { recipes, member } = this.props;
 
+    console.log(this.state.inputtedInfo);
+
     return (
-        <View style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
+        <ScrollView style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
           <List>
+            <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
+                <Text style={{fontWeight: '800', fontSize: '19'}}> Non-conflicting Times </Text>
+            </ListItem>
+
+            <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
+                <Text style={{fontWeight: '800', fontSize: '19'}}> Individual Times </Text>
+            </ListItem>
             {this.printInputs(this.state.inputtedInfo)}
-            {this.state.showMessage ? <Text> There seems to be nothing here </Text> : null}
+            {this.state.showMessage ? <Text style={{paddingLeft: 20, paddingTop: 15}}> There seems to be nothing here </Text> : null}
           </List>
-        </View>
+        </ScrollView>
       );
   }
 }
