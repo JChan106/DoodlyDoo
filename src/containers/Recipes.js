@@ -28,8 +28,6 @@ class RecipeListing extends Component {
 
   componentDidMount = () => this.fetchRecipes();
 
-  // componentWillUpdate = () => this.fetchRecipes();
-
   /**
     * Fetch Data from API, saving to Redux
     */

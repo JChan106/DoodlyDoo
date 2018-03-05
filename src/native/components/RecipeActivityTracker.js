@@ -112,9 +112,11 @@ class RecipeActivityTracker extends React.Component {
           <Text style={{color: '#a32323'}}>Can Not Attend</Text>
         </CardItem>
         <CardItem>
-          <List>
-            {this.noShows(recipe.invitedUsers)}
-          </List>
+          <Content>
+            <List>
+              {this.noShows(recipe.invitedUsers)}
+            </List>
+          </Content>
         </CardItem>
       </Card>
       <Card style={{width: '95%', alignSelf: 'center'}}>
@@ -123,9 +125,11 @@ class RecipeActivityTracker extends React.Component {
           <Text style={{color: '#a32323'}}>Has Not Responded</Text>
         </CardItem>
         <CardItem>
-          <List>
-            {this.noResponses(recipe.invitedUsers)}
-          </List>
+          <Content>
+            <List>
+              {this.noResponses(recipe.invitedUsers)}
+            </List>
+          </Content>
         </CardItem>
       </Card>
       <Spacer size={30} />

@@ -11,6 +11,7 @@ import Swiper from 'react-native-swiper'
 import Chat from './Chat';
 import RecipeActivityTracker from './RecipeActivityTracker';
 import AppointmentMasterOptions from './AppointmentMasterOptions';
+import RecipeLanding from './RecipeLanding';
 import TimeInput from './TimeInput';
 import { Firebase, FirebaseRef } from '../../lib/firebase';
 
@@ -40,52 +41,10 @@ const RecipeView = ({
     });
   }
 
-
-
-
-  // Build Method listing
-  const method = (object) => object ? Object.entries(object).map(([key, value]) => (
-      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }}>
-        <Text>{key}</Text>
-      </ListItem>
-    )) : null
-
   return (
     <Swiper removeClippedSubviews={false} >
           <ScrollView style={{backgroundColor: 'white'}}>
-            <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>
-              <H3>{recipe.appointmentName}</H3>
-              <Text>Organizer: {recipe.masterName}</Text>
-            </View>
-            <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
-              <CardItem header bordered>
-                <Icon active name="md-menu" style={{color: Colors.brandPrimary}}/>
-                <Text>Description</Text>
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <Text>{recipe.description}</Text>
-                </Body>
-              </CardItem>
-            </Card>
-            <Card style={{width: '95%', alignSelf: 'center'}}>
-              <CardItem bordered>
-                <Icon active name="md-pin" style={{color: Colors.brandPrimary}}/>
-                <Text style={{fontWeight: '900'}}> Location: </Text>
-                <Text> {recipe.location} </Text>
-              </CardItem>
-            </Card>
-            <Card style={{width: '95%', alignSelf: 'center'}}>
-              <CardItem header bordered>
-                <Text style={{color: '#49c179'}}>Available Dates</Text>
-              </CardItem>
-              <CardItem>
-                <List>
-                  {method(recipe.dates)}
-                </List>
-              </CardItem>
-            </Card>
-            <Spacer size={40} />
+            <RecipeLanding recipe={recipe} />
           </ScrollView>
 
           <ScrollView style={{backgroundColor: 'white'}}>

@@ -230,7 +230,7 @@ class TimeInput extends React.Component {
               calendarBackground: '#ffffff',
               textSectionTitleColor: 'gray',
               selectedDayBackgroundColor: '#ffffff',
-              selectedDayTextColor: '#a32323',
+              selectedDayTextColor: Colors.brandPrimary,
               todayTextColor: '#39d39f',
               dayTextColor: '#d9e1e8',
               textDisabledColor: '#d9e1e8',

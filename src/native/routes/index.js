@@ -35,6 +35,7 @@ import Contact from '../components/Contact';
 
 import TimeInput from '../components/TimeInput';
 import Chat from '../components/Chat';
+import DateInputs from '../components/DateInputs';
 
 import Recipes from '../components/Recipes';
 import AddAppointment1 from '../components/AddAppointment1';
@@ -153,6 +154,15 @@ const Index = (
       component={RecipesContainer}
       Layout={RecipeViewComponent}
     />
+
+    <Scene
+      back
+      clone
+      key="DateInputs"
+      title="Inputted Times"
+      component={DateInputs}
+    />
+
     <Scene
       back
       clone
