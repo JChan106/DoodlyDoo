@@ -35,6 +35,7 @@ class TimeInput extends React.Component {
       selectedTimesObject: {},
       recipe: null,
       userDates: null,
+      showMessage: false,
     };
 
     this.selectDate = this.selectDate.bind(this);
@@ -45,6 +46,7 @@ class TimeInput extends React.Component {
     this.hideDateTimePicker2 = this.hideDateTimePicker2.bind(this);
     this.inputTimes = this.inputTimes.bind(this);
     this.deleteTime = this.deleteTime.bind(this);
+    this.checkOverlap = this.checkOverlap.bind(this);
   }
 
   componentWillMount = () => {
@@ -72,7 +74,6 @@ class TimeInput extends React.Component {
 
   handleDatePicked2 = (date) => {
     let temp = date.toLocaleTimeString().replace(/:\d{2}\s/,' ');
-    // temp = temp.slice(0, -3);
     this.hideDateTimePicker2();
     this.setState({end: temp});
   };
@@ -83,7 +84,7 @@ class TimeInput extends React.Component {
 
   toggleModal() {
     this.setState({modalVisible: !this.state.modalVisible});
-    this.setState({start: null, end: null})
+    this.setState({start: null, end: null, showMessage: false});
   }
 
   inputTimes = () => {
@@ -119,9 +120,30 @@ class TimeInput extends React.Component {
     let recipeInfo = this.props.recipes.recipe;
     let deleteObject = this.state.selectedTimesObject;
     deleteObject[day] = deleteObject[day].filter((value) => {
-      return (value.start !== times.start && value.end !== times.end)
+      return (value.start !== times.start || value.end !== times.end)
     });
     this.setState({selectedTimesObject: deleteObject});
+  }
+
+  checkOverlap = (start, end, selectedDay) => {
+    let doesOverlap = false;
+    if (Object.keys(this.state.selectedTimesObject).length > 1) {
+      let tempTimesArray = this.state.selectedTimesObject[selectedDay];
+      if (tempTimesArray && Array.isArray(tempTimesArray)) {
+        tempTimesArray.forEach((value) => {
+          let storedStart = moment(value.start,'h:mma');
+          let storedEnd = moment(value.end,'h:mma');
+          let doesIntersect = start.isBetween(storedStart, storedEnd) || end.isBetween(storedStart, storedEnd);
+          let doesCover = (start.isBefore(storedStart) && end.isAfter(storedEnd));
+          let doesTouch = start.isSame(storedStart) || end.isSame(storedEnd) || start.isSame(storedEnd) || end.isSame(storedStart);
+          if (doesIntersect || doesCover || doesTouch) {
+            doesOverlap = true;
+          }
+        });
+      }
+    }
+    return doesOverlap;
+
   }
 
   render() {
@@ -150,7 +172,6 @@ class TimeInput extends React.Component {
           <Spacer size={10} />
               <Modal
                   visible={this.state.modalVisible}
-                  onRequestClose={() => this.toggleModal()}
                   transparent={true}
                   animationType='fade'
               >
@@ -188,8 +209,12 @@ class TimeInput extends React.Component {
                             onCancel={this.hideDateTimePicker2}
                           />
                         </Form>
+                        {this.state.showMessage ? <Text style={{color: '#a32323', width: '85%', alignSelf: 'center', position: 'absolute', bottom: 2}}> Error: Check Overlaps or Order </Text> : null}
                         <Button onPress={() => {
-                          if (this.state.start && this.state.end) {
+                          let start = moment(this.state.start,'h:mma');
+                          let end = moment(this.state.end,'h:mma');
+                          let doesOverlap = this.checkOverlap(start, end, this.state.selectedDay);
+                          if (this.state.start && this.state.end && start.isBefore(end) && !doesOverlap) {
                             this.toggleModal();
                             let timesArrayState = this.state.selectedTimesObject[this.state.selectedDay]
                             let tempStateObject = this.state.selectedTimesObject;
@@ -199,6 +224,7 @@ class TimeInput extends React.Component {
                             tempStateObject[this.state.selectedDay] = tempArray;
                             this.setState({selectedTimesObject: tempStateObject});
                           }
+                          this.setState({showMessage: true});
                         }} style={{bottom: 25, position: 'absolute', width: '85%', alignSelf: 'center'}}>
                           <Text style={{textAlign: 'center', width: '100%'}}>Add Times</Text>
                         </Button>

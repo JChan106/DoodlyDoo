@@ -159,7 +159,7 @@ const Index = (
       back
       clone
       key="DateInputs"
-      title="Inputted Times"
+      title="Available Times"
       component={DateInputs}
     />
 

@@ -5,6 +5,7 @@ import { Container, Icon, Button, View, Text, Modal, Card, CardItem, List, Conte
 import { ScrollView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Colors from '../../../native-base-theme/variables/commonColor';
+import CalculateDates from './CalculateDates';
 
 
 class DateInputs extends React.Component {
@@ -64,21 +65,23 @@ class DateInputs extends React.Component {
   render() {
     const { recipes, member } = this.props;
 
-    console.log(this.state.inputtedInfo);
-
     return (
         <ScrollView style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
-          <List>
-            <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
-                <Text style={{fontWeight: '800', fontSize: '19'}}> Non-conflicting Times </Text>
-            </ListItem>
+          {
+            this.state.showMessage ?
+             <Text style={{paddingLeft: 20, paddingTop: 15}}> No inputted times for this date </Text> :
+                <List>
+                  <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
+                      <Text style={{fontWeight: '800', fontSize: '19'}}> Non-conflicting Times </Text>
+                  </ListItem>
+                  <CalculateDates inputtedInfo={this.state.inputtedInfo} date={this.props.date} />
 
-            <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
-                <Text style={{fontWeight: '800', fontSize: '19'}}> Individual Times </Text>
-            </ListItem>
-            {this.printInputs(this.state.inputtedInfo)}
-            {this.state.showMessage ? <Text style={{paddingLeft: 20, paddingTop: 15}}> There seems to be nothing here </Text> : null}
-          </List>
+                  <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
+                      <Text style={{fontWeight: '800', fontSize: '19'}}> Individual Times </Text>
+                  </ListItem>
+                  {this.printInputs(this.state.inputtedInfo)}
+                </List>
+          }
         </ScrollView>
       );
   }
