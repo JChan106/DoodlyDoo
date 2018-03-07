@@ -18,11 +18,30 @@ class RecipeLanding extends React.Component {
     success: null,
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      datesWithTimes: new Array(),
+    };
+  }
+
+  componentWillMount = () => {
+    that = this;
+    let recipeInfo = this.props.recipes.recipe;
+    let datesWithTimes = new Array();
+    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').once('value', (snapshot) => {
+      snapshot.val() ? Object.values(snapshot.val()).map((value) => {
+        datesWithTimes = !Array.isArray(value) ? datesWithTimes.concat(Object.keys(value)) : datesWithTimes;
+      }) : null
+    });
+    this.setState({datesWithTimes: datesWithTimes});
+  }
+
   // Build Method listing
    printDates = (object) => object ? Object.entries(object).map(([key, value]) => (
       <ListItem key={key} rightIcon={{ style: { opacity: 0 } }} onPress={() => Actions.DateInputs({date: key})}>
           <Body>
-            <Text>{key}</Text>
+            {this.state.datesWithTimes.includes(key) ? <Text>{key}</Text> : <Text style={{color: '#a32323'}}>{key}</Text>}
           </Body>
           <Right>
             <Icon active name='arrow-forward' />
