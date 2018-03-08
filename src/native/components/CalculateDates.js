@@ -40,33 +40,35 @@ class CalculateDates extends React.Component {
     if (tempTimes && tempTimes.length > 0) {
       let availableTimesArray = new Array();
       tempTimes.map((baseArray) => {
-        baseArray.map((base) => {
-          let baseStart = moment(base.start,'h:mma');
-          let baseEnd = moment(base.end,'h:mma');
-          let tempStart = baseStart;
-          let tempEnd = baseEnd;
-          tempTimes.map((compareArray) => {
-            if (!isEqual(baseArray, compareArray)) {
-              compareArray.map((compare) => {
-                let compareStart = moment(compare.start,'h:mma')
-                let compareEnd = moment(compare.end,'h:mma')
-                // check if base gets overlaped by or intersects compared time
-                let doesIntersect = baseStart.isBetween(compareStart, compareEnd) || baseEnd.isBetween(compareStart, compareEnd);
-                // check if times touch each other, but dont overlap
-                let doesTouch = baseStart.isSame(compareStart) || baseEnd.isSame(compareEnd);
-                // check if overlaps compared time
-                let doesGetOverlapped = compareStart.isBetween(baseStart, baseEnd) || compareEnd.isBetween(baseStart, baseEnd);
+        if (Array.isArray(baseArray)) {
+          baseArray.map((base) => {
+            let baseStart = moment(base.start,'h:mma');
+            let baseEnd = moment(base.end,'h:mma');
+            let tempStart = baseStart;
+            let tempEnd = baseEnd;
+            tempTimes.map((compareArray) => {
+              if (Array.isArray(compareArray) && !isEqual(baseArray, compareArray)) {
+                compareArray.map((compare) => {
+                  let compareStart = moment(compare.start,'h:mma')
+                  let compareEnd = moment(compare.end,'h:mma')
+                  // check if base gets overlaped by or intersects compared time
+                  let doesIntersect = baseStart.isBetween(compareStart, compareEnd) || baseEnd.isBetween(compareStart, compareEnd);
+                  // check if times touch each other, but dont overlap
+                  let doesTouch = baseStart.isSame(compareStart) || baseEnd.isSame(compareEnd);
+                  // check if overlaps compared time
+                  let doesGetOverlapped = compareStart.isBetween(baseStart, baseEnd) || compareEnd.isBetween(baseStart, baseEnd);
 
-                if (doesIntersect || doesTouch || doesGetOverlapped) {
-                  tempStart = baseStart.isAfter(compareStart) ? baseStart : compareStart;
-                  tempEnd = baseEnd.isBefore(compareEnd) ? baseEnd : compareEnd;
-                }
-              });
-            }
+                  if (doesIntersect || doesTouch || doesGetOverlapped) {
+                    tempStart = baseStart.isAfter(compareStart) ? baseStart : compareStart;
+                    tempEnd = baseEnd.isBefore(compareEnd) ? baseEnd : compareEnd;
+                  }
+                });
+              }
+            });
+            let tempLower = `${tempStart.format('h:mm a')} - ${tempEnd.format('h:mm a')}`;
+            availableTimesArray.push(tempLower.toUpperCase());
           });
-          let tempLower = `${tempStart.format('h:mm a')} - ${tempEnd.format('h:mm a')}`;
-          availableTimesArray.push(tempLower.toUpperCase());
-        });
+        }
       });
       availableTimesArray = uniq(availableTimesArray);
       this.setState({availableTimesArray: availableTimesArray});

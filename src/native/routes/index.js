@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Scene, Tabs, Stack, Actions } from 'react-native-router-flux';
-import { Icon, Text } from 'native-base';
+import { Icon, Text, View } from 'native-base';
+
+import Colors from './../../../native-base-theme/variables/commonColor';
 
 import DefaultProps from '../constants/navigation';
 import AppConfig from '../../constants/config';
@@ -147,8 +149,7 @@ const Index = (
       back
       clone
       key="recipe"
-      onRight={() => {Actions.chat()}}
-      rightTitle="Chat"
+      right={() => <Icon style={{paddingRight: 15, color: Colors.brandPrimary}} onPress={Actions.chat} name='ios-chatbubbles' />}
       title="APPOINTMENT"
       {...DefaultProps.navbarProps}
       component={RecipesContainer}

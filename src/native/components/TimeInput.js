@@ -104,7 +104,7 @@ class TimeInput extends React.Component {
     tempArray = tempArray.filter((value) => {
       return value.length !== 0;
     });
-    if (tempArray.length === 0) {
+    if (tempArray.length <= 1) {
         let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
         let recipeInfo = this.props.recipes.recipe;
         FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: false});

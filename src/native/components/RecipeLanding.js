@@ -25,16 +25,17 @@ class RecipeLanding extends React.Component {
     };
   }
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     that = this;
     let recipeInfo = this.props.recipes.recipe;
-    let datesWithTimes = new Array();
-    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').once('value', (snapshot) => {
+    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').on('value', (snapshot) => {
+      let datesWithTimes = new Array();
       snapshot.val() ? Object.values(snapshot.val()).map((value) => {
         datesWithTimes = !Array.isArray(value) ? datesWithTimes.concat(Object.keys(value)) : datesWithTimes;
       }) : null
+      console.log(datesWithTimes);
+      this.setState({datesWithTimes: datesWithTimes});
     });
-    this.setState({datesWithTimes: datesWithTimes});
   }
 
   // Build Method listing
