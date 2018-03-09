@@ -33,7 +33,6 @@ class RecipeLanding extends React.Component {
       snapshot.val() ? Object.values(snapshot.val()).map((value) => {
         datesWithTimes = !Array.isArray(value) ? datesWithTimes.concat(Object.keys(value)) : datesWithTimes;
       }) : null
-      console.log(datesWithTimes);
       this.setState({datesWithTimes: datesWithTimes});
     });
   }

@@ -69,7 +69,7 @@ class DateInputs extends React.Component {
         <ScrollView style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
           {
             this.state.showMessage ?
-             <Text style={{paddingLeft: 20, paddingTop: 15}}> No inputted times for this date </Text> :
+             <Text style={{paddingLeft: 15, paddingTop: 15}}> No inputted times for this date </Text> :
                 <List>
                   <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
                     <Icon active name="ios-time" style={{paddingRight: 20, color: Colors.brandPrimary}}/>
