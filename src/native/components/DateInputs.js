@@ -75,7 +75,7 @@ class DateInputs extends React.Component {
                     <Icon active name="ios-time" style={{paddingRight: 20, color: Colors.brandPrimary}}/>
                     <Text style={{fontWeight: '800', fontSize: '19'}}> Non-conflicting Times </Text>
                   </ListItem>
-                  <CalculateDates inputtedInfo={this.state.inputtedInfo} date={this.props.date} />
+                  <CalculateDates inputtedInfo={this.state.inputtedInfo} date={this.props.date} recipe={this.props.recipe}/>
 
                   <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
                     <Icon active name="ios-person" style={{fontSize: 40, paddingRight: 20, color: Colors.brandPrimary}}/>

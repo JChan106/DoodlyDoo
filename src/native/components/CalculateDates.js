@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {Firebase,FirebaseRef} from './../../lib/firebase.js';
-import { Container, Icon, Button, View, Text, Modal, Card, CardItem, List, Content, ListItem, Body, Separator} from 'native-base';
+import { Container, Icon, Button, Right, View, Text, Modal, Card, CardItem, List, Content, ListItem, Body, Separator} from 'native-base';
 import isEqual from 'lodash/isEqual';
 import uniq from 'lodash/uniq';
 import orderBy from 'lodash/orderBy';
@@ -23,6 +23,7 @@ class CalculateDates extends React.Component {
     this.state = {
       modifiedInfo: null,
       availableTimesArray: null,
+      timeSetModal: null,
     };
     this.modifyData = this.modifyData.bind(this);
     this.calculateTimes = this.calculateTimes.bind(this);
@@ -122,15 +123,46 @@ class CalculateDates extends React.Component {
   }
 
   printTimes = (array) => array && array.length > 0 ? array.map((value) => (
-    <ListItem>
-      <Body>
-        <Text>{value.start} - {value.end}</Text>
-      </Body>
-    </ListItem>
+    <View>
+      <ListItem onPress={() => this.props.member.email === this.props.recipe.masterEmail ? this.setState({timeSetModal: value}) : null}>
+        <Body>
+          <Text>{value.start} - {value.end}</Text>
+        </Body>
+        {
+          this.props.member.email === this.props.recipe.masterEmail ?
+            <Right>
+              <Icon active name='add' style={{fontSize: 30, color: Colors.brandPrimary}} />
+            </Right> : null
+        }
+      </ListItem>
+      {
+        this.state.timeSetModal && this.state.timeSetModal === value ?
+        <ListItem ref="myRef" style={{backgroundColor: Colors.brandPrimary, marginLeft: 0}}>
+          <Body style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
+            <Text style={{paddingBottom: 5, color: 'white', alignSelf: 'center', fontSize: 20}}>{`${moment(this.props.date).format('LL')}:   ${value.start}`}</Text>
+            <Text style={{paddingBottom: 10, color: 'white', alignSelf: 'center', fontSize: 15}}>Set this as the meetup time?</Text>
+            <Body style={{paddingBottom: 5,width: '100%', height: '10%', display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+              <Button block style={{marginRight: 10,height: 35, width:90, backgroundColor: '#8ace88'}}
+              onPress={() => {
+                let recipeInfo = this.props.recipes.recipe;
+                FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).update({meetupTime: `${moment(this.props.date).format('LL')}:   ${value.start}`});
+                FirebaseRef.child('invitedAppointments').child(this.props.member.email.replace(/[.]/g, ',')).child(recipeInfo.id).update({meetupTime: `${moment(this.props.date).format('LL')}:   ${value.start}`});
+                this.setState({timeSetModal: null})
+              }}>
+              <Text style={{textAlign: 'center'}}>Yes</Text></Button>
+
+              <Button block style={{marginLeft: 10,height: 35, width:90,backgroundColor: '#eca386'}}
+              onPress={() => {this.setState({timeSetModal: null})}}>
+              <Text style={{ textAlign: 'center'}}>No</Text></Button>
+            </Body>
+          </Body>
+        </ListItem> : null
+      }
+    </View>
   )) : null
 
   render() {
-    const { recipes, member } = this.props;
+    const { member } = this.props;
 
     return (
         <View>
@@ -147,8 +179,8 @@ class CalculateDates extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  member: state.member || {},
   recipes: state.recipes || {},
+  member: state.member || {}
 });
 
 export default connect(mapStateToProps)(CalculateDates);

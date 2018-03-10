@@ -36,7 +36,6 @@ export function signUp(formData) {
             firstName,
             lastName,
           });
-          console.log(lowerCaseEmail);
           FirebaseRef.child(`users/${res.uid}`).set({
             firstName,
             lastName,

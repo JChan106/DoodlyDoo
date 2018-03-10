@@ -31,7 +31,6 @@ class RecipeActivityTracker extends React.Component {
     let tempHasInputted = false;
     let inputtedDates = FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('userDates').child(this.props.member.email.replace(/[.]/g, ','))
     inputtedDates.on('value', (snapshot) => {
-      console.log(snapshot.val());
       if (snapshot.val() && Object.keys(snapshot.val()).length > 1) {
          tempHasInputted = true;
          FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('invitedUsers').child(name).update({canAttend: true});
@@ -81,7 +80,6 @@ class RecipeActivityTracker extends React.Component {
     let uid = Firebase.auth().currentUser.uid;
     let email = this.props.member.email.replace(/[.]/g, ',')
     let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
-    console.log('hit');
     FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('invitedUsers').child(userName).update({canAttend: false});
     FirebaseRef.child('invitedAppointments').child(email).child(this.props.recipe.id).child('invitedUsers').child(userName).update({canAttend: false});
     this.setState({canAttend: false});
@@ -102,7 +100,7 @@ class RecipeActivityTracker extends React.Component {
     // Loading
     if (loading) return <Loading />;
 
-    console.log(this.state.hasInputted);
+    // console.log(recipe.invitedUsers);
 
     return (
       <View>

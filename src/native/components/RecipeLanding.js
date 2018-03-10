@@ -39,7 +39,7 @@ class RecipeLanding extends React.Component {
 
   // Build Method listing
    printDates = (object) => object ? Object.entries(object).map(([key, value]) => (
-      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }} onPress={() => Actions.DateInputs({date: key})}>
+      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }} onPress={() => Actions.DateInputs({date: key, recipe: this.props.recipe})}>
           <Body>
             {this.state.datesWithTimes.includes(key) ? <Text>{key}</Text> : <Text style={{color: '#a32323'}}>{key}</Text>}
           </Body>
@@ -52,7 +52,7 @@ class RecipeLanding extends React.Component {
   render() {
     const { loading, error, success, recipes, recipe } = this.props;
     // Loading
-    if (loading) return <Loading />;
+    if (loading) return <Loading />;    
 
     return (
       <View>
@@ -69,6 +69,13 @@ class RecipeLanding extends React.Component {
             <Body>
               <Text>{recipe.description}</Text>
             </Body>
+          </CardItem>
+        </Card>
+        <Card style={{width: '95%', alignSelf: 'center'}}>
+          <CardItem bordered>
+            <Icon active name="ios-time" style={{color: Colors.brandPrimary}}/>
+            <Text style={{fontWeight: '900'}}> When: </Text>
+            {recipe.meetupTime ? <Text>{recipe.meetupTime}</Text> : <Text>Undecided</Text>}
           </CardItem>
         </Card>
         <Card style={{width: '95%', alignSelf: 'center'}}>

@@ -32,7 +32,6 @@ class RequestItem extends Component {
   }
 
   componentDidMount() {
-    // console.log(this.props.Accepted);
     var that = this;
   }
 

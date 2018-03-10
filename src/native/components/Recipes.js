@@ -23,8 +23,6 @@ const RecipeListing = ({
   // Error
   if (error) return <Error content={error} />;
 
-  // console.log(setCurrentRecipe);
-
   const keyExtractor = item => item.id;
 
   const onPress = item => {

@@ -33,7 +33,7 @@ class TimeInput extends React.Component {
       start: null,
       end: null,
       selectedTimesObject: {},
-      recipe: null,
+      recipe: {},
       userDates: null,
       showMessage: false,
     };
@@ -53,7 +53,7 @@ class TimeInput extends React.Component {
     let recipeInfo = this.props.recipes.recipe;
     let emailKey = this.props.member.email.replace(/[.]/g, ',');
     FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).once('value', (snapshot) => {
-      this.setState({recipe: snapshot.val(), selectedTimesObject: snapshot.val().userDates && snapshot.val().userDates[emailKey] ? snapshot.val().userDates[emailKey] : {} });
+      this.setState({recipe: snapshot.val() ? snapshot.val() : {}, selectedTimesObject: snapshot.val().userDates && snapshot.val().userDates[emailKey] ? snapshot.val().userDates[emailKey] : {} });
     });
   };
 
@@ -95,16 +95,16 @@ class TimeInput extends React.Component {
     let name = `${this.props.member.firstName} ${this.props.member.lastName}`;
     tempObject[emailKey] = {name: name, ...tempUserDates};
     FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').update(tempObject);
-    this.props.getRecipes(this.props.member.uid);
     this.setInputted();
   }
 
   setInputted = () => {
     let tempArray = Object.values(this.state.selectedTimesObject);
+    console.log(tempArray);
     tempArray = tempArray.filter((value) => {
-      return value.length !== 0;
+      return value.length !== 0 && Array.isArray(value);
     });
-    if (tempArray.length <= 1) {
+    if (tempArray.length <= 0) {
         let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
         let recipeInfo = this.props.recipes.recipe;
         FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: false});
@@ -113,6 +113,8 @@ class TimeInput extends React.Component {
         let recipeInfo = this.props.recipes.recipe;
         FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: true});
       }
+    this.props.getRecipes(this.props.member.uid);
+
   }
 
   deleteTime = (day, times) => {
@@ -247,7 +249,7 @@ class TimeInput extends React.Component {
             markedDates={this.state.recipe.dates}
 
             onDayPress={(day) => {
-              if (this.state.recipe.dates[day.dateString]) {
+              if (this.state.recipe.dates && this.state.recipe.dates[day.dateString]) {
                 this.toggleModal();
                 this.selectDate(day);
               }
