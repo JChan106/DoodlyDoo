@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import { getRecipes, getMeals, setError, setCurrentRecipe } from '../actions/recipes';
 import { logout, getMemberData } from '../actions/member';
+import { Firebase, FirebaseRef } from '../lib/firebase';
 
 
 class RecipeListing extends Component {
@@ -26,7 +27,11 @@ class RecipeListing extends Component {
     match: null,
   }
 
-  componentDidMount = () => this.fetchRecipes();
+  componentDidMount = () => {
+    Firebase.auth().onAuthStateChanged((loggedIn) => {
+      this.fetchRecipes()
+    });
+  };
 
   /**
     * Fetch Data from API, saving to Redux
