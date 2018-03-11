@@ -58,11 +58,19 @@ const Index = (
       >
         <Stack
           key="home"
-          title={AppConfig.appName.toUpperCase()}
+          title="Home"
           icon={() => <Icon name="home" {...DefaultProps.icons} />}
           {...DefaultProps.navbarProps}
         >
           <Scene key="home" Layout={AboutComponent} component={AboutContainer} />
+          <Scene
+            back
+            key="manageContactsFromLanding"
+            title="CONTACTS"
+            right={() => <Icon style={{paddingRight: 15}} onPress={Actions.addContact} name='add' />}
+            {...DefaultProps.navbarProps}
+            component={ManageContacts}
+          />
         </Stack>
 
         <Stack

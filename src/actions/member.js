@@ -98,6 +98,30 @@ export function getMemberData() {
   });
 }
 
+export function getFriendRequests() {
+  return dispatch => new Promise((resolve) => {
+    var that = this;
+    Firebase.auth().onAuthStateChanged((loggedIn) => {
+      if (loggedIn) {
+        FirebaseRef.child("friends").child(loggedIn.email.replace(/[.]/g, ',')).on("value",function(snapshot){
+          var requests = {};
+          if (snapshot.val() !== undefined) {
+            Object.entries(snapshot.val()).map(([key, value]) => {
+              if (!value.hasAccepted) {
+                requests[key] = value;
+              }
+            })
+          }
+          return resolve(dispatch({
+            type: 'FRIEND_REQUESTS_UPDATE',
+            data: requests,
+          }));
+        });
+      }
+    });
+  });
+}
+
 /**
   * Login to Firebase with Email/Password
   */

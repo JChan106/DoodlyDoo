@@ -87,6 +87,7 @@ class ManageContacts extends React.Component {
         request={request}
         />)
     });
+
     if (loading) return <Loading />;
     return (
       <ScrollView>

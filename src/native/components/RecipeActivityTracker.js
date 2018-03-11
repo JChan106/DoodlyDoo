@@ -100,8 +100,6 @@ class RecipeActivityTracker extends React.Component {
     // Loading
     if (loading) return <Loading />;
 
-    // console.log(recipe.invitedUsers);
-
     return (
       <View>
       <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 15}}>

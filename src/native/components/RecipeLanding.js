@@ -52,7 +52,7 @@ class RecipeLanding extends React.Component {
   render() {
     const { loading, error, success, recipes, recipe } = this.props;
     // Loading
-    if (loading) return <Loading />;    
+    if (loading) return <Loading />;
 
     return (
       <View>
@@ -75,7 +75,7 @@ class RecipeLanding extends React.Component {
           <CardItem bordered>
             <Icon active name="ios-time" style={{color: Colors.brandPrimary}}/>
             <Text style={{fontWeight: '900'}}> When: </Text>
-            {recipe.meetupTime ? <Text>{recipe.meetupTime}</Text> : <Text>Undecided</Text>}
+            {recipe.meetupTime && recipe.meetupDate ? <Text>{recipe.meetupDate}:   {recipe.meetupTime}</Text> : <Text>Undecided</Text>}
           </CardItem>
         </Card>
         <Card style={{width: '95%', alignSelf: 'center'}}>

@@ -100,7 +100,6 @@ class TimeInput extends React.Component {
 
   setInputted = () => {
     let tempArray = Object.values(this.state.selectedTimesObject);
-    console.log(tempArray);
     tempArray = tempArray.filter((value) => {
       return value.length !== 0 && Array.isArray(value);
     });

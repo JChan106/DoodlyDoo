@@ -49,6 +49,7 @@ export default function recipeReducer(state = initialState, action) {
             invitedUsers: item.invitedUsers,
             masteruid: item.masteruid,
             meetupTime: item.meetupTime,
+            meetupDate: item.meetupDate,
           }
       }});
       }
