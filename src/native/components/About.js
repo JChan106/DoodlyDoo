@@ -42,7 +42,7 @@ const printUpcomingAppointments = (appointments, member) =>
     </ListItem>
   );
 
-const printNewAppointments = (appointments, member) =>
+const printNewAppointments = (appointments, member, setCurrentRecipe) =>
   appointments.map((value) =>
     <ListItem onPress={() => {
       setCurrentRecipe({id: value.id, masteruid: value.masteruid});
@@ -70,7 +70,7 @@ const About = ({member, recipes, newRecipes, setCurrentRecipe}) => (
             </CardItem>
             <CardItem style={{backgroundColor: 'ghostwhite'}}>
               <List>
-                  {printNewAppointments(newRecipes, member)}
+                  {printNewAppointments(newRecipes, member, setCurrentRecipe)}
                   {printUpcomingAppointments(recipes, member)}
                   {printUnreadMessages(member, setCurrentRecipe)}
                   {Array.isArray(recipes) && recipes.length <= 0 && Array.isArray(newRecipes) && newRecipes.length <= 0 && member && member.unreadMessages && Object.keys(member.unreadMessages).length <= 0 ?
