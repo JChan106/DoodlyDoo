@@ -160,6 +160,7 @@ class AddAppointment3 extends React.Component {
           let invUser = value.email.replace(/[.]/g, ',');
           const firebaseInvited = FirebaseRef.child("invitedAppointments").child(invUser).child(id);
           let fbRequestInvite = FirebaseRef.child("requestInvite").child(id).child(invUser);
+          invited[masterName] = {email: masterEmail, inputted: false, canAttend: true};
           firebaseInvited.set({
             appointmentName: appt,
             description: des,
@@ -177,7 +178,6 @@ class AddAppointment3 extends React.Component {
             ownerAccepted: true
           });
         });
-        invited[masterName] = {email: masterEmail, inputted: false, canAttend: true};
         appointments.set({
           appointmentName: appt,
           description: des,
