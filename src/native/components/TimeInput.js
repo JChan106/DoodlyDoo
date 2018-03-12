@@ -52,11 +52,13 @@ class TimeInput extends React.Component {
   componentWillMount = () => {
     let recipeInfo = this.props.recipes.recipe;
     let emailKey = this.props.member.email.replace(/[.]/g, ',');
-    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).once('value', (snapshot) => {
-      if (snapshot.val()) {
-        this.setState({recipe: snapshot.val() ? snapshot.val() : {}, selectedTimesObject: snapshot.val().userDates && snapshot.val().userDates[emailKey] ? snapshot.val().userDates[emailKey] : {} });
-      }
-    });
+    if (recipeInfo) {
+      FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).once('value', (snapshot) => {
+        if (snapshot.val()) {
+          this.setState({recipe: snapshot.val() ? snapshot.val() : {}, selectedTimesObject: snapshot.val().userDates && snapshot.val().userDates[emailKey] ? snapshot.val().userDates[emailKey] : {} });
+        }
+      });
+    }
   };
 
   showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
