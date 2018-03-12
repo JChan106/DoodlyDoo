@@ -15,15 +15,23 @@ let temp = "'s Dashboard";
 const printFriendRequestMessages = (friendRequests) =>
   friendRequests ? Object.entries(friendRequests).map(([key, value]) =>
     <ListItem onPress={Actions.manageContactsFromLanding} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
-      <Icon active name="ios-person-add" style={{color: '#a32323', paddingRight: 15}}/>
+      <Icon active name="ios-person-add" style={{color: Colors.brandPrimary, paddingRight: 15}}/>
       <Text style={{color: Colors.brandPrimary}}> New friend request from {value.firstName} {value.lastName} </Text>
     </ListItem>
   ) : null
 
+  const printUnreadMessages = (member) =>
+    member && member.unreadMessages ? Object.entries(member.unreadMessages).map(([key, value]) =>
+      <ListItem onPress={() => Actions.recipe({ match: { params: { id: String(value.id), member: member } } })} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
+        <Icon active name="ios-chatbubbles" style={{color: Colors.brandPrimary, paddingRight: 15}}/>
+        <Text style={{color: Colors.brandPrimary}}> New Messages in {key} </Text>
+      </ListItem>
+    ) : null
+
 const printUpcomingAppointments = (appointments, member) =>
   appointments.map((value) =>
     <ListItem onPress={() => Actions.recipe({ match: { params: { id: String(value.id), member: member } } })} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
-      <Icon active name="ios-flag" style={{color: '#a32323', paddingRight: 15}}/>
+      <Icon active name="md-calendar" style={{color: Colors.brandPrimary, paddingRight: 15}}/>
       <View horizontal={true} style={{flexDirection: 'column'}}>
         <Text style={{fontWeight: '500'}}> Today: <Text style={{fontWeight: '800', color: Colors.brandPrimary}}> {value.appointmentName} </Text> </Text>
         <Text style={{fontWeight: '300'}}> {value.meetupDate}:  {value.meetupTime} </Text>
@@ -31,7 +39,18 @@ const printUpcomingAppointments = (appointments, member) =>
     </ListItem>
   );
 
-const About = ({member, recipes}) => (
+const printNewAppointments = (appointments, member) =>
+  appointments.map((value) =>
+    <ListItem onPress={() => Actions.recipe({ match: { params: { id: String(value.id), member: member } } })} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
+      <Icon active name="md-clock" style={{color: Colors.brandPrimary, paddingRight: 15}}/>
+      <View horizontal={true} style={{flexDirection: 'column'}}>
+        <Text style={{fontWeight: '500'}}> New Appointment: <Text style={{fontWeight: '800', color: Colors.brandPrimary}}> {value.appointmentName} </Text> </Text>
+        <Text style={{fontWeight: '300'}}> Created by {value.masterName} </Text>
+      </View>
+    </ListItem>
+  );
+
+const About = ({member, recipes, newRecipes}) => (
     <Container>
       {(member && member.email) ?
         <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
@@ -45,7 +64,12 @@ const About = ({member, recipes}) => (
             </CardItem>
             <CardItem style={{backgroundColor: 'ghostwhite'}}>
               <List>
-                {printUpcomingAppointments(recipes, member)}
+                  {printNewAppointments(newRecipes, member)}
+                  {printUpcomingAppointments(recipes, member)}
+                  {printUnreadMessages(member)}
+                  {Array.isArray(recipes) && recipes.length <= 0 && Array.isArray(newRecipes) && newRecipes.length <= 0 ?
+                    <Text> You are all up to date </Text> : null}
+
               </List>
             </CardItem>
           </Card>
@@ -58,6 +82,7 @@ const About = ({member, recipes}) => (
             <CardItem style={{backgroundColor: 'ghostwhite'}}>
               <List>
                 {printFriendRequestMessages(member.friendRequests)}
+                {member && member.friendRequests && Object.keys(member.friendRequests).length <= 0 ? <Text> No recent activities </Text> : null}
               </List>
             </CardItem>
           </Card>

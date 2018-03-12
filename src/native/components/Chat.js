@@ -23,6 +23,7 @@ class Chat extends React.Component {
       showName: false,
       user: {},
       masterEmail: null,
+      invitedUsers: null,
     };
     this.toggleModal = this.toggleModal.bind(this);
   }
@@ -34,19 +35,40 @@ class Chat extends React.Component {
   componentDidMount() {
     that = this;
     let recipeInfo = this.props.recipes.recipe;
+    let name = `${this.props.member.firstName} ${this.props.member.lastName}`;
+    let emailKey = null;
     FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).once('value', (snapshot) => {
-      let emailKey = snapshot.val().masterEmail.replace(/[.]/g, ',');
-      let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id);
+      emailKey = snapshot.val().masterEmail.replace(/[.]/g, ',');
+      let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id).child('messages');
       appointmentMessages ? appointmentMessages.on('value', (appointmentSnap) => {
-        that.setState({messages: appointmentSnap.val(), masterEmail: snapshot.val().masterEmail});
+        let tempMessages = appointmentSnap.val();
+        that.setState({messages: tempMessages, masterEmail: snapshot.val().masterEmail});
       }) : null
     });
+    let tempObject = {};
+    tempObject[name] = true;
+    FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id).child('usersRead').update(tempObject);
+    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').once('value', (snapshot) => {
+      let invitedUsers = snapshot.val();
+      that.setState({invitedUsers: invitedUsers});
+    })
   }
 
   onSend(messages = []) {
     let recipeInfo = this.props.recipes.recipe;
     let emailKey = this.state.masterEmail.replace(/[.]/g, ',');
-    let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id);
+    let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id).child('messages');
+    let appointmentRead = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id).child('usersRead');
+    let name = `${this.props.member.firstName} ${this.props.member.lastName}`;
+
+    if (this.state.invitedUsers) {
+      let recipeInfo = this.props.recipes.recipe;
+      let tempUsersRead = {};
+      Object.keys(this.state.invitedUsers).map((key) => {
+        name !== key ? tempUsersRead[key] = false : tempUsersRead[key] = true;
+      });
+      appointmentRead.set(tempUsersRead);
+    }
     if (appointmentMessages) {
       appointmentMessages.set(messages.concat(this.state.messages));
     }

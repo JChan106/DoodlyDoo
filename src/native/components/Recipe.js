@@ -48,6 +48,8 @@ const RecipeView = ({
     });
   }
 
+  currentEmail ? FirebaseRef.child('invitedAppointments').child(currentEmail.replace(/[.]/g, ',')).child(recipe.id).update({read: true}) : null
+
   return (
     <Swiper removeClippedSubviews={false} >
           <ScrollView style={{backgroundColor: 'white'}}>
