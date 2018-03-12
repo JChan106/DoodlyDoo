@@ -81,6 +81,7 @@ class RecipeActivityTracker extends React.Component {
     let email = this.props.member.email.replace(/[.]/g, ',')
     let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
     FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('invitedUsers').child(userName).update({canAttend: false});
+    FirebaseRef.child('invitedAppointments').child(email).child(this.props.recipe.id).child('invitedUsers').child(userName).update({canAttend: false});
     this.setState({canAttend: false});
   }
 
@@ -90,6 +91,7 @@ class RecipeActivityTracker extends React.Component {
     let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
 
     FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('invitedUsers').child(userName).update({canAttend: true});
+    FirebaseRef.child('invitedAppointments').child(email).child(this.props.recipe.id).child('invitedUsers').child(userName).update({canAttend: true});
     this.setState({canAttend: true});
   }
 
