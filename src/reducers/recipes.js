@@ -53,7 +53,6 @@ export default function recipeReducer(state = initialState, action) {
           }
       }});
       }
-
       return {
         ...state,
         error: null,

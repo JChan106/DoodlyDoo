@@ -48,7 +48,11 @@ const RecipeView = ({
     });
   }
 
-  currentEmail ? FirebaseRef.child('invitedAppointments').child(currentEmail.replace(/[.]/g, ',')).child(recipe.id).update({read: true}) : null
+  FirebaseRef.child('invitedAppointments').child(currentEmail.replace(/[.]/g, ',')).child(recipe.id).once('value', (snapshot) => {
+    if (snapshot.val()) {
+      currentEmail ? FirebaseRef.child('invitedAppointments').child(currentEmail.replace(/[.]/g, ',')).child(recipe.id).update({read: true}) : null
+    }
+  })
 
   return (
     <Swiper removeClippedSubviews={false} >
