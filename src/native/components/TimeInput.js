@@ -110,13 +110,13 @@ class TimeInput extends React.Component {
         let email = this.props.member.email.replace(/[.]/g, ',');
         let recipeInfo = this.props.recipes.recipe;
         FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: false});
-        FirebaseRef.child('invitedAppointments').child(email).child(recipeInfo.id).child('invitedUsers').child(userName).update({canAttend: false});
+        FirebaseRef.child('invitedAppointments').child(email).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: false});
       } else {
         let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
         let recipeInfo = this.props.recipes.recipe;
         let email = this.props.member.email.replace(/[.]/g, ',');
         FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: true});
-        FirebaseRef.child('invitedAppointments').child(email).child(recipeInfo.id).child('invitedUsers').child(userName).update({canAttend: true});
+        FirebaseRef.child('invitedAppointments').child(email).child(recipeInfo.id).child('invitedUsers').child(userName).update({inputted: true});
       }
     this.props.getRecipes(this.props.member.uid);
 
