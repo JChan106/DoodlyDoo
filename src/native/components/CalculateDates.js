@@ -146,7 +146,7 @@ class CalculateDates extends React.Component {
               onPress={() => {
                 let recipeInfo = this.props.recipes.recipe;
                 FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).update({meetupDate: `${moment(this.props.date).format('LL')}`, meetupTime: `${value.start}`});
-                FirebaseRef.child('invitedAppointments').child(recipeInfo.id).update({meetupDate: `${moment(this.props.date).format('LL')}`, meetupTime: `${value.start}`});
+                // FirebaseRef.child('invitedAppointments').child(recipeInfo.id).update({meetupDate: `${moment(this.props.date).format('LL')}`, meetupTime: `${value.start}`});
                 this.setState({timeSetModal: null})
               }}>
               <Text style={{textAlign: 'center'}}>Yes</Text></Button>
