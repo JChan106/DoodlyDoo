@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, TouchableOpacity, RefreshControl, Image } from 'react-native';
-import { Container, Content, Card, CardItem, Body, Text, Button, H3 } from 'native-base';
+import { View, FlatList, TouchableOpacity, RefreshControl, Image, ScrollView } from 'react-native';
+import { Container, Content, Card, CardItem, Body, Text, Button, H3} from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { logout, getMemberData } from '../../actions/member';
 import Loading from './Loading';
@@ -35,14 +35,14 @@ const RecipeListing = ({
   return (
     <Container>
       {(member && member.email) ?
-      <Content>
-          <Spacer size={15} />
-            <Button bordered
-                    style={{width: '95%', alignSelf: 'center', shadowColor: '#608296'}}
-                    onPress={Actions.addAppointment1}>
-              <Text style={{width: '100%', textAlign: 'center'}}>Create Appointment</Text>
-            </Button>
-          <Spacer size={15} />
+      <View style={{marginBottom: 30}}>
+        <Button bordered
+                style={{width: '95%', alignSelf: 'center', shadowColor: '#608296'}}
+                onPress={Actions.addAppointment1}>
+          <Text style={{width: '100%', textAlign: 'center'}}>Create Appointment</Text>
+        </Button>
+        <ScrollView>
+          <Spacer size={10} />
           <FlatList
             numColumns={1}
             data={recipes}
@@ -73,7 +73,8 @@ const RecipeListing = ({
             }
           />
           <Spacer size={20} />
-      </Content>
+        </ScrollView>
+      </View>
       :
       <View style={{justifyContent: 'center', alignSelf: 'center', flex: 1}}>
         <Button bordered style={{shadowColor: '#608296', alignSelf: 'center', marginBottom: 20}} onPress={Actions.loginFromLanding}>

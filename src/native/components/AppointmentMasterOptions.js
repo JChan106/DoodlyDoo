@@ -37,6 +37,7 @@ class AppointmentMasterOptions extends React.Component {
         var invited = [];
         that.setState({
           requests: [],
+          invited: []
         })
         snapshot.forEach(function(snapshot) {
           if (!snapshot.val().ownerAccepted) {
@@ -96,7 +97,7 @@ class AppointmentMasterOptions extends React.Component {
     });
     return (
       <View style={{height: '100%', backgroundColor: 'white', alignItems: 'center', paddingTop: 15, paddingBottom: 50}}>
-        <View style={{width: '90%', height: '65%'}}>
+        <View style={{width: '90%', height: '75%'}}>
           <H3 style={{alignSelf: 'center', paddingBottom: 15}}>Requests</H3>
           <View style={{height: 1, backgroundColor: "lightgrey"}}></View>
           <ScrollView style={{alignSelf: 'center', width: '100%',}}>
@@ -105,14 +106,15 @@ class AppointmentMasterOptions extends React.Component {
           </ScrollView>
         </View>
         <View>
-          <H3 style={{alignSelf: 'center', paddingTop: 10}}>Options</H3>
-          <View style={{paddingTop: 15, paddingBottom: 10}}>
-            <Button bordered style={{width: '90%', alignSelf: 'center', shadowColor: Colors.brandPrimary}} onPress={this.editAppointment}>
+          <View>
+            <View style={{height: 1, backgroundColor: "lightgrey"}}></View>
+            <H3 style={{alignSelf: 'center', paddingTop: 10}}>Options</H3>
+          </View>
+          <View style={{paddingTop: 15, paddingBottom: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Button bordered style={{width: '45%', alignSelf: 'center', shadowColor: Colors.brandPrimary}} onPress={this.editAppointment}>
               <Text style={{textAlign: 'center', width: '100%'}}>Edit</Text>
             </Button>
-          </View>
-          <View style={{ paddingTop: 10}}>
-            <Button bordered style={{width: '90%', alignSelf: 'center', borderColor: '#a32323'}} onPress={this.deleteAppointment}>
+            <Button bordered style={{width: '45%', alignSelf: 'center', borderColor: '#a32323'}} onPress={this.deleteAppointment}>
               <Text style={{textAlign: 'center', width: '100%', color: '#a32323'}}>Delete</Text>
             </Button>
           </View>
