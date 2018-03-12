@@ -6,6 +6,8 @@ import { View, Text, Image } from 'react-native';
 import moment from 'moment';
 import { Firebase, FirebaseRef } from '../lib/firebase';
 import { logout, getMemberData, getFriendRequests, getMessages } from '../actions/member';
+import { getRecipes, setCurrentRecipe } from '../actions/recipes';
+
 
 
 function cacheImages(images) {
@@ -25,6 +27,7 @@ class About extends Component {
     getMemberData: PropTypes.func.isRequired,
     getFriendRequests: PropTypes.func.isRequired,
     getMessages: PropTypes.func.isRequired,
+    getRecipes: PropTypes.func.isRequired,
     member: PropTypes.shape({
       loading: PropTypes.bool.isRequired,
       error: PropTypes.string,
@@ -37,26 +40,47 @@ class About extends Component {
       isReady: false,
       newInvitedAppointments: new Array(),
     };
+    this.loadData = this.loadData.bind(this);
+    this.finishLoadData = this.finishLoadData.bind(this);
   }
 
-  componentDidMount = () => {
-    this.props.getMemberData();
-    this.props.getFriendRequests();
+  componentWillMount = () => {
     Firebase.auth().onAuthStateChanged((loggedIn) => {
-      loggedIn ? FirebaseRef.child('invitedAppointments').child(loggedIn.email.replace(/[.]/g, ',')).on('value', (snapshot) => {
-        tempArray = new Array();
-        if (snapshot.val()) {
-          Object.entries(snapshot.val()).map(([key, value]) => {
-            if (!value['read']) {
-              tempArray.push(value);
-            }
-          });
-        }
-        this.setState({newInvitedAppointments: tempArray});
-      }) : null
+      this.loadData();
+      setTimeout(() => {
+        this.finishLoadData();
+      }, 500);
     });
-    let name = `${this.props.member.firstName} ${this.props.member.lastName}`;
-    this.props.getMessages(this.props.recipes.recipes, name);
+  }
+
+  loadData = () => {
+    var promise = new Promise((resolve, reject) => {
+      this.props.getMemberData();
+      this.props.getFriendRequests();
+      this.props.getRecipes();
+      resolve();
+    });
+
+    return promise;
+  }
+
+  finishLoadData = () => {
+      if (this.props.member.email) {
+        FirebaseRef.child('invitedAppointments').child(this.props.member.email.replace(/[.]/g, ',')).on('value', (snapshot) => {
+          tempArray = new Array();
+          if (snapshot.val()) {
+            Object.entries(snapshot.val()).map(([key, value]) => {
+              if (!value['read']) {
+                tempArray.push(value);
+              }
+            });
+          }
+          console.log(tempArray);
+          this.setState({newInvitedAppointments: tempArray});
+        });
+        let name = `${this.props.member.firstName} ${this.props.member.lastName}`;
+        this.props.getMessages(this.props.recipes.recipes, name);
+      }
   };
 
   async _loadAssetsAsync() {
@@ -90,7 +114,7 @@ class About extends Component {
         />
       );
     } else {
-      return <Layout member={member} logout={memberLogout} recipes={tempArray} newRecipes={this.state.newInvitedAppointments}/>;
+      return <Layout member={member} logout={memberLogout} recipes={tempArray} newRecipes={this.state.newInvitedAppointments} setCurrentRecipe={this.props.setCurrentRecipe}/>;
     }
   }
 }
@@ -105,6 +129,8 @@ const mapDispatchToProps = {
   getMemberData,
   getFriendRequests,
   getMessages,
+  setCurrentRecipe,
+  getRecipes,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(About);

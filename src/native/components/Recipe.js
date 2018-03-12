@@ -33,7 +33,7 @@ const RecipeView = ({
 
   Firebase.auth().onAuthStateChanged((loggedIn) => {
     if (loggedIn) {
-      member.uid !== loggedIn.uid ? Actions.pop() : null
+      member.uid !== loggedIn.uid ? null : null
     }
   });
 

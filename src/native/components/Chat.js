@@ -38,20 +38,23 @@ class Chat extends React.Component {
     let name = `${this.props.member.firstName} ${this.props.member.lastName}`;
     let emailKey = null;
     FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).once('value', (snapshot) => {
-      emailKey = snapshot.val().masterEmail.replace(/[.]/g, ',');
-      let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id).child('messages');
-      appointmentMessages ? appointmentMessages.on('value', (appointmentSnap) => {
-        let tempMessages = appointmentSnap.val();
-        that.setState({messages: tempMessages, masterEmail: snapshot.val().masterEmail});
-      }) : null
+      if (snapshot.val()) {
+        emailKey = snapshot.val().masterEmail.replace(/[.]/g, ',');
+        let appointmentMessages = FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id).child('messages');
+        appointmentMessages ? appointmentMessages.on('value', (appointmentSnap) => {
+          let tempMessages = appointmentSnap.val();
+          that.setState({messages: tempMessages, masterEmail: snapshot.val().masterEmail});
+        }) : null
+      }
+    }).then(() => {
+      let tempObject = {};
+      tempObject[name] = true;
+      emailKey ? FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id).child('usersRead').update(tempObject) : null;
+      FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').once('value', (snapshot) => {
+        let invitedUsers = snapshot.val();
+        that.setState({invitedUsers: invitedUsers});
+      })
     });
-    let tempObject = {};
-    tempObject[name] = true;
-    FirebaseRef.child('messages').child(emailKey).child(recipeInfo.id).child('usersRead').update(tempObject);
-    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('invitedUsers').once('value', (snapshot) => {
-      let invitedUsers = snapshot.val();
-      that.setState({invitedUsers: invitedUsers});
-    })
   }
 
   onSend(messages = []) {

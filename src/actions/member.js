@@ -75,7 +75,6 @@ function getUserData(dispatch) {
 
   return ref.on('value', (snapshot) => {
     const userData = snapshot.val() || [];
-
     return dispatch({
       type: 'USER_DETAILS_UPDATE',
       data: userData,
@@ -134,12 +133,12 @@ export function getMessages(recipes, userName) {
             if (snapshot.val()) {
               snapshot.val()[userName] === null || snapshot.val()[userName] === false ? tempUnreadMessages[recipe.appointmentName] = recipe : null;
             }
+            return resolve(dispatch({
+              type: 'UNREAD_MESSAGES',
+              data: tempUnreadMessages,
+            }));
           });
         }) : null
-        return resolve(dispatch({
-          type: 'UNREAD_MESSAGES',
-          data: tempUnreadMessages,
-        }));
       }
     });
   });

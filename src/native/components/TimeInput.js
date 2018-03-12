@@ -53,7 +53,9 @@ class TimeInput extends React.Component {
     let recipeInfo = this.props.recipes.recipe;
     let emailKey = this.props.member.email.replace(/[.]/g, ',');
     FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).once('value', (snapshot) => {
-      this.setState({recipe: snapshot.val() ? snapshot.val() : {}, selectedTimesObject: snapshot.val().userDates && snapshot.val().userDates[emailKey] ? snapshot.val().userDates[emailKey] : {} });
+      if (snapshot.val()) {
+        this.setState({recipe: snapshot.val() ? snapshot.val() : {}, selectedTimesObject: snapshot.val().userDates && snapshot.val().userDates[emailKey] ? snapshot.val().userDates[emailKey] : {} });
+      }
     });
   };
 

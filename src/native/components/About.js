@@ -20,9 +20,12 @@ const printFriendRequestMessages = (friendRequests) =>
     </ListItem>
   ) : null
 
-  const printUnreadMessages = (member) =>
+  const printUnreadMessages = (member, setCurrentRecipe) =>
     member && member.unreadMessages ? Object.entries(member.unreadMessages).map(([key, value]) =>
-      <ListItem onPress={() => Actions.recipe({ match: { params: { id: String(value.id), member: member } } })} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
+      <ListItem onPress={() => {
+        setCurrentRecipe({id: value.id, masteruid: value.masteruid});
+        Actions.recipe({ match: { params: { id: String(value.id), member: member } } });
+      }} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
         <Icon active name="ios-chatbubbles" style={{color: Colors.brandPrimary, paddingRight: 15}}/>
         <Text style={{color: Colors.brandPrimary}}> New Messages in {key} </Text>
       </ListItem>
@@ -50,7 +53,7 @@ const printNewAppointments = (appointments, member) =>
     </ListItem>
   );
 
-const About = ({member, recipes, newRecipes}) => (
+const About = ({member, recipes, newRecipes, setCurrentRecipe}) => (
     <Container>
       {(member && member.email) ?
         <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
@@ -66,8 +69,8 @@ const About = ({member, recipes, newRecipes}) => (
               <List>
                   {printNewAppointments(newRecipes, member)}
                   {printUpcomingAppointments(recipes, member)}
-                  {printUnreadMessages(member)}
-                  {Array.isArray(recipes) && recipes.length <= 0 && Array.isArray(newRecipes) && newRecipes.length <= 0 ?
+                  {printUnreadMessages(member, setCurrentRecipe)}
+                  {Array.isArray(recipes) && recipes.length <= 0 && Array.isArray(newRecipes) && newRecipes.length <= 0 && member && member.unreadMessages && Object.keys(member.unreadMessages).length <= 0 ?
                     <Text> You are all up to date </Text> : null}
 
               </List>
