@@ -11,6 +11,7 @@ import Swiper from 'react-native-swiper'
 import Chat from './Chat';
 import RecipeActivityTracker from './RecipeActivityTracker';
 import AppointmentMasterOptions from './AppointmentMasterOptions';
+import AppointmentInvitedOptions from './AppointmentInvitedOptions';
 import RecipeLanding from './RecipeLanding';
 import TimeInput from './TimeInput';
 import { Firebase, FirebaseRef } from '../../lib/firebase';
@@ -59,9 +60,7 @@ const RecipeView = ({
             currentEmail === recipe.masterEmail ?
             <AppointmentMasterOptions recipe={recipe} />
             :
-            <ScrollView contentContainerStyle={30} keyboardShouldPersistTaps='always' style={{flex:1, backgroundColor: 'white'}} >
-              <Text> Temp Screen </Text>
-            </ScrollView>
+            <AppointmentInvitedOptions key="lol" recipe={recipe} />
           }
 
 

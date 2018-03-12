@@ -74,6 +74,7 @@ class AddContact extends React.Component {
                       lastName: userLast,
                       email: user.email,
                       hasAccepted: false,
+                      bothAccepted: false,
                     });
                   });
                   theirInfo.once('value', function(theirData){
@@ -85,6 +86,7 @@ class AddContact extends React.Component {
                       lastName: theirLast,
                       email: that.state.email,
                       hasAccepted: true,
+                      bothAccepted: false,
                     });
                   });
                   FirebaseRef.child("friends").child(that.emailToKey(user.email)).child(that.emailToKey(that.state.email)).once("value").then(function(s2){

@@ -67,21 +67,28 @@ class AddAppointment3 extends React.Component {
     if (user) {
       var getuserdata = FirebaseRef.child('users/' + user.uid);
       getuserdata.once('value',function(snapshot){
-
+        let fbRequestInvite = null;
         let editInvited = null;
         invitedUsers ?
           Object.entries(invitedUsers).map(([key, value]) => {
             let email = value.email.replace(/[.]/g, ',');
             if (!(Object.values(invited).indexOf(value.email) > -1)) {
               FirebaseRef.child('invitedAppointments').child(email).child(id).remove();
+              FirebaseRef.child("requestInvite").child(id).child(email).remove();
             } else {
               editInvited = FirebaseRef.child('invitedAppointments').child(email).child(id);
+              fbRequestInvite = FirebaseRef.child("requestInvite").child(id).child(email);
               editInvited.update({
                 appointmentName: appt,
                 description: des,
                 location: loc,
                 dates: dates,
                 invitedUsers: invited,
+              });
+              fbRequestInvite.set({
+                email: email,
+                invitedBy: masterEmail,
+                ownerAccepted: true
               });
             }
           }) : null
@@ -91,6 +98,7 @@ class AddAppointment3 extends React.Component {
             let email = value.email.replace(/[.]/g, ',');
             if (!invitedUsers || !(Object.values(invitedUsers).indexOf(value.email) > -1)) {
               let newInvite = FirebaseRef.child('invitedAppointments').child(email).child(id);
+              let fbRequestInvite = FirebaseRef.child("requestInvite").child(id).child(email);
               newInvite.set({
                 appointmentName: appt,
                 description: des,
@@ -101,6 +109,11 @@ class AddAppointment3 extends React.Component {
                 id: id,
                 invitedUsers: invited,
                 masteruid: masteruid,
+              });
+              fbRequestInvite.set({
+                email: value.email,
+                invitedBy: masterEmail,
+                ownerAccepted: true
               });
             }
           }) : null
@@ -145,6 +158,7 @@ class AddAppointment3 extends React.Component {
         Object.entries(invited).map(([key, value]) => {
           let invUser = value.email.replace(/[.]/g, ',');
           const firebaseInvited = FirebaseRef.child("invitedAppointments").child(invUser).child(id);
+          let fbRequestInvite = FirebaseRef.child("requestInvite").child(id).child(invUser);
           firebaseInvited.set({
             appointmentName: appt,
             description: des,
@@ -155,7 +169,12 @@ class AddAppointment3 extends React.Component {
             id: id,
             invitedUsers: invited,
             masteruid: user.uid
-          })
+          });
+          fbRequestInvite.set({
+            email: value.email,
+            invitedBy: masterEmail,
+            ownerAccepted: true
+          });
         });
         invited[masterName] = {email: masterEmail, inputted: false, canAttend: true};
         appointments.set({
