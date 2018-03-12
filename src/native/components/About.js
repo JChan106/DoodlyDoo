@@ -44,7 +44,10 @@ const printUpcomingAppointments = (appointments, member) =>
 
 const printNewAppointments = (appointments, member) =>
   appointments.map((value) =>
-    <ListItem onPress={() => Actions.recipe({ match: { params: { id: String(value.id), member: member } } })} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
+    <ListItem onPress={() => {
+      setCurrentRecipe({id: value.id, masteruid: value.masteruid});
+      Actions.recipe({ match: { params: { id: String(value.id), member: member } } })
+    }} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
       <Icon active name="md-clock" style={{color: Colors.brandPrimary, paddingRight: 15}}/>
       <View horizontal={true} style={{flexDirection: 'column'}}>
         <Text style={{fontWeight: '500'}}> New Appointment: <Text style={{fontWeight: '800', color: Colors.brandPrimary}}> {value.appointmentName} </Text> </Text>
