@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { AppLoading, Asset } from 'expo';
 import { View, Text, Image } from 'react-native';
 import moment from 'moment';
-import { logout, getMemberData, getFriendRequests } from '../actions/member';
+import { Firebase, FirebaseRef } from '../lib/firebase';
+import { logout, getMemberData, getFriendRequests, getMessages } from '../actions/member';
 
 
 function cacheImages(images) {
@@ -23,6 +24,7 @@ class About extends Component {
     memberLogout: PropTypes.func.isRequired,
     getMemberData: PropTypes.func.isRequired,
     getFriendRequests: PropTypes.func.isRequired,
+    getMessages: PropTypes.func.isRequired,
     member: PropTypes.shape({
       loading: PropTypes.bool.isRequired,
       error: PropTypes.string,
@@ -33,12 +35,28 @@ class About extends Component {
     super(props);
     this.state = {
       isReady: false,
+      newInvitedAppointments: new Array(),
     };
   }
 
   componentDidMount = () => {
     this.props.getMemberData();
     this.props.getFriendRequests();
+    Firebase.auth().onAuthStateChanged((loggedIn) => {
+      loggedIn ? FirebaseRef.child('invitedAppointments').child(loggedIn.email.replace(/[.]/g, ',')).on('value', (snapshot) => {
+        tempArray = new Array();
+        if (snapshot.val()) {
+          Object.entries(snapshot.val()).map(([key, value]) => {
+            if (!value['read']) {
+              tempArray.push(value);
+            }
+          });
+        }
+        this.setState({newInvitedAppointments: tempArray});
+      }) : null
+    });
+    let name = `${this.props.member.firstName} ${this.props.member.lastName}`;
+    this.props.getMessages(this.props.recipes.recipes, name);
   };
 
   async _loadAssetsAsync() {
@@ -72,7 +90,7 @@ class About extends Component {
         />
       );
     } else {
-      return <Layout member={member} logout={memberLogout} recipes={tempArray}/>;
+      return <Layout member={member} logout={memberLogout} recipes={tempArray} newRecipes={this.state.newInvitedAppointments}/>;
     }
   }
 }
@@ -86,6 +104,7 @@ const mapDispatchToProps = {
   memberLogout: logout,
   getMemberData,
   getFriendRequests,
+  getMessages,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(About);

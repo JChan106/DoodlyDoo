@@ -105,7 +105,7 @@ export function getFriendRequests() {
       if (loggedIn) {
         FirebaseRef.child("friends").child(loggedIn.email.replace(/[.]/g, ',')).on("value",function(snapshot){
           var requests = {};
-          if (snapshot.val() !== undefined) {
+          if (snapshot.val()) {
             Object.entries(snapshot.val()).map(([key, value]) => {
               if (!value.hasAccepted) {
                 requests[key] = value;
@@ -117,6 +117,29 @@ export function getFriendRequests() {
             data: requests,
           }));
         });
+      }
+    });
+  });
+}
+
+export function getMessages(recipes, userName) {
+  return dispatch => new Promise((resolve) => {
+    var that = this;
+    Firebase.auth().onAuthStateChanged((loggedIn) => {
+      if (loggedIn) {
+        let tempUnreadMessages = {};
+        recipes && userName ? recipes.map((recipe) => {
+          let masterEmailKey = recipe.masterEmail.replace(/[.]/g, ',');
+          FirebaseRef.child("messages").child(masterEmailKey).child(recipe.id).child('usersRead').on("value", function(snapshot){
+            if (snapshot.val()) {
+              snapshot.val()[userName] === null || snapshot.val()[userName] === false ? tempUnreadMessages[recipe.appointmentName] = recipe : null;
+            }
+          });
+        }) : null
+        return resolve(dispatch({
+          type: 'UNREAD_MESSAGES',
+          data: tempUnreadMessages,
+        }));
       }
     });
   });

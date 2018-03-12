@@ -52,6 +52,17 @@ export default function userReducer(state = initialState, action) {
       }
       return initialState;
     }
+    case 'UNREAD_MESSAGES': {
+      if (action.data) {
+        return {
+          ...state,
+          loading: false,
+          error: null,
+          unreadMessages: action.data,
+        };
+      }
+      return initialState;
+    }
     case 'USER_RESET': {
       return initialState;
     }
