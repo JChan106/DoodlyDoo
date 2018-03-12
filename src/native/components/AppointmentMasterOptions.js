@@ -9,13 +9,53 @@ import ErrorMessages from '../../constants/errors';
 import Error from './Error';
 import Spacer from './Spacer';
 import { Firebase, FirebaseRef } from '../../lib/firebase';
-
+import InviteRequestItem from './InviteRequestItem';
+import InvitedItem from './InvitedItem';
 
 
 class AppointmentMasterOptions extends React.Component {
   static defaultProps = {
     error: null,
     success: null,
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      requests: [],
+      invited: []
+    };
+  }
+
+  componentDidMount() {
+    var that = this;
+    let user = Firebase.auth().currentUser;
+    if (user) {
+      FirebaseRef.child("requestInvite/").child(this.props.recipe.id).on("value", function(snapshot){
+        var requests = [];
+        var request;
+        var invited = [];
+        that.setState({
+          requests: [],
+          invited: []
+        })
+        snapshot.forEach(function(snapshot) {
+          if (!snapshot.val().ownerAccepted) {
+            request = snapshot.val();
+            requests.push(request);
+            that.setState({
+              requests: requests,
+            });
+          }
+          else if (snapshot.val().ownerAccepted && snapshot.val().invitedBy != user.email) {
+            invited.push(snapshot.val());
+            that.setState({
+              invited: invited,
+            });
+          }
+        })
+      })
+    }
   }
 
   deleteAppointment = () => {
@@ -49,18 +89,35 @@ class AppointmentMasterOptions extends React.Component {
     const { loading, error, success, recipe } = this.props;
     // Loading
     if (loading) return <Loading />;
-
+    const requestItems = this.state.requests.map((request) => {
+      return (<InviteRequestItem appointment={this.props.recipe} key={request.email} request={request}/>)
+    });
+    const invitedItems = this.state.invited.map((invite) => {
+      return (<InvitedItem appointment={this.props.recipe} key={invite.email} invite={invite}/>)
+    });
     return (
-      <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
-        <View style={{paddingBottom: 15}}>
-          <Button bordered style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}} onPress={this.deleteAppointment}>
-            <Text style={{textAlign: 'center', width: '100%', color: '#a32323'}}>Delete</Text>
-          </Button>
+      <View style={{height: '100%', backgroundColor: 'white', alignItems: 'center', paddingTop: 15, paddingBottom: 50}}>
+        <View style={{width: '90%', height: '75%'}}>
+          <H3 style={{alignSelf: 'center', paddingBottom: 15}}>Requests</H3>
+          <View style={{height: 1, backgroundColor: "lightgrey"}}></View>
+          <ScrollView style={{alignSelf: 'center', width: '100%',}}>
+            {requestItems}
+            {invitedItems}
+          </ScrollView>
         </View>
-        <View style={{paddingTop: 15}}>
-          <Button bordered style={{width: '95%', alignSelf: 'center', shadowColor: Colors.brandPrimary}} onPress={this.editAppointment}>
-            <Text style={{textAlign: 'center', width: '100%'}}>Edit</Text>
-          </Button>
+        <View>
+          <View>
+            <View style={{height: 1, backgroundColor: "lightgrey"}}></View>
+            <H3 style={{alignSelf: 'center', paddingTop: 10}}>Options</H3>
+          </View>
+          <View style={{paddingTop: 15, paddingBottom: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Button bordered style={{width: '45%', alignSelf: 'center', shadowColor: Colors.brandPrimary}} onPress={this.editAppointment}>
+              <Text style={{textAlign: 'center', width: '100%'}}>Edit</Text>
+            </Button>
+            <Button bordered style={{width: '45%', alignSelf: 'center', borderColor: '#a32323'}} onPress={this.deleteAppointment}>
+              <Text style={{textAlign: 'center', width: '100%', color: '#a32323'}}>Delete</Text>
+            </Button>
+          </View>
         </View>
       </View>
     );

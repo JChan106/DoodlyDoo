@@ -47,9 +47,14 @@ class RequestItem extends Component {
     if (this.refs.myRef) {
       if (user) {
         const acceptedFriend = FirebaseRef.child('friends/').child(that.emailToKey(user.email) + '/').child(that.emailToKey(e.email));
+        const theirData = FirebaseRef.child('friends/').child(that.emailToKey(e.email) + '/').child(that.emailToKey(user.email));
         acceptedFriend.update({
           hasAccepted: true,
+          bothAccepted: true
         });
+        theirData.update({
+          bothAccepted: true
+        })
       }
     }
   }
