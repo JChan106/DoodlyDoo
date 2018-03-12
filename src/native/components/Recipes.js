@@ -41,7 +41,7 @@ const RecipeListing = ({
                 onPress={Actions.addAppointment1}>
           <Text style={{width: '100%', textAlign: 'center'}}>Create Appointment</Text>
         </Button>
-        <ScrollView style={{height: "100%"}}>
+        <ScrollView style={{height: "99%"}}>
           <Spacer size={10} />
           <FlatList
             numColumns={1}
