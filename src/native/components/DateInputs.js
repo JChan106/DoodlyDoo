@@ -69,15 +69,17 @@ class DateInputs extends React.Component {
         <ScrollView style={{width: '100%', height: '100%', backgroundColor: 'white'}}>
           {
             this.state.showMessage ?
-             <Text style={{paddingLeft: 20, paddingTop: 15}}> No inputted times for this date </Text> :
+             <Text style={{paddingLeft: 15, paddingTop: 15}}> No inputted times for this date </Text> :
                 <List>
                   <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
-                      <Text style={{fontWeight: '800', fontSize: '19'}}> Non-conflicting Times </Text>
+                    <Icon active name="ios-time" style={{paddingRight: 20, color: Colors.brandPrimary}}/>
+                    <Text style={{fontWeight: '800', fontSize: '19'}}> Non-conflicting Times </Text>
                   </ListItem>
-                  <CalculateDates inputtedInfo={this.state.inputtedInfo} date={this.props.date} />
+                  <CalculateDates inputtedInfo={this.state.inputtedInfo} date={this.props.date} recipe={this.props.recipe}/>
 
                   <ListItem itemHeader style={{paddingBottom: 12, paddingTop: 12}}>
-                      <Text style={{fontWeight: '800', fontSize: '19'}}> Individual Times </Text>
+                    <Icon active name="ios-person" style={{fontSize: 40, paddingRight: 20, color: Colors.brandPrimary}}/>
+                    <Text style={{fontWeight: '800', fontSize: '19'}}> Individual Times </Text>
                   </ListItem>
                   {this.printInputs(this.state.inputtedInfo)}
                 </List>

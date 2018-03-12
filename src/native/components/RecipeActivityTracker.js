@@ -22,17 +22,30 @@ class RecipeActivityTracker extends React.Component {
     super(props);
     this.state = {
       canAttend: true,
+      hasInputted: false,
     };
   }
 
   componentWillMount = () => {
     let name = `${this.props.member.firstName} ${this.props.member.lastName}`
+    let tempHasInputted = false;
+    let inputtedDates = FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('userDates').child(this.props.member.email.replace(/[.]/g, ','))
+    inputtedDates.on('value', (snapshot) => {
+      if (snapshot.val() && Object.keys(snapshot.val()).length > 1) {
+         tempHasInputted = true;
+         FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('invitedUsers').child(name).update({canAttend: true});
+       } else {
+         tempHasInputted = false;
+       }
+      this.setState({hasInputted: tempHasInputted});
+    });
     if(this.props.member.email && this.props.member.email != this.props.recipe.masterEmail) {
       let invitedInfo = FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('invitedUsers').child(name);
       invitedInfo.on('value', (snapshot) => {
         snapshot.val() ? this.setState({canAttend: snapshot.val().canAttend}) : null;
       });
     }
+      this.setState({hasInputted: tempHasInputted});
   }
 
   // Build Method listing
@@ -67,7 +80,6 @@ class RecipeActivityTracker extends React.Component {
     let uid = Firebase.auth().currentUser.uid;
     let email = this.props.member.email.replace(/[.]/g, ',')
     let userName = `${this.props.member.firstName} ${this.props.member.lastName}`;
-
     FirebaseRef.child('appointments').child(this.props.recipe.masteruid).child(this.props.recipe.id).child('invitedUsers').child(userName).update({canAttend: false});
     FirebaseRef.child('invitedAppointments').child(email).child(this.props.recipe.id).child('invitedUsers').child(userName).update({canAttend: false});
     this.setState({canAttend: false});
@@ -137,10 +149,10 @@ class RecipeActivityTracker extends React.Component {
         this.props.member.email != recipe.masterEmail ?
           this.state.canAttend ?
             <View>
-              <Button bordered
-                      style={{width: '95%', alignSelf: 'center', borderColor: '#a32323'}}
+              <Button disabled={this.state.hasInputted ? true : false} bordered
+                      style={{width: '95%', alignSelf: 'center', borderColor: this.state.hasInputted ? 'grey' : '#a32323'}}
                       onPress={this.onCantAttend}>
-                <Text style={{width: '100%', textAlign: 'center', color: '#a32323'}}>Can Not Attend</Text>
+                <Text style={{width: '100%', textAlign: 'center', color: this.state.hasInputted ? 'grey' : '#a32323'}}>Can Not Attend</Text>
               </Button>
               <Spacer size={60} />
             </View> :

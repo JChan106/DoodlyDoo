@@ -41,6 +41,17 @@ export default function userReducer(state = initialState, action) {
       }
       return initialState;
     }
+    case 'FRIEND_REQUESTS_UPDATE': {
+      if (action.data) {
+        return {
+          ...state,
+          loading: false,
+          error: null,
+          friendRequests: action.data,
+        };
+      }
+      return initialState;
+    }
     case 'USER_RESET': {
       return initialState;
     }

@@ -72,9 +72,10 @@ class AddAppointment3 extends React.Component {
         invitedUsers ?
           Object.entries(invitedUsers).map(([key, value]) => {
             let email = value.email.replace(/[.]/g, ',');
-            if (!(Object.values(invited).indexOf(value.email) > -1)) {
+            if (!(Object.values(invited).indexOf(value.email) > -1) && (value.email !== masterEmail)) {
               FirebaseRef.child('invitedAppointments').child(email).child(id).remove();
               FirebaseRef.child("requestInvite").child(id).child(email).remove();
+              FirebaseRef.child('appointments').child(masteruid).child(id).child('userDates').child(email).remove();
             } else {
               editInvited = FirebaseRef.child('invitedAppointments').child(email).child(id);
               fbRequestInvite = FirebaseRef.child("requestInvite").child(id).child(email);

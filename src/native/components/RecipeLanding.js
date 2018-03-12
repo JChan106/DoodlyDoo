@@ -18,11 +18,30 @@ class RecipeLanding extends React.Component {
     success: null,
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      datesWithTimes: new Array(),
+    };
+  }
+
+  componentDidMount = () => {
+    that = this;
+    let recipeInfo = this.props.recipes.recipe;
+    FirebaseRef.child('appointments').child(recipeInfo.masteruid).child(recipeInfo.id).child('userDates').on('value', (snapshot) => {
+      let datesWithTimes = new Array();
+      snapshot.val() ? Object.values(snapshot.val()).map((value) => {
+        datesWithTimes = !Array.isArray(value) ? datesWithTimes.concat(Object.keys(value)) : datesWithTimes;
+      }) : null
+      this.setState({datesWithTimes: datesWithTimes});
+    });
+  }
+
   // Build Method listing
    printDates = (object) => object ? Object.entries(object).map(([key, value]) => (
-      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }} onPress={() => Actions.DateInputs({date: key})}>
+      <ListItem key={key} rightIcon={{ style: { opacity: 0 } }} onPress={() => Actions.DateInputs({date: key, recipe: this.props.recipe})}>
           <Body>
-            <Text>{key}</Text>
+            {this.state.datesWithTimes.includes(key) ? <Text>{key}</Text> : <Text style={{color: '#a32323'}}>{key}</Text>}
           </Body>
           <Right>
             <Icon active name='arrow-forward' />
@@ -50,6 +69,13 @@ class RecipeLanding extends React.Component {
             <Body>
               <Text>{recipe.description}</Text>
             </Body>
+          </CardItem>
+        </Card>
+        <Card style={{width: '95%', alignSelf: 'center'}}>
+          <CardItem bordered>
+            <Icon active name="ios-time" style={{color: Colors.brandPrimary}}/>
+            <Text style={{fontWeight: '900'}}> When: </Text>
+            {recipe.meetupTime && recipe.meetupDate ? <Text>{recipe.meetupDate}:   {recipe.meetupTime}</Text> : <Text>Undecided</Text>}
           </CardItem>
         </Card>
         <Card style={{width: '95%', alignSelf: 'center'}}>

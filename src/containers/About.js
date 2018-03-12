@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { AppLoading, Asset } from 'expo';
 import { View, Text, Image } from 'react-native';
-import { logout, getMemberData } from '../actions/member';
+import moment from 'moment';
+import { logout, getMemberData, getFriendRequests } from '../actions/member';
+
 
 function cacheImages(images) {
   return images.map(image => {
@@ -20,6 +22,7 @@ class About extends Component {
     Layout: PropTypes.func.isRequired,
     memberLogout: PropTypes.func.isRequired,
     getMemberData: PropTypes.func.isRequired,
+    getFriendRequests: PropTypes.func.isRequired,
     member: PropTypes.shape({
       loading: PropTypes.bool.isRequired,
       error: PropTypes.string,
@@ -33,7 +36,10 @@ class About extends Component {
     };
   }
 
-  componentDidMount = () => this.props.getMemberData();
+  componentDidMount = () => {
+    this.props.getMemberData();
+    this.props.getFriendRequests();
+  };
 
   async _loadAssetsAsync() {
     const imageAssets = cacheImages([
@@ -46,7 +52,16 @@ class About extends Component {
   }
 
   render = () => {
-    const { Layout, member, memberLogout } = this.props;
+    const { Layout, member, memberLogout, recipes } = this.props;
+
+    let tempArray = recipes.recipes;
+    tempArray = tempArray.filter(x => {
+      if (x && x.meetupDate) {
+        let compareAppointmentDate = moment(x.meetupDate).format('LL');
+        let inOneDay = moment().format('LL') === compareAppointmentDate
+        return x != null && x.meetupDate != null && x.meetupTime != null && inOneDay;
+      }
+    });
 
     if (!this.state.isReady) {
       return (
@@ -57,18 +72,20 @@ class About extends Component {
         />
       );
     } else {
-      return <Layout member={member} logout={memberLogout} />;
+      return <Layout member={member} logout={memberLogout} recipes={tempArray}/>;
     }
   }
 }
 
 const mapStateToProps = state => ({
+  recipes: state.recipes || {},
   member: state.member || {},
 });
 
 const mapDispatchToProps = {
   memberLogout: logout,
   getMemberData,
+  getFriendRequests,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(About);

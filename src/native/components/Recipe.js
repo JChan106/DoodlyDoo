@@ -31,6 +31,12 @@ const RecipeView = ({
     recipe = recipes.find(item => String(item.id) === recipeId);
   }
 
+  Firebase.auth().onAuthStateChanged((loggedIn) => {
+    if (loggedIn) {
+      member.uid !== loggedIn.uid ? Actions.pop() : null
+    }
+  });
+
   // Recipe not found
   if (!recipe) return <Error content={ErrorMessages.recipe404} />;
 

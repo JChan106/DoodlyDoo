@@ -10,49 +10,61 @@ import { Actions } from 'react-native-router-flux';
 import { logout, getMemberData } from '../../actions/member';
 import Swiper from 'react-native-swiper';
 
-let temp = "Welcome back, "
+let temp = "'s Dashboard";
 
-const About = ({member}) => (
+const printFriendRequestMessages = (friendRequests) =>
+  friendRequests ? Object.entries(friendRequests).map(([key, value]) =>
+    <ListItem onPress={Actions.manageContactsFromLanding} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
+      <Icon active name="ios-person-add" style={{color: '#a32323', paddingRight: 15}}/>
+      <Text style={{color: Colors.brandPrimary}}> New friend request from {value.firstName} {value.lastName} </Text>
+    </ListItem>
+  ) : null
+
+const printUpcomingAppointments = (appointments, member) =>
+  appointments.map((value) =>
+    <ListItem onPress={() => Actions.recipe({ match: { params: { id: String(value.id), member: member } } })} style={{backgroundColor: 'ghostwhite', alignSelf: 'stretch'}}>
+      <Icon active name="ios-flag" style={{color: '#a32323', paddingRight: 15}}/>
+      <View horizontal={true} style={{flexDirection: 'column'}}>
+        <Text style={{fontWeight: '500'}}> Today: <Text style={{fontWeight: '800', color: Colors.brandPrimary}}> {value.appointmentName} </Text> </Text>
+        <Text style={{fontWeight: '300'}}> {value.meetupDate}:  {value.meetupTime} </Text>
+      </View>
+    </ListItem>
+  );
+
+const About = ({member, recipes}) => (
     <Container>
       {(member && member.email) ?
         <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
           <View style={{paddingTop: 15, paddingBottom: 15, width: '95%'}}>
-            <H2 style={{left: '3%', textAlign: 'left'}}>{temp + member.firstName} </H2>
-            <H3 style={{left: '3%', textAlign: 'left'}}>This is your dashboard </H3>
-            <Text style={{left: '3%', textAlign: 'left'}}>Your activities and notifications will be summarized here.</Text>
+            <H2 style={{width: '100%', textAlign: 'center', color: Colors.brandPrimary}}>{member.firstName+temp} </H2>
           </View>
-          <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15}}>
-            <CardItem header bordered>
-              <Icon active name="md-flag" style={{color: Colors.brandPrimary}}/>
-              <Text>Lets get you updated!</Text>
+          <Card style={{width: '95%', alignSelf: 'center'}}>
+            <CardItem header bordered style={{backgroundColor: 'ghostwhite'}}>
+              <Icon active name="ios-alert" style={{color: Colors.brandPrimary}}/>
+              <Text>Updates!</Text>
             </CardItem>
-            <CardItem>
-              <Body>
-                <Text>"Play Smash. Twice Sucks"</Text>
-              </Body>
+            <CardItem style={{backgroundColor: 'ghostwhite'}}>
+              <List>
+                {printUpcomingAppointments(recipes, member)}
+              </List>
             </CardItem>
           </Card>
+          <Spacer size={20} />
           <Card style={{width: '95%', alignSelf: 'center'}}>
-            <CardItem header bordered>
+            <CardItem header bordered style={{backgroundColor: 'ghostwhite'}}>
               <Icon active name="ios-bookmark" style={{color: Colors.brandPrimary}}/>
               <Text>Account Activity</Text>
             </CardItem>
-            <CardItem>
+            <CardItem style={{backgroundColor: 'ghostwhite'}}>
               <List>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
-                <ListItem rightIcon={{ style: { opacity: 0 } }}>
-                  <Text>"No Items Here"</Text>
-                </ListItem>
+                {printFriendRequestMessages(member.friendRequests)}
               </List>
             </CardItem>
           </Card>
           <Spacer size={40} />
         </ScrollView> :
+
+
         <Swiper showsButtons={false}>
           <View style={{flex: 1, backgroundColor: 'white'}}>
             <Card style={{width: '95%', alignSelf: 'center', paddingBottom: 15, justifyContent: 'center'}}>

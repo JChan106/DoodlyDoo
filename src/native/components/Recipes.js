@@ -8,6 +8,8 @@ import Loading from './Loading';
 import Error from './Error';
 import Header from './Header';
 import Spacer from './Spacer';
+import Colors from '../../../native-base-theme/variables/commonColor';
+
 
 const RecipeListing = ({
   error,
@@ -22,8 +24,6 @@ const RecipeListing = ({
 
   // Error
   if (error) return <Error content={error} />;
-
-  // console.log(setCurrentRecipe);
 
   const keyExtractor = item => item.id;
 
@@ -47,15 +47,15 @@ const RecipeListing = ({
             numColumns={1}
             data={recipes}
             renderItem={({ item }) => (
-              <Card style={{marginBottom: 10, paddingHorizontal: 10, width: '95%', alignSelf: 'center'}}>
-                <CardItem header bordered={true}>
-                  <Text style={{ fontWeight: '600' }}>{item.appointmentName}</Text>
+              <Card style={{marginBottom: 10, width: '95%', alignSelf: 'center'}}>
+                <CardItem header bordered={true} style={{backgroundColor: 'ghostwhite'}}>
+                  <Text style={{ fontWeight: '600', color: Colors.brandPrimary}}>{item.appointmentName}</Text>
                   <Button bordered small onPress={() => onPress(item)}
-                    style={{right: 0, position: 'absolute', top: 9.5}}>
-                    <Text>View</Text>
+                    style={{right: 0, position: 'absolute', top: 9.5, borderColor: Colors.brandPrimary, marginRight: 10}}>
+                    <Text style={{color: Colors.brandPrimary}}>View</Text>
                   </Button>
                 </CardItem>
-                <CardItem cardBody bordered={true} style={{backgroundColor: 'white'}}>
+                <CardItem cardBody bordered={false} style={{backgroundColor: 'ghostwhite'}}>
                   <Body style={{paddingLeft: 15}}>
                     <Spacer size={10} />
                     <Text style={{fontWeight: '600'}}>Created By: <Text style={{fontWeight: '200'}}> {item.masterName} </Text> </Text>
