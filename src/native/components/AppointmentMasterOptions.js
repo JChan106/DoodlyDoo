@@ -97,7 +97,7 @@ class AppointmentMasterOptions extends React.Component {
     });
     return (
       <View style={{height: '100%', backgroundColor: 'white', alignItems: 'center', paddingTop: 15, paddingBottom: 50}}>
-        <View style={{width: '90%', height: '75%'}}>
+        <View style={{width: '90%', height: '80%'}}>
           <H3 style={{alignSelf: 'center', paddingBottom: 15}}>Requests</H3>
           <View style={{height: 1, backgroundColor: "lightgrey"}}></View>
           <ScrollView style={{alignSelf: 'center', width: '100%',}}>
@@ -108,7 +108,7 @@ class AppointmentMasterOptions extends React.Component {
         <View>
           <View>
             <View style={{height: 1, backgroundColor: "lightgrey"}}></View>
-            <H3 style={{alignSelf: 'center', paddingTop: 10}}>Options</H3>
+            <H3 style={{alignSelf: 'center', paddingTop: 15}}>Options</H3>
           </View>
           <View style={{paddingTop: 15, paddingBottom: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
             <Button bordered style={{width: '45%', alignSelf: 'center', shadowColor: Colors.brandPrimary}} onPress={this.editAppointment}>

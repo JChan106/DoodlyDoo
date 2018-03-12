@@ -35,13 +35,13 @@ const RecipeListing = ({
   return (
     <Container>
       {(member && member.email) ?
-      <View style={{marginBottom: 30}}>
+      <View style={{paddingTop: 10,marginBottom: 30}}>
         <Button bordered
                 style={{width: '95%', alignSelf: 'center', shadowColor: '#608296'}}
                 onPress={Actions.addAppointment1}>
           <Text style={{width: '100%', textAlign: 'center'}}>Create Appointment</Text>
         </Button>
-        <ScrollView>
+        <ScrollView style={{height: "99%"}}>
           <Spacer size={10} />
           <FlatList
             numColumns={1}
