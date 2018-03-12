@@ -69,7 +69,7 @@ class InvitedItem extends Component {
           {this.capitalize(this.props.invite.firstName) + ' ' + this.capitalize(this.props.invite.lastName)}
           </Text>
           <Body style={{paddingBottom: 5,width: '100%', height: '10%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-            <Button rounded danger style={{height: 35, width:90}} onPress={() => this.handleUninvite()}>
+            <Button rounded danger style={{height: 35, width:95}} onPress={() => this.handleUninvite()}>
               <Text style={{textAlign:'center'}}>Uninvite</Text>
             </Button>
           </Body>
